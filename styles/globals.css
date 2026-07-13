@@ -1,0 +1,280 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens — the single source of truth for color and type.
+ * Blueprint / technical-drawing system: navy ground, orange engineering
+ * accent, mono utility face. Swap values here to re-skin the entire site;
+ * components never hardcode raw hex/rgb values.
+ */
+:root {
+  /* Surfaces */
+  --bg: #0e1b2e;
+  --bg-elevated: #142640;
+  --surface: #f4f4f2;
+  --surface-muted: #e8e8e5;
+  --panel-2: #0f2038;
+
+  /* Text */
+  --text-primary: #e7eef7;
+  --text-secondary: #7c93b3;
+  --text-tertiary: #566e8f;
+  --text-inverse: #14202f;
+
+  /* Borders */
+  --border: rgba(214, 225, 240, 0.14);
+  --border-strong: rgba(214, 225, 240, 0.3);
+
+  /* Accent — single primary vurgu rengi: mühendislik turuncusu */
+  --accent: #ff7a33;
+  --accent-strong: #ff9257;
+  --accent-soft: rgba(255, 122, 51, 0.13);
+
+  /* Secondary accent — seçici kullanım (AI / Explorations) */
+  --secondary: #5ec8f2;
+  --secondary-soft: rgba(94, 200, 242, 0.1);
+
+  /* Background gradients / textures */
+  --gradient-mesh: radial-gradient(1200px circle at 15% -10%, rgba(255, 122, 51, 0.07), transparent 55%),
+    radial-gradient(900px circle at 85% 110%, rgba(94, 200, 242, 0.05), transparent 55%);
+  --gradient-surface-fade: linear-gradient(180deg, var(--bg) 0%, var(--bg-elevated) 100%);
+  --grid-line: rgba(214, 225, 240, 0.08);
+
+  /* Type scale — responsive via clamp() */
+  --font-size-display: clamp(2.5rem, 1.9rem + 3.6vw, 5.5rem);
+  --font-size-h1: clamp(2.1rem, 1.7rem + 2vw, 3.5rem);
+  --font-size-h2: clamp(1.4rem, 1.2rem + 1vw, 2.15rem);
+  --font-size-h3: clamp(1.1rem, 1rem + 0.4vw, 1.4rem);
+  --font-size-body: clamp(1rem, 0.95rem + 0.15vw, 1.125rem);
+  --font-size-small: clamp(0.8125rem, 0.8rem + 0.1vw, 0.9375rem);
+  --font-size-label: clamp(0.6875rem, 0.67rem + 0.1vw, 0.75rem);
+
+  --leading-display: 1.04;
+  --leading-h1: 1.06;
+  --leading-h2: 1.15;
+  --leading-h3: 1.3;
+  --leading-body: 1.65;
+  --tracking-label: 0.14em;
+  --tracking-tight: -0.005em;
+
+  /* Layout */
+  --nav-height: 4.5rem;
+  --nav-height-scrolled: 3.75rem;
+  --container-max: 90rem;
+}
+
+/* Bridge tokens into Tailwind utilities (bg-bg, text-primary, border-accent, font-display, etc.) */
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-elevated: var(--bg-elevated);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-panel-2: var(--panel-2);
+
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-tertiary: var(--text-tertiary);
+  --color-text-inverse: var(--text-inverse);
+
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-soft: var(--accent-soft);
+  --color-secondary: var(--secondary);
+  --color-secondary-soft: var(--secondary-soft);
+
+  --font-sans: var(--font-body-family), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-display-family), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono-family), ui-monospace, "SF Mono", Consolas, monospace;
+
+  --animate-slow-drift: slow-drift 40s ease-in-out infinite;
+  --animate-fade-in: fade-in 0.8s ease-out forwards;
+  --animate-rail-flow: rail-flow 1.4s linear infinite;
+  --animate-rail-pulse: rail-pulse 1.8s ease-in-out infinite;
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    color-scheme: dark;
+  }
+
+  body {
+    background-color: var(--bg);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+  }
+
+  ::selection {
+    background-color: var(--accent-soft);
+    color: var(--text-primary);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 0;
+  }
+}
+
+@layer utilities {
+  .text-display {
+    font-family: var(--font-display);
+    font-size: var(--font-size-display);
+    line-height: var(--leading-display);
+    letter-spacing: var(--tracking-tight);
+    text-transform: uppercase;
+  }
+
+  .text-h1 {
+    font-family: var(--font-display);
+    font-size: var(--font-size-h1);
+    line-height: var(--leading-h1);
+    letter-spacing: var(--tracking-tight);
+    text-transform: uppercase;
+  }
+
+  .text-h2 {
+    font-family: var(--font-display);
+    font-size: var(--font-size-h2);
+    line-height: var(--leading-h2);
+    letter-spacing: var(--tracking-tight);
+    text-transform: uppercase;
+  }
+
+  .text-h3 {
+    font-family: var(--font-display);
+    font-size: var(--font-size-h3);
+    line-height: var(--leading-h3);
+    text-transform: uppercase;
+  }
+
+  .text-body {
+    font-size: var(--font-size-body);
+    line-height: var(--leading-body);
+  }
+
+  .text-small {
+    font-size: var(--font-size-small);
+  }
+
+  .text-label {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-label);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+  }
+
+  .font-mono-ui {
+    font-family: var(--font-mono);
+  }
+
+  .grid-bg {
+    background-image: linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  .crosshair-zone {
+    cursor: default;
+  }
+  @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .crosshair-zone {
+      cursor: none;
+    }
+  }
+
+  .sr-only-focusable {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .sr-only-focusable:focus {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    width: auto;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    clip: auto;
+    z-index: 100;
+    background-color: var(--accent);
+    color: var(--text-inverse);
+    padding: 0.75rem 1.25rem;
+    border-radius: 0;
+    font-weight: 600;
+  }
+}
+
+@keyframes slow-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(-2%, 2%, 0) scale(1.05);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes rail-flow {
+  to {
+    background-position: 0 24px;
+  }
+}
+
+@keyframes rail-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 122, 51, 0.55);
+  }
+  60% {
+    box-shadow: 0 0 0 7px rgba(255, 122, 51, 0);
+  }
+}
+
+@keyframes draw-line {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Reduced motion: kill CSS-driven ambient motion outside of Framer's own reach */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .animate-slow-drift {
+    animation: none !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
