@@ -37,13 +37,13 @@
   --gradient-mesh: radial-gradient(1200px circle at 15% -10%, rgba(255, 122, 51, 0.07), transparent 55%),
     radial-gradient(900px circle at 85% 110%, rgba(94, 200, 242, 0.05), transparent 55%);
   --gradient-surface-fade: linear-gradient(180deg, var(--bg) 0%, var(--bg-elevated) 100%);
-  --grid-line: rgba(214, 225, 240, 0.08);
+  --grid-line: rgba(214, 225, 240, 0.14);
 
-  /* Type scale — responsive via clamp() */
-  --font-size-display: clamp(2.5rem, 1.9rem + 3.6vw, 5.5rem);
-  --font-size-h1: clamp(2.1rem, 1.7rem + 2vw, 3.5rem);
+  /* Type scale — responsive via clamp(), matching the Blueprint reference exactly */
+  --font-size-display: clamp(2.3rem, 4.8vw, 4.2rem);
+  --font-size-h1: clamp(1.8rem, 3.2vw, 2.5rem);
   --font-size-h2: clamp(1.4rem, 1.2rem + 1vw, 2.15rem);
-  --font-size-h3: clamp(1.1rem, 1rem + 0.4vw, 1.4rem);
+  --font-size-h3: clamp(1rem, 0.95rem + 0.2vw, 1.25rem);
   --font-size-body: clamp(1rem, 0.95rem + 0.15vw, 1.125rem);
   --font-size-small: clamp(0.8125rem, 0.8rem + 0.1vw, 0.9375rem);
   --font-size-label: clamp(0.6875rem, 0.67rem + 0.1vw, 0.75rem);
@@ -57,9 +57,10 @@
   --tracking-tight: -0.005em;
 
   /* Layout */
-  --nav-height: 4.5rem;
-  --nav-height-scrolled: 3.75rem;
-  --container-max: 90rem;
+  --nav-height: 4.25rem;
+  --container-max: 1180px;
+  --section-py: clamp(3.5rem, 8vw, 6rem);
+  --section-px: clamp(1.25rem, 4vw, 3rem);
 }
 
 /* Bridge tokens into Tailwind utilities (bg-bg, text-primary, border-accent, font-display, etc.) */
@@ -88,7 +89,6 @@
   --font-display: var(--font-display-family), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-mono-family), ui-monospace, "SF Mono", Consolas, monospace;
 
-  --animate-slow-drift: slow-drift 40s ease-in-out infinite;
   --animate-fade-in: fade-in 0.8s ease-out forwards;
   --animate-rail-flow: rail-flow 1.4s linear infinite;
   --animate-rail-pulse: rail-pulse 1.8s ease-in-out infinite;
@@ -180,11 +180,16 @@
     background-size: 40px 40px;
   }
 
-  .crosshair-zone {
+  /* `*` here is deliberate: native controls (button, a, svg) set their own
+     cursor and don't inherit, so without this a button/link inside a zone
+     shows the OS pointer *and* the custom crosshair at the same time. */
+  .crosshair-zone,
+  .crosshair-zone * {
     cursor: default;
   }
   @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-    .crosshair-zone {
+    .crosshair-zone,
+    .crosshair-zone * {
       cursor: none;
     }
   }
@@ -216,16 +221,6 @@
     padding: 0.75rem 1.25rem;
     border-radius: 0;
     font-weight: 600;
-  }
-}
-
-@keyframes slow-drift {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-  50% {
-    transform: translate3d(-2%, 2%, 0) scale(1.05);
   }
 }
 
@@ -264,10 +259,6 @@
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
-  }
-
-  .animate-slow-drift {
-    animation: none !important;
   }
 
   *,

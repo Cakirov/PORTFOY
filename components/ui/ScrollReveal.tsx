@@ -22,7 +22,7 @@ export function ScrollReveal({
   className,
   variants = fadeInUp,
   delay = 0,
-  amount = 0.3,
+  amount = 0.15,
 }: ScrollRevealProps) {
   return (
     <motion.div

@@ -13,12 +13,21 @@ export interface ProcessStep {
   icon: IconComponent;
 }
 
+export type ExplorationStatus = "active" | "prototype" | "archived";
+
 export interface Exploration {
   id: string;
   title: string;
   description: string;
   tag: string;
   icon: IconComponent;
+  status: ExplorationStatus;
+  updatedAt: string;
+}
+
+export interface AboutSpec {
+  label: string;
+  value: string;
 }
 
 export interface SiteContent {
@@ -38,6 +47,7 @@ export interface SiteContent {
     eyebrow: string;
     heading: string;
     body: string[];
+    specs: AboutSpec[];
   };
   skills: {
     eyebrow: string;

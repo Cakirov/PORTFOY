@@ -1,4 +1,3 @@
-import { RevealText } from "@/components/ui/RevealText";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Masthead } from "@/components/ui/Masthead";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
@@ -9,33 +8,30 @@ import { SECTION_IDS } from "@/lib/constants";
 
 export function ContactSection() {
   const { contact } = siteContent;
+  // Email leads as the primary CTA here; Footer keeps the data's natural order.
+  const ctaLinks = [...socialLinks].sort((a, b) => Number(b.platform === "email") - Number(a.platform === "email"));
 
   return (
     <section
       id={SECTION_IDS.contact}
       aria-labelledby="contact-heading"
-      className="relative mx-auto max-w-(--container-max) border-t border-border px-6 py-28 lg:px-10 lg:py-36"
+      className="relative mx-auto max-w-(--container-max) border-t border-border px-(--section-px) py-(--section-py)"
     >
-      <Masthead fig="08" name="CONTACT" view="SIGNATURE" sheet="8 / 8" />
+      <ScrollReveal>
+        <Masthead fig="08" name="CONTACT" view="SIGNATURE" sheet="8 / 8" />
+      </ScrollReveal>
 
-      <div className="mx-auto flex max-w-3xl flex-col items-center gap-8 border border-border-strong px-6 py-16 text-center sm:px-12">
-        <ScrollReveal>
-          <Eyebrow>{contact.eyebrow}</Eyebrow>
-        </ScrollReveal>
+      <ScrollReveal className="mx-auto flex max-w-3xl flex-col items-center gap-8 border border-border-strong px-6 py-16 text-center sm:px-12">
+        <Eyebrow className="justify-center">{contact.eyebrow}</Eyebrow>
 
-        <RevealText
-          as="h2"
-          id="contact-heading"
-          text={contact.heading}
-          className="text-h1 font-display font-semibold text-text-primary"
-        />
+        <h2 id="contact-heading" className="text-h1 font-display font-bold text-text-primary">
+          {contact.heading}
+        </h2>
 
-        <ScrollReveal delay={0.1} className="text-body max-w-xl text-text-secondary">
-          <p>{contact.body}</p>
-        </ScrollReveal>
+        <p className="text-body max-w-xl text-text-secondary">{contact.body}</p>
 
-        <ScrollReveal delay={0.2} className="mt-4 flex flex-wrap items-center justify-center gap-4">
-          {socialLinks.map((link) => (
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-4">
+          {ctaLinks.map((link) => (
             <Button
               key={link.platform}
               href={link.href}
@@ -46,8 +42,8 @@ export function ContactSection() {
               {link.label}
             </Button>
           ))}
-        </ScrollReveal>
-      </div>
+        </div>
+      </ScrollReveal>
     </section>
   );
 }

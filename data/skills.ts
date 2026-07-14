@@ -56,7 +56,7 @@ export const skillGroups: SkillGroup[] = [
   },
   {
     key: "product",
-    label: "Product Development",
+    label: "Product",
     items: [
       { name: "Ürün Stratejisi" },
       { name: "Kullanıcı Araştırması" },

@@ -1,18 +1,13 @@
 import { socialLinks } from "@/data/socialLinks";
 import { siteContent } from "@/data/siteContent";
-
-const REVISION_HISTORY = [
-  { rev: "01", date: "2026.05.02", note: "İlk taslak — hero ve temel bölümler" },
-  { rev: "02", date: "2026.06.18", note: "Proje bölümü ve şematik diyagramlar eklendi" },
-  { rev: "03", date: "2026.07.13", note: "Mevcut sürüm — teknik çizim detayları ve proje paneli" },
-] as const;
+import { REVISION_HISTORY, CURRENT_REVISION } from "@/lib/constants";
 
 export function Footer() {
   const { footer } = siteContent;
   const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-border px-6 py-12 lg:px-10">
+    <footer className="border-t border-border px-(--section-px) py-12">
       <div className="mx-auto flex max-w-(--container-max) flex-col gap-8">
         <div>
           <p className="mb-3 font-mono-ui text-label text-text-tertiary">Revision History</p>
@@ -56,7 +51,7 @@ export function Footer() {
           </div>
           <div className="border-r border-border-strong p-4">
             <span className="mb-1 block text-label text-text-tertiary">Date</span>
-            <span className="text-small text-text-primary">{REVISION_HISTORY[REVISION_HISTORY.length - 1].date}</span>
+            <span className="text-small text-text-primary">{CURRENT_REVISION.date}</span>
           </div>
           <div className="border-r border-border-strong p-4">
             <span className="mb-1 block text-label text-text-tertiary">Sheet</span>
@@ -64,7 +59,7 @@ export function Footer() {
           </div>
           <div className="p-4">
             <span className="mb-1 block text-label text-text-tertiary">Rev</span>
-            <span className="text-small text-accent">{REVISION_HISTORY[REVISION_HISTORY.length - 1].rev}</span>
+            <span className="text-small text-accent">{CURRENT_REVISION.rev}</span>
           </div>
         </div>
 

@@ -8,20 +8,11 @@ import { navLinks } from "@/data/navigation";
 import { useActiveSection } from "@/hooks/useActiveSection";
 import { cn } from "@/lib/utils";
 import { fadeInUp } from "@/lib/motion";
+import { CURRENT_REVISION } from "@/lib/constants";
 
 export function Navbar() {
-  const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const activeSectionId = useActiveSection(navLinks.map((link) => link.sectionId));
-
-  useEffect(() => {
-    function handleScroll() {
-      setIsScrolled(window.scrollY > 24);
-    }
-    handleScroll();
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   useEffect(() => {
     if (!isMenuOpen) return;
@@ -32,23 +23,16 @@ export function Navbar() {
   }, [isMenuOpen]);
 
   return (
-    <header
-      className={cn(
-        "fixed inset-x-0 top-0 z-40 transition-[background-color,backdrop-filter,padding] duration-500",
-        isScrolled
-          ? "border-b border-border bg-bg/80 py-3 backdrop-blur-md"
-          : "border-b border-transparent bg-transparent py-5",
-      )}
-    >
+    <header className="fixed inset-x-0 top-0 z-40 border-b border-border-strong bg-bg/95 py-4 shadow-[0_12px_32px_-16px_rgba(0,0,0,0.6)] backdrop-blur-md">
       <nav
         aria-label="Ana navigasyon"
-        className="relative z-10 mx-auto flex max-w-(--container-max) items-center justify-between px-6 lg:px-10"
+        className="relative z-10 mx-auto flex max-w-(--container-max) items-center justify-between px-(--section-px)"
       >
         <Link
           href="#hero"
-          className="text-h3 font-display font-semibold tracking-tight text-text-primary"
+          className="text-h3 font-display font-bold tracking-tight text-text-primary"
         >
-          Portföy<span className="text-accent">.</span>
+          Ömer Çakıroğlu<span className="text-accent">.</span>
         </Link>
 
         <ul className="hidden items-center gap-8 md:flex">
@@ -77,7 +61,7 @@ export function Navbar() {
         </ul>
 
         <span className="hidden font-mono-ui text-[0.68rem] tracking-wide text-text-tertiary lg:inline">
-          REV. 2026.07.13
+          REV. {CURRENT_REVISION.date}
         </span>
 
         <button

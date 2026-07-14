@@ -2,24 +2,23 @@ import { Mail, FileText } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "@/components/ui/icons";
 import type { SocialLink } from "@/types/social";
 
-// NOTE: Placeholder değerler — gerçek profil/dosya bağlantıları eklenene kadar yer tutucudur.
 export const socialLinks: SocialLink[] = [
   {
     platform: "linkedin",
     label: "LinkedIn",
-    href: "https://linkedin.com/in/kullanici-adi",
+    href: "https://www.linkedin.com/in/omerrcakiroglu/",
     icon: LinkedinIcon,
   },
   {
     platform: "github",
     label: "GitHub",
-    href: "https://github.com/kullanici-adi",
+    href: "https://github.com/Cakirov",
     icon: GithubIcon,
   },
   {
     platform: "email",
     label: "E-posta",
-    href: "mailto:merhaba@example.com",
+    href: "mailto:omerrcakirogluu@gmail.com",
     icon: Mail,
   },
   {

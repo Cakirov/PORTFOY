@@ -26,7 +26,7 @@ export function ProjectGrid({ projects }: ProjectGridProps) {
 
   return (
     <LayoutGroup>
-      <div className="grid grid-cols-12 gap-6" style={{ gridAutoFlow: "row dense" }}>
+      <div className="grid grid-cols-12 gap-5" style={{ gridAutoFlow: "row dense" }}>
         {projects.map((project, index) => (
           <div key={project.id} className="contents">
             {activeSlug === project.slug ? null : (

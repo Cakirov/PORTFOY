@@ -9,6 +9,8 @@ export const explorations: Exploration[] = [
     description: "LLM tabanlı bir asistanın, mevcut bir kod tabanının desenlerini öğrenip taslak öneriler üretmesi üzerine küçük bir deney.",
     tag: "AI Deneyi",
     icon: Bot,
+    status: "active",
+    updatedAt: "2026.07.02",
   },
   {
     id: "spatial-nav-concept",
@@ -16,6 +18,8 @@ export const explorations: Exploration[] = [
     description: "Geleneksel scroll yerine, içerikler arasında uzamsal geçişlerle gezinen bir arayüz konsepti.",
     tag: "UI Prototipi",
     icon: LayoutPanelTop,
+    status: "prototype",
+    updatedAt: "2026.05.14",
   },
   {
     id: "self-healing-pipeline",
@@ -23,6 +27,8 @@ export const explorations: Exploration[] = [
     description: "Hata durumunda otomatik olarak eski sürüme dönen ve ekibi bilgilendiren küçük bir otomasyon sistemi denemesi.",
     tag: "Otomasyon",
     icon: Sparkles,
+    status: "active",
+    updatedAt: "2026.06.28",
   },
   {
     id: "edge-inference",
@@ -30,6 +36,8 @@ export const explorations: Exploration[] = [
     description: "Küçük bir modeli tarayıcı içinde çalıştırarak sunucu maliyetini ortadan kaldıran bir yaklaşımın denenmesi.",
     tag: "Gelecek Teknolojisi",
     icon: Rocket,
+    status: "prototype",
+    updatedAt: "2026.04.09",
   },
   {
     id: "generative-layout",
@@ -37,5 +45,7 @@ export const explorations: Exploration[] = [
     description: "İçerik yoğunluğuna göre kendini yeniden dengeleyen deneysel bir grid sistemi prototipi.",
     tag: "Prototip",
     icon: FlaskConical,
+    status: "archived",
+    updatedAt: "2026.01.22",
   },
 ];

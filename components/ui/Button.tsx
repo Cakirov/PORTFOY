@@ -27,7 +27,7 @@ type ButtonAsButton = SharedProps &
 type ButtonProps = ButtonAsLink | ButtonAsButton;
 
 const VARIANT_CLASSES: Record<ButtonVariant, string> = {
-  primary: "bg-accent text-text-inverse hover:bg-accent-strong",
+  primary: "border border-accent bg-accent font-semibold text-text-inverse hover:bg-accent-strong",
   secondary:
     "border border-border-strong text-text-primary hover:border-accent hover:text-accent",
   ghost: "text-text-secondary hover:text-text-primary",
@@ -43,7 +43,7 @@ export function Button({
   ...rest
 }: ButtonProps) {
   const classes = cn(
-    "text-body inline-flex items-center gap-2 px-6 py-3 font-mono-ui text-[0.9rem] tracking-wide uppercase transition-colors duration-300",
+    "inline-flex items-center gap-2 px-[1.35rem] py-[0.85rem] font-mono-ui text-[0.76rem] tracking-wide uppercase transition-[background-color,border-color,color,transform] duration-300 active:scale-[0.97]",
     VARIANT_CLASSES[variant],
     className,
   );

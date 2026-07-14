@@ -1,5 +1,6 @@
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Masthead } from "@/components/ui/Masthead";
+import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { ProjectGrid } from "@/components/sections/ProjectGrid";
 import { projects } from "@/data/projects";
 import { siteContent } from "@/data/siteContent";
@@ -12,15 +13,17 @@ export function ProjectsSection() {
     <section
       id={SECTION_IDS.projects}
       aria-labelledby="projects-heading"
-      className="relative mx-auto max-w-(--container-max) border-t border-border px-6 py-28 lg:px-10 lg:py-36"
+      className="relative mx-auto max-w-(--container-max) border-t border-border px-(--section-px) py-(--section-py)"
     >
-      <Masthead fig="03" name="PROJECTS" view="PLAN" sheet="3 / 8" />
+      <ScrollReveal>
+        <Masthead fig="03" name="PROJECTS" view="PLAN" sheet="3 / 8" />
+      </ScrollReveal>
       <SectionHeading
         id="projects-heading"
         eyebrow={content.eyebrow}
         heading={content.heading}
         body={content.body}
-        className="mb-16"
+        className="mb-[clamp(2rem,4vw,3rem)]"
       />
       <ProjectGrid projects={projects} />
     </section>

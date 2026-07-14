@@ -10,10 +10,11 @@ export function Tag({ children, className, variant = "default" }: TagProps) {
   return (
     <span
       className={cn(
-        "text-small inline-flex items-center border px-3 py-1 font-mono-ui uppercase",
+        "inline-flex items-center border",
         variant === "default" &&
-          "border-border-strong text-text-secondary bg-bg-elevated/60",
-        variant === "accent" && "border-accent bg-accent-soft text-accent",
+          "border-border-strong px-2 py-0.5 text-[0.7rem] text-text-secondary",
+        variant === "accent" &&
+          "text-small px-3 py-1 font-mono-ui text-accent uppercase border-accent bg-accent-soft",
         className,
       )}
     >

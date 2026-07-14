@@ -1,7 +1,6 @@
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Masthead } from "@/components/ui/Masthead";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
-import { NodeGraphic } from "@/components/ui/NodeGraphic";
 import { siteContent } from "@/data/siteContent";
 import { SECTION_IDS } from "@/lib/constants";
 
@@ -12,26 +11,34 @@ export function AboutSection() {
     <section
       id={SECTION_IDS.about}
       aria-labelledby="about-heading"
-      className="relative mx-auto max-w-(--container-max) border-t border-border px-6 py-28 lg:px-10 lg:py-36"
+      className="relative mx-auto max-w-(--container-max) border-t border-border px-(--section-px) py-(--section-py)"
     >
-      <Masthead fig="04" name="PROFILE" view="ELEVATION" sheet="4 / 8" />
+      <ScrollReveal>
+        <Masthead fig="04" name="PROFILE" view="ELEVATION" sheet="4 / 8" />
+      </ScrollReveal>
       <div className="grid grid-cols-1 gap-16 lg:grid-cols-12">
         <div className="lg:col-span-4">
           <SectionHeading id="about-heading" eyebrow={about.eyebrow} heading={about.heading} />
 
-          <ScrollReveal
-            delay={0.15}
-            className="crosshair-zone relative mt-10 hidden aspect-[4/5] overflow-hidden border border-border bg-bg-elevated lg:block"
-          >
-            <div className="absolute inset-0 p-10 opacity-70">
-              <NodeGraphic variant="mesh" accent="secondary" />
-            </div>
+          <ScrollReveal delay={0.1} className="mt-10 border border-border-strong">
+            <dl>
+              {about.specs.map((spec, i) => (
+                <div
+                  key={spec.label}
+                  className="grid grid-cols-[6rem_1fr] border-b border-dashed border-border px-4 py-2.5 last:border-b-0"
+                >
+                  <dt className="font-mono-ui text-label text-text-tertiary">{spec.label}</dt>
+                  <dd className={`text-small ${i === 2 ? "text-accent" : "text-text-primary"}`}>{spec.value}</dd>
+                </div>
+              ))}
+            </dl>
           </ScrollReveal>
         </div>
 
         <div className="flex flex-col gap-6 lg:col-span-7 lg:col-start-6">
           {about.body.map((paragraph, i) => (
-            <ScrollReveal key={i} delay={i * 0.1} className="text-body text-text-secondary">
+            <ScrollReveal key={i} delay={i * 0.1} className="flex gap-4 text-body text-text-secondary">
+              <span className="font-mono-ui text-label text-accent">§{String(i + 1).padStart(2, "0")}</span>
               <p>{paragraph}</p>
             </ScrollReveal>
           ))}

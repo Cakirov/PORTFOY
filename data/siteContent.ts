@@ -28,6 +28,12 @@ export const siteContent: SiteContent = {
       "Kodu, uzun vadede bakımı yapılabilecek ve büyüyebilecek bir sistemin parçası olarak tasarlarım — hızlı çözüm ile sağlam çözüm arasındaki dengeyi bilinçli kurarım.",
       "Yeni teknolojilere meraklıyım ama araçları amaç değil, doğru problemi çözmek için birer araç olarak görürüm.",
     ],
+    specs: [
+      { label: "Rol", value: "Yazılım Mühendisi" },
+      { label: "Odak", value: "Sistem Tasarımı · AI" },
+      { label: "Durum", value: "Yeni Fırsatlara Açık" },
+      { label: "Konum", value: "Uzaktan / TR" },
+    ],
   },
   skills: {
     eyebrow: "Yetkinlikler",
@@ -50,7 +56,7 @@ export const siteContent: SiteContent = {
     body: "Aklınızda bir proje mi var, yoksa sadece merhaba mı demek istiyorsunuz? Her iki durumda da yazmaktan çekinmeyin.",
   },
   footer: {
-    name: "Adınız Soyadınız",
+    name: "Ömer Çakıroğlu",
     tagline: "Yazılım mühendisliği, ürün düşüncesi ve sistem tasarımı üzerine.",
   },
 };

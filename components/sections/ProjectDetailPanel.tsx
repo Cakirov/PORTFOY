@@ -9,7 +9,7 @@ import { Tag } from "@/components/ui/Tag";
 import { useFocusTrap } from "@/hooks/useFocusTrap";
 import { useLockBodyScroll } from "@/hooks/useLockBodyScroll";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
-import { PROJECT_LAYOUT_SPAN_MAP } from "@/lib/constants";
+import { PROJECT_LAYOUT_SPAN_MAP, CURRENT_REVISION } from "@/lib/constants";
 
 interface ProjectDetailPanelProps {
   project: Project;
@@ -56,7 +56,7 @@ export function ProjectDetailPanel({ project, sheetNumber, onClose }: ProjectDet
         <span>
           Sheet {String(sheetNumber).padStart(2, "0")} <span className="text-accent">Detail</span>
         </span>
-        <span>Rev. 2026.07.13</span>
+        <span>Rev. {CURRENT_REVISION.date}</span>
       </div>
 
       <div className="relative">
@@ -90,7 +90,7 @@ export function ProjectDetailPanel({ project, sheetNumber, onClose }: ProjectDet
             </span>
           </div>
 
-          <h3 ref={headingRef} tabIndex={-1} className="text-h1 font-display font-semibold text-text-primary outline-none">
+          <h3 ref={headingRef} tabIndex={-1} className="text-h1 font-display font-bold text-text-primary outline-none">
             {project.title}
           </h3>
 

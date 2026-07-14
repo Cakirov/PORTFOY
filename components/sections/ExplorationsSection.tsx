@@ -1,43 +1,74 @@
+"use client";
+
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Masthead } from "@/components/ui/Masthead";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { explorations } from "@/data/explorations";
 import { siteContent } from "@/data/siteContent";
-import { SECTION_IDS } from "@/lib/constants";
+import { SECTION_IDS, EXPLORATION_STATUS_META } from "@/lib/constants";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { cn } from "@/lib/utils";
 
 export function ExplorationsSection() {
   const { explorations: content } = siteContent;
+  const canReveal = useMediaQuery("(hover: hover) and (pointer: fine)");
 
   return (
     <section
       id={SECTION_IDS.explorations}
       aria-labelledby="explorations-heading"
-      className="relative mx-auto max-w-(--container-max) border-t border-border px-6 py-28 lg:px-10 lg:py-36"
+      className="relative mx-auto max-w-(--container-max) border-t border-border px-(--section-px) py-(--section-py)"
     >
-      <Masthead fig="07" name="R&D LOG" view="APPENDIX" sheet="7 / 8" />
+      <ScrollReveal>
+        <Masthead fig="07" name="R&D LOG" view="APPENDIX" sheet="7 / 8" />
+      </ScrollReveal>
       <SectionHeading
         id="explorations-heading"
         eyebrow={content.eyebrow}
         heading={content.heading}
         body={content.body}
-        className="mb-16"
+        className="mb-[clamp(2rem,4vw,3rem)]"
       />
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {explorations.map((item, i) => (
-          <ScrollReveal
-            key={item.id}
-            delay={i * 0.06}
-            className="group flex flex-col gap-4 border border-border bg-bg-elevated/50 p-7 transition-colors duration-300 hover:border-secondary"
-          >
-            <div className="flex items-center justify-between font-mono-ui text-[0.68rem] tracking-wide text-text-tertiary uppercase">
-              <span>Log.{String(i + 1).padStart(2, "0")}</span>
-              <span className="border border-secondary px-2.5 py-0.5 text-secondary">{item.tag}</span>
-            </div>
-            <h3 className="text-h3 font-display font-semibold text-text-primary">{item.title}</h3>
-            <p className="text-body text-text-secondary">{item.description}</p>
-          </ScrollReveal>
-        ))}
+        {explorations.map((item, i) => {
+          const status = EXPLORATION_STATUS_META[item.status];
+          return (
+            <ScrollReveal
+              key={item.id}
+              delay={i * 0.06}
+              className="group relative flex flex-col gap-4 border border-border bg-bg-elevated/50 py-7 pr-7 pl-9 transition-colors duration-300 hover:border-secondary"
+            >
+              <span
+                aria-hidden="true"
+                className="absolute top-6 bottom-6 left-4 w-px bg-[repeating-linear-gradient(to_bottom,var(--border-strong)_0_3px,transparent_3px_8px)] opacity-70"
+              />
+
+              <div className="flex items-center justify-between font-mono-ui text-[0.68rem] tracking-wide text-text-tertiary uppercase">
+                <span>Log.{String(i + 1).padStart(2, "0")}</span>
+                <span className="border border-secondary px-2.5 py-0.5 text-secondary">{item.tag}</span>
+              </div>
+
+              <div className="flex items-center gap-2 font-mono-ui text-[0.68rem] tracking-wide uppercase">
+                <span aria-hidden="true" className={cn("h-2 w-2 rounded-full", status.dotClass)} />
+                <span className={status.colorClass}>{status.label}</span>
+              </div>
+
+              <h3 className="text-h3 font-display font-bold text-text-primary">{item.title}</h3>
+              <p className="text-body text-text-secondary">{item.description}</p>
+
+              <span
+                className={cn(
+                  "font-mono-ui text-[0.62rem] tracking-wide text-text-tertiary uppercase",
+                  canReveal &&
+                    "opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-within:opacity-100",
+                )}
+              >
+                Güncelleme: {item.updatedAt}
+              </span>
+            </ScrollReveal>
+          );
+        })}
       </div>
     </section>
   );

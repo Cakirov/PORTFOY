@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Oswald, Inter, JetBrains_Mono } from "next/font/google";
+import { Roboto_Condensed, Inter, JetBrains_Mono } from "next/font/google";
 import { Providers } from "@/components/Providers";
 import { SkipLink } from "@/components/SkipLink";
 import { ScrollProgress } from "@/components/ScrollProgress";
@@ -11,8 +11,9 @@ import { SheetIndexRail } from "@/components/SheetIndexRail";
 import { buildMetadata } from "@/lib/metadata";
 import "../styles/globals.css";
 
-const oswald = Oswald({
+const robotoCondensed = Roboto_Condensed({
   subsets: ["latin", "latin-ext"],
+  weight: ["400", "700"],
   variable: "--font-display-family",
   display: "swap",
 });
@@ -39,7 +40,7 @@ export default function RootLayout({
   return (
     <html
       lang="tr"
-      className={`${oswald.variable} ${inter.variable} ${jetbrainsMono.variable}`}
+      className={`${robotoCondensed.variable} ${inter.variable} ${jetbrainsMono.variable}`}
     >
       <body className="antialiased">
         <Providers>
