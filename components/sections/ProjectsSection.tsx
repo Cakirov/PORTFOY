@@ -13,7 +13,7 @@ export function ProjectsSection() {
     <section
       id={SECTION_IDS.projects}
       aria-labelledby="projects-heading"
-      className="relative mx-auto max-w-(--container-max) border-t border-border px-(--section-px) py-(--section-py)"
+      className="container-max relative border-t border-border px-(--section-px) py-(--section-py)"
     >
       <ScrollReveal>
         <Masthead fig="03" name="PROJECTS" view="PLAN" sheet="3 / 8" />

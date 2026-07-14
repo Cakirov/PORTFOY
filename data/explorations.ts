@@ -1,4 +1,4 @@
-import { Sparkles, LayoutPanelTop, Bot, Rocket, FlaskConical } from "lucide-react";
+import { Sparkles, LayoutPanelTop, Bot, Rocket, FlaskConical, RefreshCw } from "lucide-react";
 import type { Exploration } from "@/types/content";
 
 // NOTE: Örnek deneysel içerik — gerçek prototip/deney kayıtlarıyla değiştirilecektir.
@@ -47,5 +47,14 @@ export const explorations: Exploration[] = [
     icon: FlaskConical,
     status: "archived",
     updatedAt: "2026.01.22",
+  },
+  {
+    id: "local-first-sync",
+    title: "Yerel Öncelikli Senkronizasyon",
+    description: "İnternet bağlantısı kesildiğinde bile çalışmaya devam eden, tekrar bağlanınca çakışmaları otomatik çözen bir senkronizasyon katmanı denemesi.",
+    tag: "Altyapı Deneyi",
+    icon: RefreshCw,
+    status: "active",
+    updatedAt: "2026.07.14",
   },
 ];

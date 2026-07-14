@@ -1,9 +1,10 @@
 import type { SiteContent } from "@/types/content";
+import { PERSON_NAME } from "@/lib/constants";
 
 // NOTE: Tüm metinler geçici/örnek içeriktir; gerçek lansmandan önce güncellenmelidir.
 export const siteContent: SiteContent = {
   hero: {
-    eyebrow: "Yazılım Mühendisi",
+    eyebrow: "Full Stack Developer - IoT - DevOps",
     headline: "Fikirleri çalışan dijital sistemlere dönüştürüyorum.",
     subtext:
       "Yazılım, ürün geliştirme ve yeni nesil teknolojiler üzerine çalışan bir yazılım mühendisiyim.",
@@ -56,7 +57,7 @@ export const siteContent: SiteContent = {
     body: "Aklınızda bir proje mi var, yoksa sadece merhaba mı demek istiyorsunuz? Her iki durumda da yazmaktan çekinmeyin.",
   },
   footer: {
-    name: "Ömer Çakıroğlu",
+    name: PERSON_NAME,
     tagline: "Yazılım mühendisliği, ürün düşüncesi ve sistem tasarımı üzerine.",
   },
 };

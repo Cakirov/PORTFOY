@@ -8,7 +8,7 @@ import { NodeGraphic } from "@/components/ui/NodeGraphic";
 import { Tag } from "@/components/ui/Tag";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { cn } from "@/lib/utils";
-import { PROJECT_LAYOUT_SPAN_MAP } from "@/lib/constants";
+import { PROJECT_LAYOUT_SPAN_MAP, PROJECT_CAROUSEL_ITEM_CLASSES } from "@/lib/constants";
 
 interface ProjectCardProps {
   project: Project;
@@ -23,8 +23,8 @@ export function ProjectCard({ project, sheetNumber, onOpen, triggerRef }: Projec
 
   const rotateX = useMotionValue(0);
   const rotateY = useMotionValue(0);
-  const springRotateX = useSpring(rotateX, { stiffness: 200, damping: 20 });
-  const springRotateY = useSpring(rotateY, { stiffness: 200, damping: 20 });
+  const springRotateX = useSpring(rotateX, { stiffness: 350, damping: 28 });
+  const springRotateY = useSpring(rotateY, { stiffness: 350, damping: 28 });
   const imageY = useTransform(springRotateX, [-11, 11], [7, -7]);
   const imageX = useTransform(springRotateY, [-11, 11], [-7, 7]);
 
@@ -47,7 +47,11 @@ export function ProjectCard({ project, sheetNumber, onOpen, triggerRef }: Projec
   return (
     <motion.div
       layoutId={`project-card-${project.slug}`}
-      className={PROJECT_LAYOUT_SPAN_MAP[project.layoutSize]}
+      className={cn(
+        "relative hover:z-10",
+        PROJECT_CAROUSEL_ITEM_CLASSES,
+        PROJECT_LAYOUT_SPAN_MAP[project.layoutSize],
+      )}
       style={{ perspective: 1200 }}
     >
       <motion.div
@@ -55,11 +59,11 @@ export function ProjectCard({ project, sheetNumber, onOpen, triggerRef }: Projec
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         whileHover={{ y: -6, scale: 1.015 }}
-        transition={{ type: "spring", stiffness: 200, damping: 20 }}
+        transition={{ type: "spring", stiffness: 350, damping: 28 }}
         style={{ rotateX: springRotateX, rotateY: springRotateY, transformStyle: "preserve-3d" }}
-        className="crosshair-zone group relative flex h-full flex-col overflow-hidden border border-border-strong bg-bg-elevated transition-[border-color,box-shadow] duration-300 hover:border-accent hover:shadow-[0_24px_48px_-20px_rgba(0,0,0,0.55)]"
+        className="crosshair-zone group relative flex h-full flex-col overflow-hidden border border-border-strong bg-bg-elevated transition-[border-color,box-shadow] duration-200 hover:border-accent hover:shadow-[0_24px_48px_-20px_rgba(0,0,0,0.55)]"
       >
-        <div className="flex items-center justify-between border-b border-border-strong px-5 py-3 font-mono-ui text-[0.65rem] tracking-wide text-text-tertiary uppercase">
+        <div className="flex items-center justify-between border-b border-border-strong px-5 py-2 font-mono-ui text-[0.65rem] tracking-wide text-text-tertiary uppercase md:py-3">
           <span>Sheet {String(sheetNumber).padStart(2, "0")}</span>
           <strong className="text-accent">{project.category}</strong>
           <span>{project.year}</span>
@@ -78,7 +82,7 @@ export function ProjectCard({ project, sheetNumber, onOpen, triggerRef }: Projec
             style={{ x: imageX, y: imageY }}
             className={cn(
               "relative w-full overflow-hidden border-b border-border-strong bg-panel-2",
-              isTall ? "h-[260px]" : "h-[200px]",
+              isTall ? "h-[150px] md:h-[260px]" : "h-[130px] md:h-[200px]",
             )}
           >
             <div className="absolute inset-0 p-5 opacity-90 transition-transform duration-500 group-hover:scale-[1.06]">
@@ -86,12 +90,12 @@ export function ProjectCard({ project, sheetNumber, onOpen, triggerRef }: Projec
             </div>
           </motion.div>
 
-          <div className="flex flex-1 flex-col gap-3 p-6">
+          <div className="flex flex-1 flex-col gap-2 p-4 md:gap-3 md:p-6">
             <Tag variant="accent">{project.category}</Tag>
             <h3 className="text-h3 font-display font-bold text-text-primary">{project.title}</h3>
-            <p className="text-body text-text-secondary">{project.shortDescription}</p>
+            <p className="text-body line-clamp-2 text-text-secondary md:line-clamp-none">{project.shortDescription}</p>
 
-            <div className="mt-auto flex flex-wrap gap-1.5">
+            <div className="mt-auto flex flex-wrap gap-1.5 [&>*:nth-child(n+4)]:hidden md:[&>*:nth-child(n+4)]:inline-flex">
               {project.technologies.map((tech) => (
                 <Tag key={tech}>{tech}</Tag>
               ))}

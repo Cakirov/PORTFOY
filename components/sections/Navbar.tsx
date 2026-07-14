@@ -1,38 +1,73 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { navLinks } from "@/data/navigation";
 import { useActiveSection } from "@/hooks/useActiveSection";
+import { useFocusTrap } from "@/hooks/useFocusTrap";
+import { useLockBodyScroll } from "@/hooks/useLockBodyScroll";
 import { cn } from "@/lib/utils";
 import { fadeInUp } from "@/lib/motion";
-import { CURRENT_REVISION } from "@/lib/constants";
+import { CURRENT_REVISION, PERSON_NAME } from "@/lib/constants";
 
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const activeSectionId = useActiveSection(navLinks.map((link) => link.sectionId));
+  const menuRef = useRef<HTMLDivElement>(null);
+  const toggleButtonRef = useRef<HTMLButtonElement>(null);
+  const wasOpenRef = useRef(false);
+
+  useFocusTrap(menuRef, isMenuOpen);
+  useLockBodyScroll(isMenuOpen);
+
+  useEffect(() => {
+    if (wasOpenRef.current && !isMenuOpen) {
+      toggleButtonRef.current?.focus();
+    }
+    wasOpenRef.current = isMenuOpen;
+  }, [isMenuOpen]);
 
   useEffect(() => {
     if (!isMenuOpen) return;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = "";
-    };
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") setIsMenuOpen(false);
+    }
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
   }, [isMenuOpen]);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-40 border-b border-border-strong bg-bg/95 py-4 shadow-[0_12px_32px_-16px_rgba(0,0,0,0.6)] backdrop-blur-md">
+    <header className="fixed inset-x-0 top-0 z-40 border-b border-border-strong bg-bg/95 py-5 shadow-[0_12px_32px_-16px_rgba(0,0,0,0.6)] backdrop-blur-md">
       <nav
         aria-label="Ana navigasyon"
-        className="relative z-10 mx-auto flex max-w-(--container-max) items-center justify-between px-(--section-px)"
+        className="container-max relative z-10 flex items-center justify-between px-(--section-px)"
       >
         <Link
           href="#hero"
-          className="text-h3 font-display font-bold tracking-tight text-text-primary"
+          aria-label={PERSON_NAME}
+          className="group relative flex h-10 w-10 items-center justify-center border border-accent bg-bg-elevated font-mono-ui text-[0.68rem] font-bold tracking-wide text-accent transition-colors duration-300 ease-out hover:bg-accent-soft"
         >
-          Ömer Çakıroğlu<span className="text-accent">.</span>
+          CKR
+          {/* Corner brackets snap inward and fade in on hover — a viewfinder
+              "lock-on" cue that reinforces the mark without moving the box. */}
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute -top-2.5 -left-2.5 h-2.5 w-2.5 border-t border-l border-accent opacity-0 transition-all duration-300 ease-out group-hover:-top-1.5 group-hover:-left-1.5 group-hover:opacity-100"
+          />
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute -top-2.5 -right-2.5 h-2.5 w-2.5 border-t border-r border-accent opacity-0 transition-all duration-300 ease-out group-hover:-top-1.5 group-hover:-right-1.5 group-hover:opacity-100"
+          />
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute -bottom-2.5 -left-2.5 h-2.5 w-2.5 border-b border-l border-accent opacity-0 transition-all duration-300 ease-out group-hover:-bottom-1.5 group-hover:-left-1.5 group-hover:opacity-100"
+          />
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute -bottom-2.5 -right-2.5 h-2.5 w-2.5 border-b border-r border-accent opacity-0 transition-all duration-300 ease-out group-hover:-bottom-1.5 group-hover:-right-1.5 group-hover:opacity-100"
+          />
         </Link>
 
         <ul className="hidden items-center gap-8 md:flex">
@@ -65,6 +100,7 @@ export function Navbar() {
         </span>
 
         <button
+          ref={toggleButtonRef}
           type="button"
           className="inline-flex items-center justify-center border border-border-strong p-2 text-text-primary md:hidden"
           aria-expanded={isMenuOpen}
@@ -80,6 +116,10 @@ export function Navbar() {
         {isMenuOpen && (
           <motion.div
             id="mobile-menu"
+            ref={menuRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Mobil navigasyon"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}

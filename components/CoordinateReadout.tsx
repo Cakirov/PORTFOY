@@ -37,7 +37,7 @@ export function CoordinateReadout() {
   return (
     <div
       aria-hidden="true"
-      className={`fixed right-5 bottom-5 z-50 hidden border border-border-strong bg-bg/85 px-2.5 py-1.5 font-mono-ui text-[0.68rem] tracking-wide text-text-tertiary backdrop-blur-md transition-opacity duration-300 sm:block ${
+      className={`fixed right-5 bottom-5 z-50 hidden border border-border-strong bg-bg/85 px-2.5 py-1.5 font-mono-ui text-[0.68rem] tracking-wide text-text-tertiary backdrop-blur-md transition-opacity duration-300 lg:block ${
         hasScrolled ? "opacity-100" : "opacity-0"
       }`}
     >

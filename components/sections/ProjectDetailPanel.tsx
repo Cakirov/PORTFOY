@@ -9,7 +9,8 @@ import { Tag } from "@/components/ui/Tag";
 import { useFocusTrap } from "@/hooks/useFocusTrap";
 import { useLockBodyScroll } from "@/hooks/useLockBodyScroll";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
-import { PROJECT_LAYOUT_SPAN_MAP, CURRENT_REVISION } from "@/lib/constants";
+import { PROJECT_LAYOUT_SPAN_MAP, PROJECT_CAROUSEL_ITEM_CLASSES, CURRENT_REVISION } from "@/lib/constants";
+import { cn } from "@/lib/utils";
 
 interface ProjectDetailPanelProps {
   project: Project;
@@ -47,10 +48,15 @@ export function ProjectDetailPanel({ project, sheetNumber, onClose }: ProjectDet
     <motion.div
       layoutId={`project-card-${project.slug}`}
       id={`project-panel-${project.slug}`}
-      role="region"
+      role="dialog"
+      aria-modal="true"
       aria-label={`${project.title} detayları`}
       ref={panelRef}
-      className={`${PROJECT_LAYOUT_SPAN_MAP.featured} overflow-hidden border border-border-strong bg-bg-elevated md:col-span-12 md:row-span-1`}
+      className={cn(
+        PROJECT_CAROUSEL_ITEM_CLASSES,
+        PROJECT_LAYOUT_SPAN_MAP.featured,
+        "overflow-hidden border border-border-strong bg-bg-elevated md:col-span-12 md:row-span-1",
+      )}
     >
       <div className="flex items-center justify-between border-b border-border-strong px-5 py-3 font-mono-ui text-[0.68rem] tracking-wide text-text-tertiary uppercase">
         <span>

@@ -10,7 +10,7 @@ const POSITION_CLASSES: Record<(typeof POSITIONS)[number], string> = {
 /** Fixed corner crop/registration marks — decorative print-drawing chrome. */
 export function RegistrationMarks() {
   return (
-    <div aria-hidden="true" className="hidden sm:block">
+    <div aria-hidden="true" className="hidden lg:block">
       {POSITIONS.map((pos) => (
         <div
           key={pos}

@@ -6,8 +6,8 @@ export function LegendBox({ className }: { className?: string }) {
     <div
       aria-hidden="true"
       className={cn(
-        "absolute right-0 -bottom-2 flex translate-y-full flex-wrap gap-4 border border-border-strong bg-bg-elevated px-4 py-3 font-mono-ui text-[0.66rem] text-text-secondary",
-        "max-lg:static max-lg:mt-6 max-lg:translate-y-0",
+        "absolute -top-2 right-0 flex -translate-y-full flex-wrap gap-4 border border-border-strong bg-bg-elevated px-4 py-3 font-mono-ui text-[0.66rem] text-text-secondary",
+        "max-lg:static max-lg:mb-6 max-lg:translate-y-0",
         className,
       )}
     >

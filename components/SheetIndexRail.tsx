@@ -16,7 +16,7 @@ export function SheetIndexRail() {
   return (
     <nav
       aria-label="Sayfa içi hızlı erişim"
-      className="fixed top-1/2 left-6 z-[55] hidden -translate-y-1/2 font-mono-ui min-[1241px]:block"
+      className="fixed top-1/2 left-6 z-[55] hidden -translate-y-1/2 font-mono-ui lg:block"
     >
       <div className="relative flex flex-col gap-[1.35rem] pl-[0.3rem]">
         <div

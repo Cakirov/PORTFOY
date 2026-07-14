@@ -17,7 +17,7 @@ export function ExplorationsSection() {
     <section
       id={SECTION_IDS.explorations}
       aria-labelledby="explorations-heading"
-      className="relative mx-auto max-w-(--container-max) border-t border-border px-(--section-px) py-(--section-py)"
+      className="container-max relative border-t border-border px-(--section-px) py-(--section-py)"
     >
       <ScrollReveal>
         <Masthead fig="07" name="R&D LOG" view="APPENDIX" sheet="7 / 8" />

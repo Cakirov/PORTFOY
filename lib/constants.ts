@@ -3,18 +3,31 @@ import type { ExplorationStatus } from "@/types/content";
 
 /**
  * Editorial grid rhythm: a project's visual weight is driven entirely by
- * this lookup, keyed off its `layoutSize`. Adding/reordering projects never
- * requires touching the grid component — only `data/projects.ts`.
- * Cards always stack head-bar → visual → body vertically; only the column
- * span and (for featured/tall) a minimum height vary — there is no
- * row-spanning grid track.
+ * this lookup, keyed off its `layoutSize` — applies at `md:` and up only.
+ * Below `md:` the projects grid becomes a horizontal snap-scroll strip
+ * (see `PROJECT_CAROUSEL_ITEM_CLASSES`) where layoutSize's visual-weight
+ * distinction isn't a meaningful concept. Cards always stack head-bar →
+ * visual → body vertically; only the column span and (for featured/tall)
+ * a minimum height vary at `md:` — there is no row-spanning grid track.
  */
 export const PROJECT_LAYOUT_SPAN_MAP: Record<ProjectLayoutSize, string> = {
-  featured: "col-span-12 md:col-span-8 md:min-h-[420px]",
-  wide: "col-span-12 md:col-span-8",
-  tall: "col-span-12 md:col-span-4 md:min-h-[420px]",
-  standard: "col-span-12 md:col-span-6",
+  featured: "md:col-span-8 md:min-h-[420px]",
+  wide: "md:col-span-8",
+  tall: "md:col-span-4 md:min-h-[420px]",
+  standard: "md:col-span-6",
 };
+
+/**
+ * Shared mobile-carousel sizing for both `ProjectCard` and the open
+ * `ProjectDetailPanel` — every item (open or closed) needs the same fixed
+ * width/shrink/snap behavior in the horizontal strip, regardless of its
+ * desktop layoutSize.
+ */
+export const PROJECT_CAROUSEL_ITEM_CLASSES =
+  "w-[85vw] shrink-0 snap-start sm:w-[380px] md:w-auto md:shrink md:snap-align-none";
+
+/** Single source of truth for the site owner's name — used in the navbar, footer, and page metadata. */
+export const PERSON_NAME = "Ömer Çakıroğlu";
 
 export const SECTION_IDS = {
   hero: "hero",

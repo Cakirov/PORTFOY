@@ -11,7 +11,7 @@ export function AboutSection() {
     <section
       id={SECTION_IDS.about}
       aria-labelledby="about-heading"
-      className="relative mx-auto max-w-(--container-max) border-t border-border px-(--section-px) py-(--section-py)"
+      className="container-max relative border-t border-border px-(--section-px) py-(--section-py)"
     >
       <ScrollReveal>
         <Masthead fig="04" name="PROFILE" view="ELEVATION" sheet="4 / 8" />

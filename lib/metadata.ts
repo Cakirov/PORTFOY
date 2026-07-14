@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
+import { PERSON_NAME } from "@/lib/constants";
 
-const SITE_NAME = "Ömer Çakıroğlu — Yazılım Mühendisi";
+const SITE_NAME = `${PERSON_NAME} — Yazılım Mühendisi`;
 const SITE_DESCRIPTION =
   "Yazılım, ürün geliştirme ve yeni nesil teknolojiler üzerine çalışan bir yazılım mühendisinin kişisel portföyü.";
-const SITE_URL = "https://example.com";
+export const SITE_URL = "https://cakirov.com";
 
 export function buildMetadata(): Metadata {
   return {
@@ -20,7 +21,7 @@ export function buildMetadata(): Metadata {
       "ürün geliştirme",
       "yapay zeka",
     ],
-    authors: [{ name: "Ömer Çakıroğlu" }],
+    authors: [{ name: PERSON_NAME }],
     openGraph: {
       type: "website",
       locale: "tr_TR",

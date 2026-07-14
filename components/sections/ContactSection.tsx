@@ -15,7 +15,7 @@ export function ContactSection() {
     <section
       id={SECTION_IDS.contact}
       aria-labelledby="contact-heading"
-      className="relative mx-auto max-w-(--container-max) border-t border-border px-(--section-px) py-(--section-py)"
+      className="container-max relative border-t border-border px-(--section-px) py-(--section-py)"
     >
       <ScrollReveal>
         <Masthead fig="08" name="CONTACT" view="SIGNATURE" sheet="8 / 8" />

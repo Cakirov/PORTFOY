@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import { Roboto_Condensed, Inter, JetBrains_Mono } from "next/font/google";
 import { Providers } from "@/components/Providers";
 import { SkipLink } from "@/components/SkipLink";
@@ -6,8 +7,8 @@ import { ScrollProgress } from "@/components/ScrollProgress";
 import { CrosshairCursor } from "@/components/CrosshairCursor";
 import { CoordinateReadout } from "@/components/CoordinateReadout";
 import { RegistrationMarks } from "@/components/RegistrationMarks";
-import { CoordinateRuler } from "@/components/CoordinateRuler";
 import { SheetIndexRail } from "@/components/SheetIndexRail";
+import { StructuredData } from "@/components/StructuredData";
 import { buildMetadata } from "@/lib/metadata";
 import "../styles/globals.css";
 
@@ -43,16 +44,17 @@ export default function RootLayout({
       className={`${robotoCondensed.variable} ${inter.variable} ${jetbrainsMono.variable}`}
     >
       <body className="antialiased">
+        <StructuredData />
         <Providers>
           <SkipLink />
           <ScrollProgress />
           <RegistrationMarks />
-          <CoordinateRuler />
           <CoordinateReadout />
           <CrosshairCursor />
           <SheetIndexRail />
           {children}
         </Providers>
+        <Analytics />
       </body>
     </html>
   );

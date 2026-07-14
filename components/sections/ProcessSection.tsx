@@ -16,7 +16,7 @@ export function ProcessSection() {
     <section
       id={SECTION_IDS.process}
       aria-labelledby="process-heading"
-      className="relative mx-auto max-w-(--container-max) border-t border-border px-(--section-px) py-(--section-py)"
+      className="container-max relative border-t border-border px-(--section-px) py-(--section-py)"
     >
       <ScrollReveal>
         <Masthead fig="06" name="PIPELINE" view="SECTION A-A" sheet="6 / 8" />

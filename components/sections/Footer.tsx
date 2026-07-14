@@ -8,7 +8,7 @@ export function Footer() {
 
   return (
     <footer className="border-t border-border px-(--section-px) py-12">
-      <div className="mx-auto flex max-w-(--container-max) flex-col gap-8">
+      <div className="container-max flex flex-col gap-8">
         <div>
           <p className="mb-3 font-mono-ui text-label text-text-tertiary">Revision History</p>
           <div className="overflow-x-auto border border-border-strong">

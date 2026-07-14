@@ -39,14 +39,19 @@
   --gradient-surface-fade: linear-gradient(180deg, var(--bg) 0%, var(--bg-elevated) 100%);
   --grid-line: rgba(214, 225, 240, 0.14);
 
-  /* Type scale — responsive via clamp(), matching the Blueprint reference exactly */
-  --font-size-display: clamp(2.3rem, 4.8vw, 4.2rem);
-  --font-size-h1: clamp(1.8rem, 3.2vw, 2.5rem);
-  --font-size-h2: clamp(1.4rem, 1.2rem + 1vw, 2.15rem);
-  --font-size-h3: clamp(1rem, 0.95rem + 0.2vw, 1.25rem);
-  --font-size-body: clamp(1rem, 0.95rem + 0.15vw, 1.125rem);
-  --font-size-small: clamp(0.8125rem, 0.8rem + 0.1vw, 0.9375rem);
-  --font-size-label: clamp(0.6875rem, 0.67rem + 0.1vw, 0.75rem);
+  /* Type scale — responsive via clamp(). Uses `cqw` (container query width,
+     relative to the nearest `.container-max` ancestor's actual rendered
+     width), not `vw` — otherwise type keeps scaling with raw viewport width
+     even past the point where the container itself has capped out at
+     --container-max, so two screens with an near-identical content column
+     (e.g. 1280px and 1440px wide) would render noticeably different ratios. */
+  --font-size-display: clamp(2.3rem, 4.8cqw, 4.2rem);
+  --font-size-h1: clamp(1.8rem, 3.2cqw, 2.5rem);
+  --font-size-h2: clamp(1.4rem, 1.2rem + 1cqw, 2.15rem);
+  --font-size-h3: clamp(1rem, 0.95rem + 0.2cqw, 1.25rem);
+  --font-size-body: clamp(1rem, 0.95rem + 0.15cqw, 1.125rem);
+  --font-size-small: clamp(0.8125rem, 0.8rem + 0.1cqw, 0.9375rem);
+  --font-size-label: clamp(0.6875rem, 0.67rem + 0.1cqw, 0.75rem);
 
   --leading-display: 1.04;
   --leading-h1: 1.06;
@@ -57,10 +62,12 @@
   --tracking-tight: -0.005em;
 
   /* Layout */
-  --nav-height: 4.25rem;
-  --container-max: 1180px;
-  --section-py: clamp(3.5rem, 8vw, 6rem);
-  --section-px: clamp(1.25rem, 4vw, 3rem);
+  --nav-height: 4.75rem;
+  --container-max: 1220px;
+  /* Mobile minimum lowered (was 3.5rem) — with 8+ sections stacked this
+     accumulates fast on small screens; desktop max (6rem) is unaffected. */
+  --section-py: clamp(2.5rem, 8cqw, 6rem);
+  --section-px: clamp(1.25rem, 4cqw, 3rem);
 }
 
 /* Bridge tokens into Tailwind utilities (bg-bg, text-primary, border-accent, font-display, etc.) */
@@ -123,6 +130,15 @@
 }
 
 @layer utilities {
+  /* Establishes the container-query context the `cqw`-based type scale
+     above measures against — replaces the old `mx-auto max-w-(--container-max)`
+     utility composition, which only capped width but had no bearing on `vw`. */
+  .container-max {
+    container-type: inline-size;
+    margin-inline: auto;
+    max-width: var(--container-max);
+  }
+
   .text-display {
     font-family: var(--font-display);
     font-size: var(--font-size-display);

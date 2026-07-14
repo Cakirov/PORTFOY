@@ -12,7 +12,7 @@ export function SkillsSection() {
     <section
       id={SECTION_IDS.skills}
       aria-labelledby="skills-heading"
-      className="relative mx-auto max-w-(--container-max) border-t border-border px-(--section-px) py-(--section-py)"
+      className="container-max relative border-t border-border px-(--section-px) py-(--section-py)"
     >
       <ScrollReveal>
         <Masthead fig="05" name="COMPONENT SCHEDULE" view="SCHEDULE" sheet="5 / 8" />

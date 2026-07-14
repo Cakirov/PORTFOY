@@ -12,7 +12,7 @@ export function IntroSection() {
     <section
       id={SECTION_IDS.intro}
       aria-labelledby="intro-heading"
-      className="relative mx-auto max-w-(--container-max) border-t border-border px-(--section-px) py-(--section-py)"
+      className="container-max relative border-t border-border px-(--section-px) py-(--section-py)"
     >
       <ScrollReveal>
         <Masthead fig="02" name="APPROACH" view="DETAIL" sheet="2 / 8" />
