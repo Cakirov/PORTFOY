@@ -6,7 +6,6 @@ import { SkipLink } from "@/components/SkipLink";
 import { ScrollProgress } from "@/components/ScrollProgress";
 import { CrosshairCursor } from "@/components/CrosshairCursor";
 import { CoordinateReadout } from "@/components/CoordinateReadout";
-import { RegistrationMarks } from "@/components/RegistrationMarks";
 import { SheetIndexRail } from "@/components/SheetIndexRail";
 import { StructuredData } from "@/components/StructuredData";
 import { buildMetadata } from "@/lib/metadata";
@@ -48,7 +47,6 @@ export default function RootLayout({
         <Providers>
           <SkipLink />
           <ScrollProgress />
-          <RegistrationMarks />
           <CoordinateReadout />
           <CrosshairCursor />
           <SheetIndexRail />

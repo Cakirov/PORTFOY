@@ -32,7 +32,7 @@ export const siteContent: SiteContent = {
     specs: [
       { label: "Rol", value: "Yazılım Mühendisi" },
       { label: "Odak", value: "Sistem Tasarımı · AI" },
-      { label: "Durum", value: "Yeni Fırsatlara Açık" },
+      { label: "Durum", value: "Yeni Fırsatlara Açık", highlight: true },
       { label: "Konum", value: "Uzaktan / TR" },
     ],
   },

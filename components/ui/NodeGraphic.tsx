@@ -94,51 +94,108 @@ export function NodeGraphic({ variant = "nodes", accent = "primary", className }
               />
             ))}
           </g>
-          {/* Each port is an independent sibling <g>, so the plain (unnamed)
-              group/group-hover pair below never crosses between ports. */}
-          {NODE_PORTS.map((port) => (
-            <g
-              key={port.id}
-              className="group"
-              onMouseEnter={() => setHoveredPort(port.id)}
-              onMouseLeave={() => setHoveredPort((current) => (current === port.id ? null : current))}
-            >
-              <rect
-                x={port.x}
-                y={port.y}
-                width={port.w}
-                height={port.h}
-                className={cn(
-                  "fill-bg-elevated transition-[fill,stroke] duration-500 ease-out group-hover:fill-accent-soft group-hover:stroke-accent",
-                  port.active ? "stroke-accent" : "stroke-text-tertiary",
-                )}
-                strokeWidth={port.active ? 1.5 : 1}
-              />
-              {port.dot ? (
+          {/* Small glowing "data packets" that keep drifting along the wires
+              once the diagram has finished drawing itself in — a continuous
+              ambient sign of life rather than a one-shot entrance. Plain SMIL
+              (no React state) so it never fights the port hover/entrance
+              animations layered on top. */}
+          <g>
+            {NODE_WIRES.map((wire, i) => {
+              const beginAt = `${1.3 + i * 0.4}s`;
+              return (
                 <circle
-                  cx={port.dot.cx}
-                  cy={port.dot.cy}
-                  r="3"
-                  className={cn(
-                    "transition-[fill,stroke] duration-500 ease-out group-hover:fill-accent group-hover:stroke-accent",
-                    port.active ? "fill-accent" : "fill-none stroke-text-tertiary",
-                  )}
-                />
-              ) : null}
-              <text
-                x={port.labelX}
-                y={port.labelY}
-                fontSize="12"
-                fontFamily="var(--font-mono)"
-                className={cn(
-                  "transition-[fill] duration-500 ease-out group-hover:fill-accent",
-                  port.active ? "fill-accent" : "fill-text-tertiary",
-                )}
+                  key={`packet-${wire.id}`}
+                  r={2.4}
+                  fill="currentColor"
+                  opacity={0}
+                  style={{ filter: "drop-shadow(0 0 3px currentColor)" }}
+                >
+                  {/* Pop-in exactly when the motion starts, instead of sitting
+                      visible at the SVG's own 0,0 origin until `begin` hits. */}
+                  <animate
+                    attributeName="opacity"
+                    from="0"
+                    to="0.9"
+                    dur="0.01s"
+                    begin={beginAt}
+                    fill="freeze"
+                  />
+                  <animateMotion
+                    dur={`${2.6 + (i % 3) * 0.6}s`}
+                    begin={beginAt}
+                    repeatCount="indefinite"
+                    path={wire.d}
+                  />
+                </circle>
+              );
+            })}
+          </g>
+          {/* Each port is an independent sibling <g>, so the plain (unnamed)
+              group/group-hover pair below never crosses between ports. Ports
+              pop in one by one just behind the wires drawing in, and active
+              ports keep a slow "alive" pulse afterward. */}
+          {NODE_PORTS.map((port, i) => {
+            const entranceDelay = 0.25 + i * 0.08;
+            return (
+              <motion.g
+                key={port.id}
+                className="group"
+                style={{ transformBox: "fill-box", transformOrigin: "center" }}
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true, amount: 0.5 }}
+                transition={{ duration: 0.5, ease: EASE_STANDARD, delay: entranceDelay }}
+                onMouseEnter={() => setHoveredPort(port.id)}
+                onMouseLeave={() => setHoveredPort((current) => (current === port.id ? null : current))}
               >
-                {port.label}
-              </text>
-            </g>
-          ))}
+                <rect
+                  x={port.x}
+                  y={port.y}
+                  width={port.w}
+                  height={port.h}
+                  className={cn(
+                    "fill-bg-elevated transition-[fill,stroke] duration-500 ease-out group-hover:fill-accent-soft group-hover:stroke-accent",
+                    port.active ? "stroke-accent" : "stroke-text-tertiary",
+                  )}
+                  strokeWidth={port.active ? 1.5 : 1}
+                />
+                {port.dot ? (
+                  <motion.circle
+                    cx={port.dot.cx}
+                    cy={port.dot.cy}
+                    r="3"
+                    className={cn(
+                      "transition-[fill,stroke] duration-500 ease-out group-hover:fill-accent group-hover:stroke-accent",
+                      port.active ? "fill-accent" : "fill-none stroke-text-tertiary",
+                    )}
+                    {...(port.active
+                      ? {
+                          animate: { opacity: [1, 0.45, 1] },
+                          transition: {
+                            duration: 2.4,
+                            ease: "easeInOut",
+                            repeat: Infinity,
+                            delay: entranceDelay + 0.6,
+                          },
+                        }
+                      : {})}
+                  />
+                ) : null}
+                <text
+                  x={port.labelX}
+                  y={port.labelY}
+                  fontSize="12"
+                  fontFamily="var(--font-mono)"
+                  className={cn(
+                    "transition-[fill] duration-500 ease-out group-hover:fill-accent",
+                    port.active ? "fill-accent" : "fill-text-tertiary",
+                  )}
+                >
+                  {port.label}
+                </text>
+              </motion.g>
+            );
+          })}
         </g>
       )}
 

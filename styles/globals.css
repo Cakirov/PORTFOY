@@ -34,8 +34,6 @@
   --secondary-soft: rgba(94, 200, 242, 0.1);
 
   /* Background gradients / textures */
-  --gradient-mesh: radial-gradient(1200px circle at 15% -10%, rgba(255, 122, 51, 0.07), transparent 55%),
-    radial-gradient(900px circle at 85% 110%, rgba(94, 200, 242, 0.05), transparent 55%);
   --gradient-surface-fade: linear-gradient(180deg, var(--bg) 0%, var(--bg-elevated) 100%);
   --grid-line: rgba(214, 225, 240, 0.14);
 
@@ -52,6 +50,9 @@
   --font-size-body: clamp(1rem, 0.95rem + 0.15cqw, 1.125rem);
   --font-size-small: clamp(0.8125rem, 0.8rem + 0.1cqw, 0.9375rem);
   --font-size-label: clamp(0.6875rem, 0.67rem + 0.1cqw, 0.75rem);
+  /* Larger label variant — used where an eyebrow needs more presence than
+     the default (e.g. Hero) without hardcoding a one-off, untracked size. */
+  --font-size-label-lg: clamp(0.8rem, 0.78rem + 0.15cqw, 0.95rem);
 
   --leading-display: 1.04;
   --leading-h1: 1.06;
@@ -62,8 +63,10 @@
   --tracking-tight: -0.005em;
 
   /* Layout */
-  --nav-height: 4.75rem;
-  --container-max: 1220px;
+  /* Matches the real rendered header height: py-5 (2×20px) + h-10 logo (40px) = 80px.
+     The 1px border-b is deliberately ignored (sub-pixel, imperceptible). */
+  --nav-height: 5rem;
+  --container-max: 1240px;
   /* Mobile minimum lowered (was 3.5rem) — with 8+ sections stacked this
      accumulates fast on small screens; desktop max (6rem) is unaffected. */
   --section-py: clamp(2.5rem, 8cqw, 6rem);
@@ -111,6 +114,14 @@
     color-scheme: dark;
   }
 
+  /* Every in-page anchor (Navbar links, Hero CTAs, SheetIndexRail) jumps a
+     section to the very top of the viewport, which the fixed header then
+     covers. This offsets the scroll target by the header's height so the
+     section's own heading lands below it instead. */
+  section[id] {
+    scroll-margin-top: var(--nav-height);
+  }
+
   body {
     background-color: var(--bg);
     color: var(--text-primary);
@@ -132,7 +143,18 @@
 @layer utilities {
   /* Establishes the container-query context the `cqw`-based type scale
      above measures against — replaces the old `mx-auto max-w-(--container-max)`
-     utility composition, which only capped width but had no bearing on `vw`. */
+     utility composition, which only capped width but had no bearing on `vw`.
+
+     Note: this element's own `px-(--section-px)` also resolves in `cqw`,
+     which is technically self-referential (an element can't be its own
+     container-query-length basis) — the browser falls back to the nearest
+     ancestor container, and since none exists here, to the viewport. This is
+     provably inert given the current DOM: below --container-max the box's
+     width already equals the viewport, so `cqw` and the viewport fallback
+     agree exactly; above it, `4cqw`/`4vw` both saturate the clamp() ceiling
+     well before --container-max is reached either way. Left as-is rather
+     than restructured (wrapper + inner container) — there's no width at
+     which the two bases could ever diverge. */
   .container-max {
     container-type: inline-size;
     margin-inline: auto;
@@ -186,6 +208,13 @@
     text-transform: uppercase;
   }
 
+  .text-label-lg {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-label-lg);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+  }
+
   .font-mono-ui {
     font-family: var(--font-mono);
   }
@@ -194,6 +223,14 @@
     background-image: linear-gradient(var(--grid-line) 1px, transparent 1px),
       linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
     background-size: 40px 40px;
+    background-position: center;
+    /* --container-max is a multiple of the tile size, but only once the
+       viewport is wide enough for it to actually cap the box — below that
+       breakpoint (and always, vertically, since height is viewport-driven
+       `svh`) the box width/height won't land on a clean multiple. `round`
+       nudges the tile size itself on both axes so whole squares always fill
+       the box, instead of leaving a cropped half-row/column at the edges. */
+    background-repeat: round;
   }
 
   /* `*` here is deliberate: native controls (button, a, svg) set their own

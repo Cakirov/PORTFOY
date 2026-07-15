@@ -8,7 +8,11 @@ import { NodeGraphic } from "@/components/ui/NodeGraphic";
 import { Tag } from "@/components/ui/Tag";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { cn } from "@/lib/utils";
-import { PROJECT_LAYOUT_SPAN_MAP, PROJECT_CAROUSEL_ITEM_CLASSES } from "@/lib/constants";
+import {
+  PROJECT_LAYOUT_SPAN_MAP,
+  PROJECT_CAROUSEL_ITEM_CLASSES,
+  PROJECT_LARGE_IMAGE_LAYOUT_SIZES,
+} from "@/lib/constants";
 
 interface ProjectCardProps {
   project: Project;
@@ -42,7 +46,7 @@ export function ProjectCard({ project, sheetNumber, onOpen, triggerRef }: Projec
     rotateY.set(0);
   }
 
-  const isTall = project.layoutSize === "tall";
+  const hasLargeImage = PROJECT_LARGE_IMAGE_LAYOUT_SIZES.includes(project.layoutSize);
 
   return (
     <motion.div
@@ -82,7 +86,7 @@ export function ProjectCard({ project, sheetNumber, onOpen, triggerRef }: Projec
             style={{ x: imageX, y: imageY }}
             className={cn(
               "relative w-full overflow-hidden border-b border-border-strong bg-panel-2",
-              isTall ? "h-[150px] md:h-[260px]" : "h-[130px] md:h-[200px]",
+              hasLargeImage ? "h-[150px] md:h-[260px]" : "h-[130px] md:h-[200px]",
             )}
           >
             <div className="absolute inset-0 p-5 opacity-90 transition-transform duration-500 group-hover:scale-[1.06]">
@@ -95,10 +99,15 @@ export function ProjectCard({ project, sheetNumber, onOpen, triggerRef }: Projec
             <h3 className="text-h3 font-display font-bold text-text-primary">{project.title}</h3>
             <p className="text-body line-clamp-2 text-text-secondary md:line-clamp-none">{project.shortDescription}</p>
 
-            <div className="mt-auto flex flex-wrap gap-1.5 [&>*:nth-child(n+4)]:hidden md:[&>*:nth-child(n+4)]:inline-flex">
-              {project.technologies.map((tech) => (
-                <Tag key={tech}>{tech}</Tag>
+            <div className="mt-auto flex flex-wrap gap-1.5">
+              {project.technologies.map((tech, i) => (
+                <Tag key={tech} className={cn(i >= 3 && "hidden md:inline-flex")}>
+                  {tech}
+                </Tag>
               ))}
+              {project.technologies.length > 3 ? (
+                <Tag className="md:hidden">+{project.technologies.length - 3}</Tag>
+              ) : null}
             </div>
 
             <span className="text-small inline-flex items-center gap-1.5 font-medium text-accent">

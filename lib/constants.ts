@@ -17,6 +17,12 @@ export const PROJECT_LAYOUT_SPAN_MAP: Record<ProjectLayoutSize, string> = {
   standard: "md:col-span-6",
 };
 
+/** layoutSizes that reserve extra vertical room (`md:min-h-[420px]` above) —
+    these should render the taller card image so the diagram doesn't look
+    disproportionately small inside the extra height. `wide` gets more width,
+    not height, so it's excluded. */
+export const PROJECT_LARGE_IMAGE_LAYOUT_SIZES: ProjectLayoutSize[] = ["featured", "tall"];
+
 /**
  * Shared mobile-carousel sizing for both `ProjectCard` and the open
  * `ProjectDetailPanel` — every item (open or closed) needs the same fixed

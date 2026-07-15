@@ -53,9 +53,14 @@ export function ProjectDetailPanel({ project, sheetNumber, onClose }: ProjectDet
       aria-label={`${project.title} detayları`}
       ref={panelRef}
       className={cn(
-        PROJECT_CAROUSEL_ITEM_CLASSES,
-        PROJECT_LAYOUT_SPAN_MAP.featured,
-        "overflow-hidden border border-border-strong bg-bg-elevated md:col-span-12 md:row-span-1",
+        "border border-border-strong bg-bg-elevated",
+        isMobile
+          ? "fixed inset-0 z-[60] h-[100dvh] overflow-y-auto overscroll-contain"
+          : cn(
+              PROJECT_CAROUSEL_ITEM_CLASSES,
+              PROJECT_LAYOUT_SPAN_MAP.featured,
+              "overflow-hidden md:col-span-12 md:row-span-1",
+            ),
       )}
     >
       <div className="flex items-center justify-between border-b border-border-strong px-5 py-3 font-mono-ui text-[0.68rem] tracking-wide text-text-tertiary uppercase">

@@ -39,7 +39,16 @@ export function Navbar() {
   }, [isMenuOpen]);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-40 border-b border-border-strong bg-bg/95 py-5 shadow-[0_12px_32px_-16px_rgba(0,0,0,0.6)] backdrop-blur-md">
+    <header
+      className={cn(
+        "fixed inset-x-0 top-0 z-40 border-b border-border-strong bg-bg/95 py-5 shadow-[0_12px_32px_-16px_rgba(0,0,0,0.6)] backdrop-blur-md",
+        // The mobile overlay below is a DOM descendant of this header, so it's
+        // capped at the header's own stacking level — bump it above
+        // ScrollProgress (z-50) while the menu is open, rather than raising
+        // the overlay itself (which wouldn't escape this context anyway).
+        isMenuOpen && "z-[60]",
+      )}
+    >
       <nav
         aria-label="Ana navigasyon"
         className="container-max relative z-10 flex items-center justify-between px-(--section-px)"
@@ -95,6 +104,10 @@ export function Navbar() {
           ))}
         </ul>
 
+        {/* Deliberately `lg:` rather than matching the nav-link `ul`'s `md:` —
+            showing this alongside the full link list at tablet widths (768-
+            1023px) would crowd the row; it's a separate threshold, not an
+            oversight. */}
         <span className="hidden font-mono-ui text-[0.68rem] tracking-wide text-text-tertiary lg:inline">
           REV. {CURRENT_REVISION.date}
         </span>

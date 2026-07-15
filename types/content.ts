@@ -28,6 +28,8 @@ export interface Exploration {
 export interface AboutSpec {
   label: string;
   value: string;
+  /** Renders `value` in the accent color — data-driven so reordering specs can't silently move it. */
+  highlight?: boolean;
 }
 
 export interface SiteContent {

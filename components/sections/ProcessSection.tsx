@@ -29,6 +29,10 @@ export function ProcessSection() {
         className="mb-[clamp(2rem,4vw,3rem)]"
       />
 
+      {/* No `sm:` intermediate step here — this is a left-to-right pipeline
+          with `→` connectors between adjacent stages (see the `lg:block`
+          connector below); a 2-column wrap would break that metaphor
+          (stage 2 beside stage 1 with no connector, 3/4 wrapping oddly). */}
       <ol className="grid grid-cols-1 border border-border-strong lg:grid-cols-4">
         {processSteps.map((step, i) => (
           <motion.li

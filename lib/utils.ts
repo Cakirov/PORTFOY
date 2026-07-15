@@ -11,7 +11,7 @@ const customTwMerge = extendTailwindMerge<"custom-type-scale">({
   extend: {
     classGroups: {
       "custom-type-scale": [
-        { text: ["display", "h1", "h2", "h3", "body", "small", "label"] },
+        { text: ["display", "h1", "h2", "h3", "body", "small", "label", "label-lg"] },
       ],
     },
   },

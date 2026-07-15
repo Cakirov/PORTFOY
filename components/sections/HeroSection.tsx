@@ -6,9 +6,9 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { GridBackdrop } from "@/components/ui/GridBackdrop";
 import { NodeGraphic } from "@/components/ui/NodeGraphic";
 import { Masthead } from "@/components/ui/Masthead";
-import { LegendBox } from "@/components/ui/LegendBox";
+import { ScaleBar } from "@/components/ui/ScaleBar";
 import { siteContent } from "@/data/siteContent";
-import { heroEntrance, heroTransition } from "@/lib/motion";
+import { EASE_STANDARD, heroEntrance, heroTransition } from "@/lib/motion";
 import { PERSON_NAME, SECTION_IDS } from "@/lib/constants";
 
 export function HeroSection() {
@@ -20,13 +20,16 @@ export function HeroSection() {
       aria-label={hero.headline}
       className="relative flex min-h-[100svh] flex-col overflow-hidden pt-(--nav-height)"
     >
-      {/* Capped to exactly one viewport tall — the section itself can grow
-          taller than 100svh on shorter/wider screens (aspect-square diagram
-          + content), but the grid pattern shouldn't stretch past the first
-          screen with it. */}
-      <GridBackdrop className="inset-x-0 top-0 bottom-auto h-[100svh]" />
-
       <div className="container-max relative flex w-full flex-1 flex-col px-(--section-px)">
+        {/* Scoped to the content column's own width (not the full viewport).
+            Left at the base `inset-0` (full section height) rather than a
+            fixed `h-[100svh]` — on short/narrow mobile viewports the section
+            can grow taller than one screen, and a fixed height would leave a
+            bare, pattern-less strip below the cutoff. Faded out (rather than
+            hard-cropped) over its last stretch so the true bottom edge
+            doesn't read as a drawn-in closing line. */}
+        <GridBackdrop className="border-x border-(--grid-line) [mask-image:linear-gradient(to_bottom,black,black_88%,transparent)]" />
+
         <motion.div
           className="mt-16"
           initial="hidden"
@@ -37,7 +40,7 @@ export function HeroSection() {
           <Masthead fig="01" name="HERO" view="ISOMETRIC" sheet="1 / 8" />
         </motion.div>
 
-        <div className="grid flex-1 grid-cols-1 items-center gap-16 py-10 lg:grid-cols-12 lg:gap-4">
+        <div className="grid flex-1 grid-cols-1 items-start gap-16 py-10 lg:grid-cols-12 lg:items-center lg:gap-4">
           <div className="lg:col-span-6 lg:-mt-28">
             <motion.div initial="hidden" animate="visible" variants={heroEntrance} transition={heroTransition(0.1)}>
               <p className="text-h3 mb-1 font-display font-bold tracking-tight text-text-primary">
@@ -47,10 +50,8 @@ export function HeroSection() {
             </motion.div>
 
             <motion.div initial="hidden" animate="visible" variants={heroEntrance} transition={heroTransition(0.16)}>
-              <Eyebrow className="mb-[1.1rem]">
-                <span lang="en" style={{ fontSize: "0.9rem" }}>
-                  {hero.eyebrow}
-                </span>
+              <Eyebrow size="lg" className="mb-[1.1rem]">
+                <span lang="en">{hero.eyebrow}</span>
               </Eyebrow>
             </motion.div>
 
@@ -64,6 +65,15 @@ export function HeroSection() {
             >
               {hero.headline}
             </motion.h1>
+
+            <motion.div
+              aria-hidden="true"
+              className="mt-5 mb-6 h-[3px] w-20 bg-accent"
+              style={{ transformOrigin: "left" }}
+              initial={{ scaleX: 0 }}
+              animate={{ scaleX: 1 }}
+              transition={{ duration: 0.7, ease: EASE_STANDARD, delay: 1 }}
+            />
 
             <motion.p
               initial="hidden"
@@ -90,6 +100,10 @@ export function HeroSection() {
                 {hero.secondaryCta}
               </Button>
             </motion.div>
+
+            <motion.div initial="hidden" animate="visible" variants={heroEntrance} transition={heroTransition(0.48)}>
+              <ScaleBar />
+            </motion.div>
           </div>
 
           <motion.div
@@ -99,7 +113,6 @@ export function HeroSection() {
             variants={heroEntrance}
             transition={heroTransition(0.28)}
           >
-            <LegendBox />
             <NodeGraphic variant="nodes" accent="primary" className="h-full w-full" />
           </motion.div>
         </div>

@@ -4,7 +4,7 @@ import { GridBackdrop } from "@/components/ui/GridBackdrop";
 
 export default function NotFound() {
   return (
-    <section className="relative flex min-h-[100svh] flex-col items-center justify-center overflow-hidden px-(--section-px) text-center">
+    <section className="container-max relative flex min-h-[100svh] flex-col items-center justify-center overflow-hidden px-(--section-px) text-center">
       <GridBackdrop />
 
       <div className="relative">

@@ -36,28 +36,31 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 border border-border-strong font-mono-ui sm:grid-cols-3">
-          <div className="border-r border-b border-border-strong p-4 sm:border-b-0">
+        {/* Dividers come from the 1px grid gap showing the border color through,
+            not per-cell border classes — that stays correct whether the grid
+            wraps as 2 cols × 3 rows (mobile) or 3 cols × 2 rows (sm:+). */}
+        <div className="grid grid-cols-2 gap-px border border-border-strong bg-border-strong font-mono-ui sm:grid-cols-3">
+          <div className="bg-bg p-4">
             <span className="mb-1 block text-label text-text-tertiary">Drawn By</span>
             <span className="text-small text-text-primary">{footer.name}</span>
           </div>
-          <div className="border-b border-border-strong p-4 sm:border-r sm:border-b-0">
+          <div className="bg-bg p-4">
             <span className="mb-1 block text-label text-text-tertiary">Checked By</span>
             <span className="text-small text-text-primary">OK</span>
           </div>
-          <div className="border-r border-border-strong p-4">
+          <div className="bg-bg p-4">
             <span className="mb-1 block text-label text-text-tertiary">Approved By</span>
             <span className="text-small text-accent">Beklemede</span>
           </div>
-          <div className="border-r border-border-strong p-4">
+          <div className="bg-bg p-4">
             <span className="mb-1 block text-label text-text-tertiary">Date</span>
             <span className="text-small text-text-primary">{CURRENT_REVISION.date}</span>
           </div>
-          <div className="border-r border-border-strong p-4">
+          <div className="bg-bg p-4">
             <span className="mb-1 block text-label text-text-tertiary">Sheet</span>
             <span className="text-small text-text-primary">8 / 8</span>
           </div>
-          <div className="p-4">
+          <div className="bg-bg p-4">
             <span className="mb-1 block text-label text-text-tertiary">Rev</span>
             <span className="text-small text-accent">{CURRENT_REVISION.rev}</span>
           </div>

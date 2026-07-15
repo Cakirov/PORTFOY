@@ -29,8 +29,16 @@ export function ProjectGrid({ projects }: ProjectGridProps) {
       setThumbRatio(Math.min(1, el.clientWidth / el.scrollWidth));
     }
     measure();
+    // ResizeObserver catches layout shifts that don't fire `resize` (font-load
+    // reflow, container-query-driven changes); the listener stays as a
+    // defensive fallback.
+    const observer = new ResizeObserver(measure);
+    observer.observe(el);
     window.addEventListener("resize", measure);
-    return () => window.removeEventListener("resize", measure);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", measure);
+    };
   }, [projects.length]);
 
   const handleOpen = useCallback((slug: string) => setActiveSlug(slug), []);
