@@ -36,7 +36,6 @@ export function ContactSection() {
               key={link.platform}
               href={link.href}
               variant={link.platform === "email" ? "primary" : "secondary"}
-              magnetic
             >
               <link.icon className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
               {link.label}

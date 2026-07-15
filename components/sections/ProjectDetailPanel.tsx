@@ -9,7 +9,7 @@ import { Tag } from "@/components/ui/Tag";
 import { useFocusTrap } from "@/hooks/useFocusTrap";
 import { useLockBodyScroll } from "@/hooks/useLockBodyScroll";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
-import { PROJECT_LAYOUT_SPAN_MAP, PROJECT_CAROUSEL_ITEM_CLASSES, CURRENT_REVISION } from "@/lib/constants";
+import { PROJECT_LAYOUT_SPAN_MAP, PROJECT_CAROUSEL_ITEM_CLASSES } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
 interface ProjectDetailPanelProps {
@@ -63,11 +63,10 @@ export function ProjectDetailPanel({ project, sheetNumber, onClose }: ProjectDet
             ),
       )}
     >
-      <div className="flex items-center justify-between border-b border-border-strong px-5 py-3 font-mono-ui text-[0.68rem] tracking-wide text-text-tertiary uppercase">
+      <div className="flex items-center border-b border-border-strong px-5 py-3 font-mono-ui text-[0.68rem] tracking-wide text-text-tertiary uppercase">
         <span>
           Sheet {String(sheetNumber).padStart(2, "0")} <span className="text-accent">Detail</span>
         </span>
-        <span>Rev. {CURRENT_REVISION.date}</span>
       </div>
 
       <div className="relative">

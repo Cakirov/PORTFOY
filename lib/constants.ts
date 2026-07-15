@@ -71,19 +71,6 @@ export const EXPLORATION_STATUS_META: Record<
   },
 };
 
-/**
- * Single source of truth for the "revision" stamp shown in the Navbar,
- * project detail panel, and Footer's revision-history table — the last
- * entry is always the current build's revision/date.
- */
-export const REVISION_HISTORY = [
-  { rev: "01", date: "2026.05.02", note: "İlk taslak — hero ve temel bölümler" },
-  { rev: "02", date: "2026.06.18", note: "Proje bölümü ve şematik diyagramlar eklendi" },
-  { rev: "03", date: "2026.07.13", note: "Mevcut sürüm — teknik çizim detayları ve proje paneli" },
-] as const;
-
-export const CURRENT_REVISION = REVISION_HISTORY[REVISION_HISTORY.length - 1];
-
 /** Single source of truth for the "sheet" numbering used in section mastheads and the nav rail. */
 export const SHEET_INDEX = [
   { id: SECTION_IDS.hero, num: "01", label: "Hero" },

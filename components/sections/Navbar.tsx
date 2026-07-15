@@ -10,7 +10,7 @@ import { useFocusTrap } from "@/hooks/useFocusTrap";
 import { useLockBodyScroll } from "@/hooks/useLockBodyScroll";
 import { cn } from "@/lib/utils";
 import { fadeInUp } from "@/lib/motion";
-import { CURRENT_REVISION, PERSON_NAME } from "@/lib/constants";
+import { PERSON_NAME } from "@/lib/constants";
 
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -104,13 +104,34 @@ export function Navbar() {
           ))}
         </ul>
 
-        {/* Deliberately `lg:` rather than matching the nav-link `ul`'s `md:` —
-            showing this alongside the full link list at tablet widths (768-
-            1023px) would crowd the row; it's a separate threshold, not an
-            oversight. */}
-        <span className="hidden font-mono-ui text-[0.68rem] tracking-wide text-text-tertiary lg:inline">
-          REV. {CURRENT_REVISION.date}
-        </span>
+        {/* Placeholder link to a not-yet-built section — same lock-on visual
+            language as the CKR mark, kept separate so it can be pointed at
+            real content later without touching the brand mark. Also
+            restores the nav-link list's original centered position (this
+            slot used to hold a now-removed REV. badge). */}
+        <Link
+          href="/lab"
+          aria-label="Yapım aşamasında yeni bölüm"
+          className="group relative flex h-10 w-10 items-center justify-center border border-border-strong bg-bg-elevated font-mono-ui text-[0.68rem] font-bold tracking-wide text-text-tertiary transition-colors duration-300 ease-out hover:border-accent hover:bg-accent-soft hover:text-accent"
+        >
+          +
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute -top-2.5 -left-2.5 h-2.5 w-2.5 border-t border-l border-accent opacity-0 transition-all duration-300 ease-out group-hover:-top-1.5 group-hover:-left-1.5 group-hover:opacity-100"
+          />
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute -top-2.5 -right-2.5 h-2.5 w-2.5 border-t border-r border-accent opacity-0 transition-all duration-300 ease-out group-hover:-top-1.5 group-hover:-right-1.5 group-hover:opacity-100"
+          />
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute -bottom-2.5 -left-2.5 h-2.5 w-2.5 border-b border-l border-accent opacity-0 transition-all duration-300 ease-out group-hover:-bottom-1.5 group-hover:-left-1.5 group-hover:opacity-100"
+          />
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute -bottom-2.5 -right-2.5 h-2.5 w-2.5 border-b border-r border-accent opacity-0 transition-all duration-300 ease-out group-hover:-bottom-1.5 group-hover:-right-1.5 group-hover:opacity-100"
+          />
+        </Link>
 
         <button
           ref={toggleButtonRef}
