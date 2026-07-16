@@ -1,4 +1,4 @@
-import { Mail, FileText } from "lucide-react";
+import { Mail } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "@/components/ui/icons";
 import type { SocialLink } from "@/types/social";
 
@@ -20,11 +20,5 @@ export const socialLinks: SocialLink[] = [
     label: "E-posta",
     href: "mailto:omerrcakirogluu@gmail.com",
     icon: Mail,
-  },
-  {
-    platform: "cv",
-    label: "CV",
-    href: "#", // NOTE: gerçek CV dosyası eklenene kadar yer tutucu
-    icon: FileText,
   },
 ];
