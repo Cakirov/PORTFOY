@@ -9,7 +9,7 @@ import { Tag } from "@/components/ui/Tag";
 import { useFocusTrap } from "@/hooks/useFocusTrap";
 import { useLockBodyScroll } from "@/hooks/useLockBodyScroll";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
-import { PROJECT_LAYOUT_SPAN_MAP, PROJECT_CAROUSEL_ITEM_CLASSES } from "@/lib/constants";
+import { PROJECT_LAYOUT_SPAN_MAP, PROJECT_CAROUSEL_ITEM_CLASSES, PROJECT_CATEGORY_CODE } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
 interface ProjectDetailPanelProps {
@@ -72,7 +72,12 @@ export function ProjectDetailPanel({ project, sheetNumber, onClose }: ProjectDet
       <div className="relative">
         <motion.div layoutId={`project-image-${project.slug}`} className="relative aspect-[21/9] w-full overflow-hidden bg-panel-2">
           <div className="absolute inset-0 p-12 opacity-90">
-            <NodeGraphic variant={project.visual.variant} accent={project.visual.accent ?? "primary"} />
+            <NodeGraphic
+              slug={project.slug}
+              techLabels={project.technologies}
+              hubLabel={PROJECT_CATEGORY_CODE[project.category]}
+              accent={project.visual.accent ?? "primary"}
+            />
           </div>
         </motion.div>
 

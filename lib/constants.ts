@@ -1,4 +1,4 @@
-import type { ProjectLayoutSize } from "@/types/project";
+import type { ProjectCategory, ProjectLayoutSize } from "@/types/project";
 import type { ExplorationStatus } from "@/types/content";
 
 /**
@@ -34,6 +34,18 @@ export const PROJECT_CAROUSEL_ITEM_CLASSES =
 
 /** Single source of truth for the site owner's name — used in the navbar, footer, and page metadata. */
 export const PERSON_NAME = "Ömer Çakıroğlu";
+
+/** Short code shown in each project card's diagram hub (NodeGraphic) — ties
+    the schematic back to that project's own category instead of a generic
+    "CORE" label, keyed off the same category already shown in its Tag. */
+export const PROJECT_CATEGORY_CODE: Record<ProjectCategory, string> = {
+  "Web Platform": "WEB",
+  AI: "AI",
+  "E-Commerce": "SHOP",
+  "Developer Tool": "DEV",
+  Systems: "SYS",
+  Product: "APP",
+};
 
 export const SECTION_IDS = {
   hero: "hero",

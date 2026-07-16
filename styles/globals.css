@@ -10,8 +10,6 @@
   /* Surfaces */
   --bg: #0e1b2e;
   --bg-elevated: #142640;
-  --surface: #f4f4f2;
-  --surface-muted: #e8e8e5;
   --panel-2: #0f2038;
 
   /* Text */
@@ -77,8 +75,6 @@
 @theme inline {
   --color-bg: var(--bg);
   --color-bg-elevated: var(--bg-elevated);
-  --color-surface: var(--surface);
-  --color-surface-muted: var(--surface-muted);
   --color-panel-2: var(--panel-2);
 
   --color-text-primary: var(--text-primary);

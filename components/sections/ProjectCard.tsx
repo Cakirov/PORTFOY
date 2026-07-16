@@ -8,10 +8,12 @@ import { NodeGraphic } from "@/components/ui/NodeGraphic";
 import { Tag } from "@/components/ui/Tag";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { cn } from "@/lib/utils";
+import { fadeInUp, transitionBase } from "@/lib/motion";
 import {
   PROJECT_LAYOUT_SPAN_MAP,
   PROJECT_CAROUSEL_ITEM_CLASSES,
   PROJECT_LARGE_IMAGE_LAYOUT_SIZES,
+  PROJECT_CATEGORY_CODE,
 } from "@/lib/constants";
 
 interface ProjectCardProps {
@@ -19,9 +21,22 @@ interface ProjectCardProps {
   sheetNumber: number;
   onOpen: (slug: string) => void;
   triggerRef: (el: HTMLButtonElement | null) => void;
+  /** True once this card has already played its scroll-in entrance —
+      it unmounts while its detail panel is open (see ProjectGrid), so
+      without this it would replay the fade-in every time a user closes
+      the panel. */
+  initialRevealed: boolean;
+  onRevealed: () => void;
 }
 
-export function ProjectCard({ project, sheetNumber, onOpen, triggerRef }: ProjectCardProps) {
+export function ProjectCard({
+  project,
+  sheetNumber,
+  onOpen,
+  triggerRef,
+  initialRevealed,
+  onRevealed,
+}: ProjectCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const canTilt = useMediaQuery("(hover: hover) and (pointer: fine)");
 
@@ -62,8 +77,13 @@ export function ProjectCard({ project, sheetNumber, onOpen, triggerRef }: Projec
         ref={cardRef}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
-        whileHover={{ y: -6, scale: 1.015 }}
-        transition={{ type: "spring", stiffness: 350, damping: 28 }}
+        variants={fadeInUp}
+        initial={initialRevealed ? false : "hidden"}
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.15 }}
+        onViewportEnter={initialRevealed ? undefined : onRevealed}
+        whileHover={{ y: -6, scale: 1.015, transition: { type: "spring", stiffness: 350, damping: 28 } }}
+        transition={{ ...transitionBase, delay: (sheetNumber - 1) * 0.05 }}
         style={{ rotateX: springRotateX, rotateY: springRotateY, transformStyle: "preserve-3d" }}
         className="crosshair-zone group relative flex h-full flex-col overflow-hidden border border-border-strong bg-bg-elevated transition-[border-color,box-shadow] duration-200 hover:border-accent hover:shadow-[0_24px_48px_-20px_rgba(0,0,0,0.55)]"
       >
@@ -90,7 +110,12 @@ export function ProjectCard({ project, sheetNumber, onOpen, triggerRef }: Projec
             )}
           >
             <div className="absolute inset-0 p-5 opacity-90 transition-transform duration-500 group-hover:scale-[1.06]">
-              <NodeGraphic variant={project.visual.variant} accent={project.visual.accent ?? "primary"} />
+              <NodeGraphic
+                slug={project.slug}
+                techLabels={project.technologies}
+                hubLabel={PROJECT_CATEGORY_CODE[project.category]}
+                accent={project.visual.accent ?? "primary"}
+              />
             </div>
           </motion.div>
 

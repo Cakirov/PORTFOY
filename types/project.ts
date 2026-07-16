@@ -9,8 +9,6 @@ export type ProjectCategory =
 /** Editorial grid rhythm — drives grid span, not visual one-offs. */
 export type ProjectLayoutSize = "featured" | "wide" | "tall" | "standard";
 
-export type ProjectVisualVariant = "nodes" | "mesh" | "flow" | "grid";
-
 export interface ProjectLink {
   label: string;
   url: string;
@@ -30,7 +28,6 @@ export interface Project {
   featured: boolean;
   layoutSize: ProjectLayoutSize;
   visual: {
-    variant: ProjectVisualVariant;
     accent?: "primary" | "secondary";
   };
   challenge: string;

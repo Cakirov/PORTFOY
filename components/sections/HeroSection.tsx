@@ -28,7 +28,10 @@ export function HeroSection() {
             bare, pattern-less strip below the cutoff. Faded out (rather than
             hard-cropped) over its last stretch so the true bottom edge
             doesn't read as a drawn-in closing line. */}
-        <GridBackdrop className="border-x border-(--grid-line) [mask-image:linear-gradient(to_bottom,black,black_88%,transparent)]" />
+        <GridBackdrop
+          parallax
+          className="border-x border-(--grid-line) [mask-image:linear-gradient(to_bottom,black,black_88%,transparent)]"
+        />
 
         <motion.div
           className="mt-16"
@@ -113,7 +116,7 @@ export function HeroSection() {
             variants={heroEntrance}
             transition={heroTransition(0.28)}
           >
-            <NodeGraphic variant="nodes" accent="primary" className="h-full w-full" />
+            <NodeGraphic accent="primary" className="h-full w-full" />
           </motion.div>
         </div>
       </div>

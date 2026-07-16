@@ -20,7 +20,7 @@ export const projects: Project[] = [
     year: 2025,
     featured: true,
     layoutSize: "featured",
-    visual: { variant: "nodes", accent: "primary" },
+    visual: { accent: "primary" },
     challenge:
       "Ekipler, yüzlerce mikroservisten gelen uyarılar arasında asıl kök nedeni bulmakta zorlanıyor, önemli olaylar gürültüye karışıyordu. Nöbetçi mühendisler genellikle birbirine bağlı onlarca uyarıyı tek tek inceleyerek zaman kaybediyordu.",
     solution:
@@ -48,7 +48,7 @@ export const projects: Project[] = [
     year: 2024,
     featured: true,
     layoutSize: "wide",
-    visual: { variant: "grid", accent: "primary" },
+    visual: { accent: "primary" },
     challenge:
       "Müşteri, büyüdükçe hazır platformun özelleştirme kısıtlarına takılıyor ve her yeni entegrasyon haftalar sürüyordu. Kampanya dönemlerinde envanter senkronizasyonu sık sık gecikiyor, stok tutarsızlıkları satış kaybına yol açıyordu.",
     solution:
@@ -76,7 +76,7 @@ export const projects: Project[] = [
     year: 2025,
     featured: true,
     layoutSize: "tall",
-    visual: { variant: "flow", accent: "secondary" },
+    visual: { accent: "secondary" },
     challenge:
       "Genel amaçlı asistanlar, ekip içi özel bilgiye erişemediği için yüzeysel cevaplar veriyordu. Kullanıcılar, bir yanıtın nereden geldiğini doğrulayamadıkları için sonuçlara güvenmekte tereddüt ediyordu.",
     solution:
@@ -101,7 +101,7 @@ export const projects: Project[] = [
     year: 2023,
     featured: false,
     layoutSize: "tall",
-    visual: { variant: "nodes", accent: "secondary" },
+    visual: { accent: "secondary" },
     challenge:
       "Operasyon ekibi, araç durumu bilgisini üç farklı tedarikçi sisteminden manuel olarak birleştiriyor; bir arızayı fark etmek genellikle saatler alıyordu.",
     solution:
@@ -126,7 +126,7 @@ export const projects: Project[] = [
     year: 2023,
     featured: false,
     layoutSize: "standard",
-    visual: { variant: "grid", accent: "primary" },
+    visual: { accent: "primary" },
     challenge:
       "Ekipler; görev takibi, zaman çizelgesi ve kaynak planlaması için üç ayrı araç kullanmak zorunda kalıyordu. Bu araçlar arasında veri elle taşındığı için raporlar sık sık güncel değildi.",
     solution:
@@ -151,7 +151,7 @@ export const projects: Project[] = [
     year: 2024,
     featured: false,
     layoutSize: "standard",
-    visual: { variant: "mesh", accent: "primary" },
+    visual: { accent: "primary" },
     challenge:
       "Her ürün ekibi kendi buton, form ve modal bileşenlerini yeniden yazıyordu; aynı hata (odak kaybı, kontrast yetersizliği) birden fazla üründe tekrar ediyordu.",
     solution:
@@ -179,7 +179,7 @@ export const projects: Project[] = [
     year: 2024,
     featured: false,
     layoutSize: "standard",
-    visual: { variant: "mesh", accent: "secondary" },
+    visual: { accent: "secondary" },
     challenge:
       "Küçük ekipler, kimlik doğrulamayı her projede yeniden ve genellikle güvenlik açıklarıyla yazıyordu; oturum yönetimi ve token yenileme mantığı her seferinde farklı şekilde hatalıydı.",
     solution:
@@ -207,7 +207,7 @@ export const projects: Project[] = [
     year: 2023,
     featured: false,
     layoutSize: "standard",
-    visual: { variant: "flow", accent: "primary" },
+    visual: { accent: "primary" },
     challenge:
       "Saha ve toplantı notları çoğunlukla sesli kaydediliyor ama sonrasında dinlenip elle özetlenmediği için aylar sonra hiç kullanılmadan unutuluyordu.",
     solution:
@@ -232,7 +232,7 @@ export const projects: Project[] = [
     year: 2025,
     featured: false,
     layoutSize: "wide",
-    visual: { variant: "flow", accent: "primary" },
+    visual: { accent: "primary" },
     challenge:
       "Geleneksel otomatik ölçeklendirme, ani ve düzensiz yük değişimlerinde gecikmeli ve verimsiz kalıyordu; sistem tepki verdiğinde yük zirvesi genellikle çoktan geçmiş oluyordu.",
     solution:
@@ -257,7 +257,7 @@ export const projects: Project[] = [
     year: 2024,
     featured: false,
     layoutSize: "tall",
-    visual: { variant: "mesh", accent: "secondary" },
+    visual: { accent: "secondary" },
     challenge:
       "Yeni katılan mühendisler, aynı sorunun cevabının hangi araçta (Confluence, eski bir GitHub issue'su, Slack konuşması) olduğunu bilmediği için aynı soruları tekrar tekrar soruyordu.",
     solution:

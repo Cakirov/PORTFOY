@@ -26,11 +26,6 @@ export const fadeInUp: Variants = {
   visible: { opacity: 1, y: 0 },
 };
 
-export const fadeIn: Variants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1 },
-};
-
 export const heroEntrance: Variants = {
   hidden: { opacity: 0, y: 12 },
   visible: { opacity: 1, y: 0 },

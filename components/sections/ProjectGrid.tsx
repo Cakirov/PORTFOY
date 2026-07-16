@@ -14,6 +14,10 @@ export function ProjectGrid({ projects }: ProjectGridProps) {
   const [activeSlug, setActiveSlug] = useState<string | null>(null);
   const triggerRefs = useRef(new Map<string, HTMLButtonElement | null>());
   const scrollRef = useRef<HTMLDivElement>(null);
+  // Cards that have already played their scroll-in entrance once — a card
+  // unmounts while its own detail panel is open (see the ternary below), so
+  // without this tracking it would replay its fade-in on every remount.
+  const [revealedSlugs, setRevealedSlugs] = useState<Set<string>>(() => new Set());
   // Ratio of visible-to-total scroll width, i.e. how big the custom scroll
   // thumb should be — mobile browsers hide/auto-fade native scrollbars on
   // touch, so without this the horizontal strip doesn't read as scrollable.
@@ -66,6 +70,10 @@ export function ProjectGrid({ projects }: ProjectGridProps) {
                 sheetNumber={index + 1}
                 onOpen={handleOpen}
                 triggerRef={(el) => triggerRefs.current.set(project.slug, el)}
+                initialRevealed={revealedSlugs.has(project.slug)}
+                onRevealed={() =>
+                  setRevealedSlugs((prev) => (prev.has(project.slug) ? prev : new Set(prev).add(project.slug)))
+                }
               />
             )}
             <AnimatePresence mode="popLayout">
