@@ -10,7 +10,10 @@ import { SECTION_IDS } from "@/lib/constants";
 export function ContactSection() {
   const { contact } = siteContent;
   // Email leads as the primary CTA here; Footer keeps the data's natural order.
-  const ctaLinks = [...socialLinks].sort((a, b) => Number(b.platform === "email") - Number(a.platform === "email"));
+  // CV is excluded here (no real file behind it yet) — Footer still lists it.
+  const ctaLinks = socialLinks
+    .filter((link) => link.platform !== "cv")
+    .sort((a, b) => Number(b.platform === "email") - Number(a.platform === "email"));
 
   return (
     <section
