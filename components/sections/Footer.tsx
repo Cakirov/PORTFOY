@@ -1,4 +1,3 @@
-import { socialLinks } from "@/data/socialLinks";
 import { siteContent } from "@/data/siteContent";
 
 export function Footer() {
@@ -12,18 +11,6 @@ export function Footer() {
           <span>
             {footer.name} — © {year}
           </span>
-          <div className="flex items-center gap-5 normal-case">
-            {socialLinks.map((link) => (
-              <a
-                key={link.platform}
-                href={link.href}
-                aria-label={link.label}
-                className="text-text-secondary transition-colors hover:text-accent"
-              >
-                <link.icon className="h-4 w-4" strokeWidth={1.75} />
-              </a>
-            ))}
-          </div>
           <span>Built with Next.js</span>
         </div>
       </div>
