@@ -1,5 +1,6 @@
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
+import { AnimatedHeading } from "@/components/motion/AnimatedHeading";
 import { cn } from "@/lib/utils";
 
 interface SectionHeadingProps {
@@ -24,9 +25,12 @@ export function SectionHeading({
       className={cn("max-w-[42rem]", align === "center" && "text-center", className)}
     >
       <Eyebrow className="mb-[1.1rem]">{eyebrow}</Eyebrow>
-      <h2 id={id} className="text-h1 mb-[0.9rem] font-display font-bold text-text-primary">
-        {heading}
-      </h2>
+      <AnimatedHeading
+        id={id}
+        as="h2"
+        lines={heading.split("\n")}
+        className="text-h1 mb-[0.9rem] font-display font-bold text-text-primary"
+      />
       {body ? <p className="text-body text-text-secondary">{body}</p> : null}
     </ScrollReveal>
   );

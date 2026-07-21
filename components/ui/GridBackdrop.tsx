@@ -1,17 +1,11 @@
-"use client";
-
-import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
 import { cn } from "@/lib/utils";
 
 interface GridBackdropProps {
   className?: string;
-  /** Adds a very small vertical scroll-linked drift (±20px) to the pattern —
-      background texture only, never content. Disabled under
-      prefers-reduced-motion: raw scroll-linked transforms bypass
-      MotionConfig's automatic reduced-motion downgrade, so this is gated
-      by hand (same pattern as MagneticWrapper). */
+  /** Adds the "background" layer's scroll-linked drift to the pattern —
+      texture only, never content. `ParallaxLayer` owns the reduced-motion
+      gating and mobile scaling; this component only owns the visual texture. */
   parallax?: boolean;
 }
 
@@ -21,22 +15,13 @@ interface GridBackdropProps {
  * not faded or scaled. Pure CSS, no canvas/WebGL.
  */
 export function GridBackdrop({ className, parallax = false }: GridBackdropProps) {
-  const ref = useRef<HTMLDivElement>(null);
-  const prefersReducedMotion = useReducedMotion();
-  const enableParallax = parallax && !prefersReducedMotion;
+  const grid = <div className={cn("grid-bg pointer-events-none absolute inset-0", className)} aria-hidden="true" />;
 
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"],
-  });
-  const y = useTransform(scrollYProgress, [0, 1], ["-20px", "20px"]);
+  if (!parallax) return grid;
 
   return (
-    <motion.div
-      ref={ref}
-      className={cn("grid-bg pointer-events-none absolute inset-0", className)}
-      aria-hidden="true"
-      style={enableParallax ? { y } : undefined}
-    />
+    <ParallaxLayer layer="background" className="pointer-events-none absolute inset-0">
+      {grid}
+    </ParallaxLayer>
   );
 }

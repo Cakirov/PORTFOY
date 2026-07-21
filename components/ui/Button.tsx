@@ -43,7 +43,7 @@ export function Button({
   ...rest
 }: ButtonProps) {
   const classes = cn(
-    "inline-flex items-center gap-2 px-[1.35rem] py-[0.85rem] font-mono-ui text-[0.76rem] tracking-wide uppercase transition-[background-color,border-color,color,transform] duration-300 active:scale-[0.97]",
+    "inline-flex items-center gap-2 px-[1.35rem] py-[0.85rem] font-mono-ui text-[0.76rem] tracking-wide uppercase transition-[background-color,border-color,color,transform] duration-(--motion-fast) active:scale-[0.97]",
     VARIANT_CLASSES[variant],
     className,
   );
@@ -52,7 +52,7 @@ export function Button({
     <>
       {children}
       {showArrow ? (
-        <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+        <ArrowUpRight className="h-4 w-4 transition-transform duration-(--motion-fast) group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
       ) : null}
     </>
   );

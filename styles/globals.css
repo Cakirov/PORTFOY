@@ -69,6 +69,15 @@
      accumulates fast on small screens; desktop max (6rem) is unaffected. */
   --section-py: clamp(2.5rem, 8cqw, 6rem);
   --section-px: clamp(1.25rem, 4cqw, 3rem);
+
+  /* Motion — CSS-side mirror of lib/motion.ts's motionTokens. Plain
+     Tailwind transitions (`duration-(--motion-fast)`) can't import JS, so
+     these exist as a second, intentional file kept in sync by convention,
+     not a duplicate source of truth for the Framer-driven animations. */
+  --motion-fast: 0.2s;
+  --motion-normal: 0.45s;
+  --motion-slow: 0.8s;
+  --motion-ease-soft: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Bridge tokens into Tailwind utilities (bg-bg, text-primary, border-accent, font-display, etc.) */

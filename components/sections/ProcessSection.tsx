@@ -2,12 +2,16 @@
 
 import { motion } from "framer-motion";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { SectionFigure } from "@/components/ui/SectionFigure";
 import { Masthead } from "@/components/ui/Masthead";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
+import { GridBackdrop } from "@/components/ui/GridBackdrop";
+import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
+import { StaggerGroup } from "@/components/motion/StaggerGroup";
 import { processSteps } from "@/data/process";
 import { siteContent } from "@/data/siteContent";
 import { SECTION_IDS } from "@/lib/constants";
-import { EASE_STANDARD } from "@/lib/motion";
+import { fadeInUp } from "@/lib/motion";
 
 export function ProcessSection() {
   const { process } = siteContent;
@@ -19,6 +23,14 @@ export function ProcessSection() {
       className="relative border-t border-border bg-bg-elevated"
     >
       {/* Full-bleed section backdrop (see AboutSection.tsx for the same split). */}
+      <GridBackdrop
+        parallax
+        className="opacity-[0.18] [mask-image:linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)]"
+      />
+      <ParallaxLayer layer="foreground" className="pointer-events-none absolute inset-0">
+        <SectionFigure figure="06" className="top-10 right-[clamp(1rem,4vw,3rem)]" />
+      </ParallaxLayer>
+
       <div className="container-max relative px-(--section-px) py-(--section-py)">
         <ScrollReveal>
           <Masthead fig="06" name="PIPELINE" view="SECTION A-A" sheet="6 / 8" />
@@ -35,15 +47,12 @@ export function ProcessSection() {
             with `→` connectors between adjacent stages (see the `lg:block`
             connector below); a 2-column wrap would break that metaphor
             (stage 2 beside stage 1 with no connector, 3/4 wrapping oddly). */}
-        <ol className="grid grid-cols-1 border border-border-strong lg:grid-cols-4">
+        <StaggerGroup as="ol" className="grid grid-cols-1 border border-border-strong lg:grid-cols-4">
           {processSteps.map((step, i) => (
             <motion.li
               key={step.index}
+              variants={fadeInUp}
               className="relative border-b border-border-strong p-7 last:border-b-0 lg:border-r lg:border-b-0 lg:last:border-r-0"
-              initial={{ opacity: 0, y: 14 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.15 }}
-              transition={{ duration: 0.6, ease: EASE_STANDARD, delay: i * 0.08 }}
             >
               <span className="mb-4 block font-mono-ui text-label text-accent">Stage {String(step.index).padStart(2, "0")}</span>
               <h3 className="text-h3 font-display font-bold text-text-primary">{step.title}</h3>
@@ -58,7 +67,7 @@ export function ProcessSection() {
               ) : null}
             </motion.li>
           ))}
-        </ol>
+        </StaggerGroup>
       </div>
     </section>
   );
