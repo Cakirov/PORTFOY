@@ -15,6 +15,8 @@ export const projects: Project[] = [
       "Dağıtık ekipler için gerçek zamanlı sistem izleme ve olay yönetimi platformu.",
     longDescription:
       "Project Nova, büyük ölçekli dağıtık sistemlerde meydana gelen olayları gerçek zamanlı olarak toplayan, ilişkilendiren ve ekiplere anlamlı öncelik sırasıyla sunan bir izleme platformudur. Amaç, gürültüyü azaltıp gerçekten kritik olan sinyale odaklanmaktı. Platform, yüzlerce servisten akan telemetriyi tek bir olay zaman çizelgesinde birleştirir ve nöbetçi mühendislerin kök nedene dakikalar içinde ulaşmasını hedefler.",
+    purpose:
+      "Nöbetçi mühendislerin, yüzlerce mikroservisten gelen gürültülü uyarılar arasında asıl kök nedeni saniyeler içinde bulabilmesini sağlamak.",
     role: "Kurucu Mühendis / Full-stack",
     technologies: ["Next.js", "TypeScript", "PostgreSQL", "WebSockets", "Docker", "Redis"],
     year: 2025,
@@ -29,10 +31,6 @@ export const projects: Project[] = [
       "Erken kullanıcı testlerinde ortalama müdahale süresinin belirgin şekilde kısaldığı, uyarı yorgunluğunun azaldığı gözlemlendi. Nöbetçi ekipler, artık ilgisiz uyarıları elemek yerine doğrudan ilişkilendirilmiş olaya odaklanabiliyor.",
     learnings:
       "Gerçek zamanlı sistemlerde kullanıcıya güven vermek, doğruluktan çok tutarlılık ve şeffaflıkla ilgili — sistemin neden o kararı verdiğini göstermek kritik. İlişkilendirme mantığını kara kutu olarak bırakmak yerine her adımı izlenebilir kılmak, benimsenmeyi hızlandırdı.",
-    links: [
-      { label: "Canlı Demo", url: "#", external: false },
-      { label: "Vaka Analizi", url: "#", external: false },
-    ],
   },
   {
     id: "atlas-commerce",
@@ -43,6 +41,8 @@ export const projects: Project[] = [
       "Orta ölçekli perakendeciler için modüler, hızlı ve özelleştirilebilir e-ticaret altyapısı.",
     longDescription:
       "Atlas Commerce, hazır e-ticaret platformlarının esneklik sınırlarına takılan işletmeler için tasarlanmış modüler bir altyapıdır. Katalog, ödeme ve envanter yönetimi bağımsız servisler olarak çalışır ve her biri kendi veri modeliyle, kendi hızında yayına alınabilir. Çok kanallı satış (web, mobil, pazar yeri) tek bir sipariş çekirdeği üzerinden yönetilir.",
+    purpose:
+      "Büyüyen perakendecilerin, hazır platformların esneklik sınırına takılmadan kendi hızlarında özelleştirebilecekleri bir e-ticaret temeli sunmak.",
     role: "Backend & Sistem Mimarisi",
     technologies: ["Node.js", "Next.js", "PostgreSQL", "Redis", "Stripe API", "Docker"],
     year: 2024,
@@ -57,10 +57,6 @@ export const projects: Project[] = [
       "Yeni satış kanalı entegrasyonları haftalar yerine günler içinde tamamlanır hale geldi. Yoğun kampanya dönemlerinde stok tutarsızlığı kaynaklı iptaller belirgin şekilde azaldı.",
     learnings:
       "Modülerlik, doğru sınırları çizmeden sadece ek karmaşıklık getirir. Servisler arası sözleşmeyi (contract) en başta net tanımlamak, sonradan yeniden bölmekten çok daha ucuza geliyor.",
-    links: [
-      { label: "Vaka Analizi", url: "#", external: false },
-      { label: "Mimari Notları", url: "#", external: false },
-    ],
   },
   {
     id: "neural-workspace",
@@ -71,6 +67,8 @@ export const projects: Project[] = [
       "Ekiplerin kendi verileriyle özel yapay zekâ asistanları oluşturabildiği bir çalışma alanı.",
     longDescription:
       "Neural Workspace, ekiplerin kendi doküman ve verilerini bağlayarak konuya özel yapay zekâ asistanları oluşturmasına olanak tanıyan bir araçtır. Odak noktası, doğruluk ve kaynak şeffaflığıdır — her yanıt, hangi belgeden türetildiği gösterilmeden sunulmaz. Ekipler, kod tabanına dokunmadan yeni bir bilgi kaynağını dakikalar içinde asistana bağlayabilir.",
+    purpose:
+      "Ekiplerin kendi verileriyle, her yanıtın kaynağını şeffafça gösteren güvenilir bir yapay zekâ asistanı kurabilmesini sağlamak.",
     role: "AI Entegrasyonu / Frontend",
     technologies: ["Python", "Next.js", "Vector DB", "LLM API", "TypeScript"],
     year: 2025,
@@ -85,7 +83,6 @@ export const projects: Project[] = [
       "Kullanıcılar, yanıtlara kaynak gösterildiğinde belirgin biçimde daha fazla güven duyduklarını belirtti. Erken benimseyen ekipler, iç dokümantasyonu arama yerine doğrudan asistana soru sorarak zaman kazandı.",
     learnings:
       "Bir yapay zekâ ürününde 'doğru cevap' tek başına yetmiyor — kullanıcının cevaba neden güvenmesi gerektiğini göstermek, benimseme için doğruluğun kendisi kadar önemli.",
-    links: [{ label: "Ürün Sayfası", url: "#", external: false }],
   },
   {
     id: "fleetwatch",
@@ -96,6 +93,7 @@ export const projects: Project[] = [
       "Lojistik filoları için canlı konum, yakıt ve bakım durumunu tek ekranda birleştiren izleme sistemi.",
     longDescription:
       "Fleetwatch, saha araçlarından gelen telemetri verisini (konum, yakıt, motor durumu) tek bir operasyon panelinde birleştiren bir filo izleme sistemidir. Sürücü, araç ve rota verisini ilişkilendirerek operasyon ekiplerine anomalileri fark ettikleri anda bildirir.",
+    purpose: "Saha filosundaki bir arızayı, belirtiler ağırlaşmadan önce, tek bir ekrandan fark edilebilir hale getirmek.",
     role: "IoT & Backend Mühendisi",
     technologies: ["Go", "PostgreSQL", "MQTT", "React", "Docker"],
     year: 2023,
@@ -110,7 +108,6 @@ export const projects: Project[] = [
       "Saha ekipleri, olası arızaları belirtiler ağırlaşmadan önce fark etmeye başladı; plansız duruşlarda gözle görülür bir azalma yaşandı.",
     learnings:
       "IoT verisinde asıl zorluk toplama değil, cihazdan cihaza tutarsız formatları güvenilir şekilde normalize etmek — bu katmana erken yatırım yapmak sonraki her şeyi kolaylaştırdı.",
-    links: [{ label: "Vaka Analizi", url: "#", external: false }],
   },
   {
     id: "horizon-platform",
@@ -121,6 +118,8 @@ export const projects: Project[] = [
       "Küçük ekiplerin proje, zaman ve kaynak yönetimini tek yerden yapabildiği çalışma platformu.",
     longDescription:
       "Horizon Platform, dağınık araçlar arasında geçiş yapmak zorunda kalan küçük ekipler için proje takibi, zaman çizelgesi ve kaynak planlamasını birleştiren tek bir çalışma alanı sunar. Görev, zaman ve kişi verisi aynı model üzerinde yaşadığı için raporlar ek entegrasyon gerektirmeden otomatik oluşur.",
+    purpose:
+      "Küçük ekiplerin görev, zaman ve kaynak takibini üç ayrı araç arasında geçmeden tek yerden yönetebilmesini sağlamak.",
     role: "Full-stack Geliştirici",
     technologies: ["React", "Node.js", "MongoDB", "Tailwind CSS"],
     year: 2023,
@@ -135,7 +134,6 @@ export const projects: Project[] = [
       "Ekipler araçlar arası geçiş yapmayı bırakarak günlük planlama süresinden tasarruf etti; yöneticiler kaynak çakışmalarını rapor beklemeden anlık olarak görebildi.",
     learnings:
       "Bir arayüzü birleştirmek yetmiyor; asıl kazanım, altta yatan veri modelini de birleştirmekten geliyor — aksi halde 'tek panel' sadece görsel bir katman olarak kalıyor.",
-    links: [{ label: "Vaka Analizi", url: "#", external: false }],
   },
   {
     id: "compose-design-system",
@@ -146,6 +144,8 @@ export const projects: Project[] = [
       "Birden fazla ürün ekibinin ortak kullandığı, erişilebilirlik odaklı paylaşılan tasarım sistemi.",
     longDescription:
       "Compose, farklı ürün ekiplerinin tutarsız ve tekrar eden arayüz bileşenleri yazmasını önlemek için kurulan paylaşılan bir tasarım sistemi ve bileşen kütüphanesidir. Her bileşen, klavye erişilebilirliği ve odak yönetimi test edilmeden yayına alınmaz. Kütüphane, tasarım tokenlarını tek kaynaktan besleyerek Figma ile kod arasındaki sürüm farkını ortadan kaldırır.",
+    purpose:
+      "Farklı ürün ekiplerinin, erişilebilirlik standardından ödün vermeden aynı bileşenleri yeniden kullanabilmesini sağlamak.",
     role: "Tasarım Sistemi Mühendisi",
     technologies: ["TypeScript", "React", "Storybook", "Radix UI", "Style Dictionary"],
     year: 2024,
@@ -160,10 +160,6 @@ export const projects: Project[] = [
       "Yeni bir ekranın arayüzü, sıfırdan bileşen yazmak yerine var olan bileşenlerden kurulur hale geldi; erişilebilirlik denetimlerinde tekrar eden hatalar büyük ölçüde ortadan kalktı.",
     learnings:
       "Paylaşılan bir kütüphanenin en büyük riski benimsenmemesi — erken aşamada gerçek ekiplerin gerçek ekranlarını kütüphaneyle birlikte inşa etmek, sonradan 'kullanın' demekten çok daha etkili oldu.",
-    links: [
-      { label: "Kaynak Kod", url: "#", external: true },
-      { label: "Dokümantasyon", url: "#", external: false },
-    ],
   },
   {
     id: "authcore",
@@ -174,6 +170,8 @@ export const projects: Project[] = [
       "Geliştiricilerin birkaç satır kodla güvenli kimlik doğrulama ekleyebildiği açık kaynaklı kütüphane.",
     longDescription:
       "AuthCore, kimlik doğrulama akışlarını sıfırdan yazmak yerine güvenli, denetlenmiş ve genişletilebilir bir temel sunan hafif bir kütüphanedir. Oturum yönetimi, çok faktörlü doğrulama ve OAuth2 sağlayıcı entegrasyonlarını varsayılan olarak güvenli şekilde uygular. Kütüphane, framework'e özel bağımlılık taşımaz.",
+    purpose:
+      "Geliştiricilerin kimlik doğrulamayı sıfırdan ve güvensiz şekilde yazmak yerine, güvenli varsayımlarla hızla entegre edebilmesini sağlamak.",
     role: "Kütüphane Yazarı",
     technologies: ["TypeScript", "Node.js", "JWT", "OAuth2"],
     year: 2024,
@@ -188,10 +186,6 @@ export const projects: Project[] = [
       "Kütüphane, birden fazla iç projede kimlik doğrulama geliştirme süresini kısalttı; bağımsız güvenlik incelemesinde önceki elle yazılmış çözümlere kıyasla belirgin şekilde daha az bulgu çıktı.",
     learnings:
       "Güvenlik odaklı bir kütüphanede en değerli özellik esneklik değil, 'yanlış kullanmayı zorlaştırmak' — varsayılan davranışın güvenli olması, dokümantasyondan çok daha etkili bir koruma.",
-    links: [
-      { label: "Kaynak Kod", url: "#", external: true },
-      { label: "Dokümantasyon", url: "#", external: false },
-    ],
   },
   {
     id: "echo-notes",
@@ -202,6 +196,8 @@ export const projects: Project[] = [
       "Sesli notları otomatik özetleyip ekip panolarına bağlayan iş birliğine dayalı not alma uygulaması.",
     longDescription:
       "Echo Notes, toplantı ve saha notlarının sesli olarak kaydedilip otomatik yazıya döküldüğü, ardından yapay zekâ ile eyleme dönüştürülebilir maddelere ayrıldığı bir not alma ürünüdür. Çıkan görevler, tek tıkla ekibin kullandığı proje panosuna aktarılır.",
+    purpose:
+      "Sahada veya toplantıda kaydedilen sesli notların, hiç dinlenmeden eyleme dönüştürülebilir hale gelmesini sağlamak.",
     role: "Ürün Mühendisi",
     technologies: ["React Native", "Next.js", "Whisper API", "PostgreSQL"],
     year: 2023,
@@ -216,7 +212,6 @@ export const projects: Project[] = [
       "Kullanıcılar, kayıtlarını dinlemeden dakikalar içinde eyleme geçirebilir hale geldi; unutulan sesli notların oranı belirgin şekilde azaldı.",
     learnings:
       "Otomatik özetleme tek başına yeterli değil — kullanıcıya düzenleme ve onaylama adımı bırakmak, yapay zekânın hatalı çıkardığı bir maddeyi sessizce panoya göndermekten çok daha güvenli.",
-    links: [{ label: "Ürün Sayfası", url: "#", external: false }],
   },
   {
     id: "living-systems-lab",
@@ -227,6 +222,8 @@ export const projects: Project[] = [
       "Kendi kendini iyileştiren ve yük altında ölçeklenen deneysel bir altyapı araştırma projesi.",
     longDescription:
       "Living Systems Lab, canlı sistemlerdeki adaptasyon ilkelerinden ilham alarak, yük ve hata koşullarına otomatik uyum sağlayan altyapı bileşenleri üzerine bir araştırma çalışmasıdır. Kontrol katmanı, geçmiş yük örüntülerinden öğrenerek kaynak tahsisini önceden ayarlamaya çalışır — bu hâlâ devam eden, açık uçlu bir araştırmadır.",
+    purpose:
+      "Altyapının, yük değişimine insan müdahalesi olmadan önceden uyum sağlayabildiği bir kontrol modelini araştırmak.",
     role: "Araştırma & Prototipleme",
     technologies: ["Python", "Kubernetes", "Go", "Prometheus"],
     year: 2025,
@@ -241,7 +238,6 @@ export const projects: Project[] = [
       "Simüle edilmiş senaryolarda kaynak israfı azalırken tepki süresi iyileşti; çalışma devam eden bir araştırmadır ve henüz üretim ortamında doğrulanmadı.",
     learnings:
       "Biyolojik sistemlerden ilham almak, mühendislik problemlerine taze bir çerçeve sunuyor — ama araştırma niteliğindeki bir fikri üretime taşımadan önce sınırlarını açıkça belirtmek, güveni korumak için en az çözümün kendisi kadar önemli.",
-    links: [{ label: "Araştırma Notları", url: "#", external: false }],
   },
   {
     id: "wayfinder",
@@ -252,6 +248,8 @@ export const projects: Project[] = [
       "Ekiplerin Confluence, GitHub ve Slack'e dağılmış teknik bilgisini tek aramadan bulabildiği bir arama aracı.",
     longDescription:
       "Wayfinder, mühendislik ekiplerinin dağınık dokümantasyon kaynakları arasında kaybolan bilgiyi tek bir semantik aramadan bulmasını sağlayan bir araçtır. Anahtar kelime eşleşmesi yerine anlam benzerliğine dayanır, böylece sonuç dokümanda geçen kelimelerle birebir aynı olmasa da doğru cevabı bulabilir.",
+    purpose:
+      "Mühendislik ekiplerinin, dağınık dokümantasyon kaynakları arasında kaybolan bilgiyi tek aramadan bulabilmesini sağlamak.",
     role: "Arama & Backend Mühendisi",
     technologies: ["TypeScript", "Vector DB", "Next.js", "PostgreSQL"],
     year: 2024,
@@ -266,6 +264,5 @@ export const projects: Project[] = [
       "Yeni ekip üyelerinin ilk haftalardaki tekrarlayan sorularında belirgin bir azalma gözlendi; mevcut mühendisler de dağınık geçmiş kararları yeniden bulmak için araca yöneldi.",
     learnings:
       "Arama kalitesini artırmak çoğu zaman daha iyi bir model değil, daha iyi kaynak seçimi ve güncel tutma disiplini gerektiriyor — indeks ne kadar akıllı olursa olsun güncel olmayan bir kaynaktan doğru cevap çıkmıyor.",
-    links: [{ label: "Ürün Sayfası", url: "#", external: false }],
   },
 ];

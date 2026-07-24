@@ -1,10 +1,12 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useRef, type MouseEvent } from "react";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import type { Project } from "@/types/project";
 import { NodeGraphic } from "@/components/ui/NodeGraphic";
 import { Tag } from "@/components/ui/Tag";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { cn } from "@/lib/utils";
 import { fadeInUp, motionTokens, transitionBase, EASE_STANDARD } from "@/lib/motion";
 import {
@@ -36,7 +38,30 @@ export function ProjectCard({
   onRevealed,
 }: ProjectCardProps) {
   const hasLargeImage = PROJECT_LARGE_IMAGE_LAYOUT_SIZES.includes(project.layoutSize);
-  const isSecondary = project.visual.accent === "secondary";
+
+  const cardRef = useRef<HTMLDivElement>(null);
+  const canTilt = useMediaQuery("(hover: hover) and (pointer: fine)");
+
+  const rotateX = useMotionValue(0);
+  const rotateY = useMotionValue(0);
+  const springRotateX = useSpring(rotateX, { stiffness: 350, damping: 28 });
+  const springRotateY = useSpring(rotateY, { stiffness: 350, damping: 28 });
+  const imageY = useTransform(springRotateX, [-11, 11], [7, -7]);
+  const imageX = useTransform(springRotateY, [-11, 11], [-7, 7]);
+
+  function handleMouseMove(event: MouseEvent<HTMLDivElement>) {
+    if (!canTilt || !cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const px = (event.clientX - rect.left) / rect.width - 0.5;
+    const py = (event.clientY - rect.top) / rect.height - 0.5;
+    rotateY.set(px * 11);
+    rotateX.set(-py * 11);
+  }
+
+  function handleMouseLeave() {
+    rotateX.set(0);
+    rotateY.set(0);
+  }
 
   return (
     <motion.div
@@ -46,8 +71,12 @@ export function ProjectCard({
         PROJECT_CAROUSEL_ITEM_CLASSES,
         PROJECT_LAYOUT_SPAN_MAP[project.layoutSize],
       )}
+      style={canTilt ? { perspective: 1200 } : undefined}
     >
       <motion.div
+        ref={cardRef}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
         variants={fadeInUp}
         initial={initialRevealed ? false : "hidden"}
         whileInView="visible"
@@ -55,19 +84,9 @@ export function ProjectCard({
         onViewportEnter={initialRevealed ? undefined : onRevealed}
         whileHover={{ y: -6, transition: { duration: motionTokens.duration.fast, ease: EASE_STANDARD } }}
         transition={{ ...transitionBase, delay: (sheetNumber - 1) * motionTokens.stagger.item }}
+        style={canTilt ? { rotateX: springRotateX, rotateY: springRotateY, transformStyle: "preserve-3d" } : undefined}
         className="crosshair-zone group relative flex h-full flex-col overflow-hidden border border-border-strong bg-bg-elevated transition-[border-color,box-shadow] duration-(--motion-fast) hover:border-accent hover:shadow-[0_24px_48px_-20px_rgba(0,0,0,0.55)]"
       >
-        {/* Surface / ambient glow — sits behind everything else, only the
-            group-hover opacity is animated (cheap, no JS motion value needed
-            for a discrete hover state). Tinted by the project's own accent. */}
-        <div
-          aria-hidden="true"
-          className={cn(
-            "pointer-events-none absolute inset-0 opacity-0 blur-2xl transition-opacity duration-(--motion-normal) group-hover:opacity-60",
-            isSecondary ? "bg-secondary/20" : "bg-accent/20",
-          )}
-        />
-
         <div className="relative flex items-center justify-between border-b border-border-strong px-5 py-2 font-mono-ui text-[0.65rem] tracking-wide text-text-tertiary uppercase md:py-3">
           <span>Sheet {String(sheetNumber).padStart(2, "0")}</span>
           <strong className="text-accent">{project.category}</strong>
@@ -84,12 +103,13 @@ export function ProjectCard({
         >
           <motion.div
             layoutId={`project-image-${project.slug}`}
+            style={{ x: imageX, y: imageY }}
             className={cn(
               "relative w-full overflow-hidden border-b border-border-strong bg-panel-2",
-              hasLargeImage ? "h-[150px] md:h-[260px]" : "h-[130px] md:h-[200px]",
+              hasLargeImage ? "h-[220px] md:h-[260px]" : "h-[190px] md:h-[200px]",
             )}
           >
-            <div className="absolute inset-0 p-5 opacity-90 transition-transform duration-(--motion-normal) group-hover:scale-[1.03]">
+            <div className="absolute inset-0 p-4 opacity-90 transition-transform duration-(--motion-normal) group-hover:scale-[1.06] md:p-5">
               <NodeGraphic
                 slug={project.slug}
                 techLabels={project.technologies}

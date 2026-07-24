@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { PERSON_NAME } from "@/lib/constants";
 
-const SITE_NAME = `${PERSON_NAME} — Yazılım Mühendisi`;
+const SITE_NAME = "Ömer ÇAKIROĞLU - Cakirov";
 const SITE_DESCRIPTION =
   "Yazılım, ürün geliştirme ve yeni nesil teknolojiler üzerine çalışan bir yazılım mühendisinin kişisel portföyü.";
 export const SITE_URL = "https://cakirov.com";

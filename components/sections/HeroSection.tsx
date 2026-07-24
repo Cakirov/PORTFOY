@@ -46,9 +46,9 @@ export function HeroSection() {
           <Masthead fig="01" name="HERO" view="ISOMETRIC" sheet="1 / 8" />
         </motion.div>
 
-        <div className="relative grid flex-1 grid-cols-1 items-start gap-16 py-10 lg:grid-cols-12 lg:items-center lg:gap-4">
+        <div className="relative grid flex-1 grid-cols-1 items-start gap-16 py-10 md:grid-cols-12 md:items-center md:gap-6 lg:gap-4">
           {/* Content layer — the whole text column drifts together as one composition. */}
-          <ParallaxLayer layer="content" className="lg:col-span-6 lg:-mt-28">
+          <ParallaxLayer layer="content" className="md:col-span-7 md:-mt-16 lg:col-span-6 lg:-mt-28">
             <motion.div initial="hidden" animate="visible" variants={fadeInUp} transition={heroTransition(0.1)}>
               <p className="text-h3 mb-1 font-display font-bold tracking-tight text-text-primary">
                 {PERSON_NAME}
@@ -113,7 +113,7 @@ export function HeroSection() {
           {/* Foreground layer — drifts slightly faster than content, for
               depth; isolated in its own column so it can never overlap the
               readable text. */}
-          <ParallaxLayer layer="foreground" className="hidden lg:col-span-6 lg:block">
+          <ParallaxLayer layer="foreground" className="hidden md:col-span-5 md:block lg:col-span-6">
             <motion.div
               className="crosshair-zone relative aspect-square"
               initial="hidden"

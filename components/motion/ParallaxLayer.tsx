@@ -38,9 +38,16 @@ export function ParallaxLayer({ children, layer = "content", range, className, m
 
   const [lo, hi] = range ?? motionTokens.parallax[layer];
   const scale = isMobile ? mobileScale : 1;
+  // Percent-based translateY resolves against the wrapped element's OWN box
+  // height — fine on desktop, but mobile sections collapse to a single
+  // stacked column and can grow to 2000px+, which would turn even a small
+  // percentage into a large, unbounded pixel drift (backwards from "subtle").
+  // Anchoring the mobile drift to viewport height instead keeps it bounded
+  // regardless of how tall the section's stacked content gets.
+  const unit = isMobile ? "vh" : "%";
 
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-  const y = useTransform(scrollYProgress, [0, 1], [`${lo * scale}%`, `${hi * scale}%`]);
+  const y = useTransform(scrollYProgress, [0, 1], [`${lo * scale}${unit}`, `${hi * scale}${unit}`]);
 
   return (
     <motion.div ref={ref} className={cn(className)} style={prefersReducedMotion ? undefined : { y }}>

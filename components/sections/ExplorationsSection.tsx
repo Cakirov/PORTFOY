@@ -30,7 +30,7 @@ export function ExplorationsSection() {
         className="opacity-[0.18] [mask-image:linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)]"
       />
       <ParallaxLayer layer="foreground" className="pointer-events-none absolute inset-0">
-        <SectionFigure figure="07" className="top-10 right-[clamp(1rem,4vw,3rem)]" />
+        <SectionFigure figure="07" />
       </ParallaxLayer>
 
       <div className="container-max relative px-(--section-px) py-(--section-py)">
@@ -59,7 +59,7 @@ export function ExplorationsSection() {
                   className="absolute top-6 bottom-6 left-4 w-px bg-[repeating-linear-gradient(to_bottom,var(--border-strong)_0_3px,transparent_3px_8px)] opacity-70"
                 />
 
-                <div className="flex items-center justify-between font-mono-ui text-[0.68rem] tracking-wide text-text-tertiary uppercase">
+                <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 font-mono-ui text-[0.68rem] tracking-wide text-text-tertiary uppercase">
                   <span>Log.{String(i + 1).padStart(2, "0")}</span>
                   <span className="border border-secondary px-2.5 py-0.5 text-secondary">{item.tag}</span>
                 </div>

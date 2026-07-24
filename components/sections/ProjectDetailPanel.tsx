@@ -2,13 +2,15 @@
 
 import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { ExternalLink, X } from "lucide-react";
+import { X } from "lucide-react";
 import type { Project } from "@/types/project";
+import type { SkillGroup } from "@/types/skill";
 import { NodeGraphic } from "@/components/ui/NodeGraphic";
 import { Tag } from "@/components/ui/Tag";
 import { useFocusTrap } from "@/hooks/useFocusTrap";
 import { useLockBodyScroll } from "@/hooks/useLockBodyScroll";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { skillGroups } from "@/data/skills";
 import { PROJECT_LAYOUT_SPAN_MAP, PROJECT_CAROUSEL_ITEM_CLASSES, PROJECT_CATEGORY_CODE } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
@@ -24,10 +26,27 @@ const DETAIL_BLOCKS: Array<{ key: keyof Project; label: string }> = [
   { key: "outcome", label: "Not 3 — Sonuç" },
 ];
 
+/** Skill groups (from the Skills section's own data) this project actually
+    draws on — matched by exact tech-name overlap, plus the two project
+    categories ("AI"/"Product") that share a name with a skill group
+    outright, since a project's stack alone can under-represent those two
+    (e.g. "Vector DB"/"LLM API" don't string-match "Vector Databases"). */
+function getRelatedSkillGroups(project: Project): SkillGroup[] {
+  const techNames = new Set(project.technologies.map((tech) => tech.toLowerCase()));
+  return skillGroups.filter((group) => {
+    const hasTechMatch = group.items.some((item) => techNames.has(item.name.toLowerCase()));
+    const categoryMatch =
+      (group.key === "ai" && project.category === "AI") ||
+      (group.key === "product" && project.category === "Product");
+    return hasTechMatch || categoryMatch;
+  });
+}
+
 export function ProjectDetailPanel({ project, sheetNumber, onClose }: ProjectDetailPanelProps) {
   const panelRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const isMobile = useMediaQuery("(max-width: 767px)");
+  const relatedSkills = getRelatedSkillGroups(project);
 
   useFocusTrap(panelRef, true);
   useLockBodyScroll(isMobile);
@@ -109,6 +128,11 @@ export function ProjectDetailPanel({ project, sheetNumber, onClose }: ProjectDet
             {project.title}
           </h3>
 
+          <div className="mt-5 border-l-2 border-accent bg-accent-soft py-3 pr-4 pl-4">
+            <h4 className="mb-1 font-mono-ui text-label text-accent">Amaç</h4>
+            <p className="text-body text-text-primary">{project.purpose}</p>
+          </div>
+
           <p className="text-body mt-5 text-text-secondary">{project.longDescription}</p>
 
           <div className="mt-10 flex flex-col gap-8">
@@ -147,21 +171,14 @@ export function ProjectDetailPanel({ project, sheetNumber, onClose }: ProjectDet
             </ul>
           </div>
 
-          {project.links.length > 0 ? (
+          {relatedSkills.length > 0 ? (
             <div>
-              <h4 className="mb-3 font-mono-ui text-label text-text-tertiary">Referans Dokümanlar</h4>
-              <div className="flex flex-col gap-2">
-                {project.links.map((link) => (
-                  <a
-                    key={link.label}
-                    href={link.url}
-                    target={link.external ? "_blank" : undefined}
-                    rel={link.external ? "noopener noreferrer" : undefined}
-                    className="text-body inline-flex items-center gap-1.5 text-accent transition-colors hover:text-accent-strong"
-                  >
-                    {link.label}
-                    <ExternalLink className="h-3.5 w-3.5" />
-                  </a>
+              <h4 className="mb-3 font-mono-ui text-label text-text-tertiary">İlgili Yetkinlikler</h4>
+              <div className="flex flex-wrap gap-1.5">
+                {relatedSkills.map((group) => (
+                  <Tag key={group.key}>
+                    <span lang="en">{group.label}</span>
+                  </Tag>
                 ))}
               </div>
             </div>

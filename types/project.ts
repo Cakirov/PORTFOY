@@ -9,12 +9,6 @@ export type ProjectCategory =
 /** Editorial grid rhythm — drives grid span, not visual one-offs. */
 export type ProjectLayoutSize = "featured" | "wide" | "tall" | "standard";
 
-export interface ProjectLink {
-  label: string;
-  url: string;
-  external?: boolean;
-}
-
 export interface Project {
   id: string;
   slug: string;
@@ -22,6 +16,9 @@ export interface Project {
   category: ProjectCategory;
   shortDescription: string;
   longDescription: string;
+  /** One clear sentence on why the project exists — shown as its own
+      callout in the detail panel, distinct from the narrative description. */
+  purpose: string;
   role: string;
   technologies: string[];
   year: number;
@@ -34,5 +31,4 @@ export interface Project {
   solution: string;
   outcome: string;
   learnings?: string;
-  links: ProjectLink[];
 }
