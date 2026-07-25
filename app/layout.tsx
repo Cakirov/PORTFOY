@@ -3,6 +3,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { Roboto_Condensed, Inter, JetBrains_Mono } from "next/font/google";
 import { Providers } from "@/components/Providers";
 import { SkipLink } from "@/components/SkipLink";
+import { IntroLoader } from "@/components/IntroLoader";
 import { ScrollProgress } from "@/components/ScrollProgress";
 import { CrosshairCursor } from "@/components/CrosshairCursor";
 import { CoordinateReadout } from "@/components/CoordinateReadout";
@@ -46,6 +47,7 @@ export default function RootLayout({
         <StructuredData />
         <Providers>
           <SkipLink />
+          <IntroLoader />
           <ScrollProgress />
           <CoordinateReadout />
           <CrosshairCursor />
