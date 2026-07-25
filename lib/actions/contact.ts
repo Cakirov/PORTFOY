@@ -3,13 +3,9 @@
 import { Resend } from "resend";
 import { z } from "zod";
 
-// Resend's shared `onboarding@resend.dev` sender (no verified domain yet)
-// only delivers to the email address the Resend account itself was signed
-// up with — sending to a different address (e.g. the gmail one shown on
-// the site's own "E-posta" button) gets rejected with a 403. Once a domain
-// is verified at resend.com/domains, both this and `from` below can point
-// anywhere.
-const CONTACT_EMAIL = "omerrcakirogluu@hotmail.com";
+// cakirov.com is verified with Resend, so both this and `from` below can
+// point anywhere — matches the address on the site's own "E-posta" button.
+const CONTACT_EMAIL = "omerrcakirogluu@gmail.com";
 
 const contactSchema = z.object({
   name: z.string().trim().min(2, "En az 2 karakter olmalı").max(80, "Çok uzun"),
@@ -75,7 +71,7 @@ export async function submitContactForm(
   const resend = new Resend(apiKey);
 
   const { error } = await resend.emails.send({
-    from: "Portfolyo İletişim Formu <onboarding@resend.dev>",
+    from: "İletişim Formu <contact@cakirov.com>",
     to: CONTACT_EMAIL,
     replyTo: email,
     subject: `Yeni mesaj: ${name}`,
