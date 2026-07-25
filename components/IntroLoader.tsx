@@ -9,6 +9,9 @@ import { EASE_STANDARD } from "@/lib/motion";
 
 const SESSION_KEY = "intro-played";
 const TICK_COUNT = 20;
+/** Seconds — how long the "grow past the viewport, then fade" exit takes.
+    The `setTimeout` that unmounts the loader (below) matches this. */
+const EXIT_DURATION = 1;
 
 type Phase = "pending" | "playing" | "exiting" | "done";
 
@@ -74,7 +77,8 @@ export function IntroLoader() {
 
   useEffect(() => {
     if (phase !== "exiting") return;
-    const timeout = setTimeout(() => setPhase("done"), 650);
+    // Unmounts right as the grow+fade finishes.
+    const timeout = setTimeout(() => setPhase("done"), EXIT_DURATION * 1000);
     return () => clearTimeout(timeout);
   }, [phase]);
 
@@ -89,26 +93,22 @@ export function IntroLoader() {
         Yükleniyor
       </div>
 
-      {/* The two "doors" are the only opaque surface — everything else is
-          decorative content painted on top of them. Sliding them apart on
-          exit is what actually reveals the page underneath. */}
+      {/* Solid backdrop — the safety net that guarantees full coverage no
+          matter the screen size/aspect ratio, right up until the mark below
+          has grown large enough that its own fade-out IS the reveal. Fades
+          out in the exact same window as the mark, so there's never a gap
+          or a flash of "wrong" background. */}
       <motion.div
         aria-hidden="true"
-        className="bg-bg absolute inset-x-0 top-0 h-1/2 overflow-hidden"
-        animate={{ y: isExiting ? "-100%" : "0%" }}
-        transition={{ duration: 0.6, ease: [0.76, 0, 0.24, 1], delay: isExiting ? 0.1 : 0 }}
-      >
-        <GridBackdrop className="opacity-40" />
-      </motion.div>
-      <motion.div
-        aria-hidden="true"
-        className="bg-bg absolute inset-x-0 bottom-0 h-1/2 overflow-hidden"
-        animate={{ y: isExiting ? "100%" : "0%" }}
-        transition={{ duration: 0.6, ease: [0.76, 0, 0.24, 1], delay: isExiting ? 0.1 : 0 }}
+        className="bg-bg absolute inset-0 overflow-hidden"
+        animate={isExiting ? { opacity: [1, 1, 0] } : { opacity: 1 }}
+        transition={isExiting ? { duration: EXIT_DURATION, times: [0, 0.7, 1], ease: EASE_STANDARD } : undefined}
       >
         <GridBackdrop className="opacity-40" />
       </motion.div>
 
+      {/* Chrome — brackets, scan sweep, progress readout. Fades out fast,
+          well before the mark below has grown large enough to reach it. */}
       <motion.div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-10"
@@ -125,15 +125,6 @@ export function IntroLoader() {
               transition={{ duration: 0.5, ease: EASE_STANDARD, delay: 0.05 * i }}
             />
           ))}
-
-          <motion.div
-            className="flex h-16 w-16 items-center justify-center border border-accent bg-bg-elevated font-mono-ui text-[0.9rem] font-bold tracking-wide text-accent"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.4, ease: EASE_STANDARD, delay: 0.35 }}
-          >
-            CKR<span className="text-accent">.</span>
-          </motion.div>
 
           <motion.div
             className="absolute inset-x-1 h-[2px] bg-accent shadow-[0_0_12px_2px_var(--accent)]"
@@ -158,6 +149,30 @@ export function IntroLoader() {
           </div>
         </div>
       </motion.div>
+
+      {/* The mark — grows independently of the chrome above (not nested
+          inside its fast fade-out) so it can keep growing/fading on its own,
+          longer timeline once 100% is reached: it swells until it dwarfs
+          the viewport, fading out mid-growth so the "opening" reads as one
+          continuous gesture instead of a separate reveal step after. */}
+      <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+        <motion.div
+          className="flex h-16 w-16 items-center justify-center border border-accent bg-bg-elevated font-mono-ui text-[0.9rem] font-bold tracking-wide text-accent"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={
+            isExiting
+              ? { opacity: [1, 1, 0], scale: 34 }
+              : { opacity: 1, scale: 1 }
+          }
+          transition={
+            isExiting
+              ? { opacity: { duration: EXIT_DURATION, times: [0, 0.65, 1] }, scale: { duration: EXIT_DURATION, ease: "easeIn" } }
+              : { duration: 0.4, ease: EASE_STANDARD, delay: 0.35 }
+          }
+        >
+          CKR<span className="text-accent">.</span>
+        </motion.div>
+      </div>
     </div>
   );
 }
