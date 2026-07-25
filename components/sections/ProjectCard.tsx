@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, type MouseEvent } from "react";
+import { useEffect, useRef, type MouseEvent } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import type { Project } from "@/types/project";
@@ -41,6 +41,12 @@ export function ProjectCard({
 
   const cardRef = useRef<HTMLDivElement>(null);
   const canTilt = useMediaQuery("(hover: hover) and (pointer: fine)");
+  // The mobile carousel clips cards horizontally (`overflow-x-auto`), so an
+  // IntersectionObserver-driven `whileInView` only fires once a card is
+  // swiped into view — animating it mid-swipe instead of once on reveal.
+  // Below `md:` the entrance is decoupled from viewport/scroll entirely and
+  // just plays once on mount instead.
+  const isMobile = useMediaQuery("(max-width: 767px)");
 
   const rotateX = useMotionValue(0);
   const rotateY = useMotionValue(0);
@@ -63,6 +69,12 @@ export function ProjectCard({
     rotateY.set(0);
   }
 
+  // Mirrors the `onViewportEnter` anti-replay marking below, just triggered
+  // by mount instead of by an (unreliable, on mobile) viewport crossing.
+  useEffect(() => {
+    if (isMobile && !initialRevealed) onRevealed();
+  }, [isMobile, initialRevealed, onRevealed]);
+
   return (
     <motion.div
       layoutId={`project-card-${project.slug}`}
@@ -79,10 +91,11 @@ export function ProjectCard({
         onMouseLeave={handleMouseLeave}
         variants={fadeInUp}
         initial={initialRevealed ? false : "hidden"}
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.15 }}
-        onViewportEnter={initialRevealed ? undefined : onRevealed}
-        whileHover={{ y: -6, transition: { duration: motionTokens.duration.fast, ease: EASE_STANDARD } }}
+        animate={isMobile ? "visible" : undefined}
+        whileInView={isMobile ? undefined : "visible"}
+        viewport={isMobile ? undefined : { once: true, amount: 0.15 }}
+        onViewportEnter={isMobile || initialRevealed ? undefined : onRevealed}
+        whileHover={canTilt ? { y: -6, transition: { duration: motionTokens.duration.fast, ease: EASE_STANDARD } } : undefined}
         transition={{ ...transitionBase, delay: (sheetNumber - 1) * motionTokens.stagger.item }}
         style={canTilt ? { rotateX: springRotateX, rotateY: springRotateY, transformStyle: "preserve-3d" } : undefined}
         className="crosshair-zone group relative flex h-full flex-col overflow-hidden border border-border-strong bg-bg-elevated transition-[border-color,box-shadow] duration-(--motion-fast) hover:border-accent hover:shadow-[0_24px_48px_-20px_rgba(0,0,0,0.55)]"
@@ -106,15 +119,28 @@ export function ProjectCard({
             style={{ x: imageX, y: imageY }}
             className={cn(
               "relative w-full overflow-hidden border-b border-border-strong bg-panel-2",
-              hasLargeImage ? "h-[220px] md:h-[260px]" : "h-[190px] md:h-[200px]",
+              // NodeGraphic's viewBox is a square (0 0 400 400) — any box
+              // shorter than it is wide forces the SVG to scale down to fit
+              // the shorter dimension (`preserveAspectRatio="meet"`),
+              // shrinking the whole diagram and wasting space as empty
+              // side-margins. A fixed short height (what this used to be)
+              // always underfills a wide mobile card; `aspect-square` instead
+              // matches the box to the viewBox's own ratio exactly, so the
+              // diagram fills it edge-to-edge with no waste at any width.
+              // `md:` and up goes back to a fixed height (existing desktop
+              // cards aren't full-width, so a fixed short box is intentional
+              // there, not the bug this fixes).
+              "aspect-square",
+              hasLargeImage ? "md:aspect-auto md:h-[260px]" : "md:aspect-auto md:h-[200px]",
             )}
           >
-            <div className="absolute inset-0 p-4 opacity-90 transition-transform duration-(--motion-normal) group-hover:scale-[1.06] md:p-5">
+            <div className="absolute inset-0 p-3 opacity-90 transition-transform duration-(--motion-normal) group-hover:scale-[1.06] md:p-5">
               <NodeGraphic
                 slug={project.slug}
                 techLabels={project.technologies}
                 hubLabel={PROJECT_CATEGORY_CODE[project.category]}
                 accent={project.visual.accent ?? "primary"}
+                animateOnScroll={!isMobile}
               />
             </div>
           </motion.div>

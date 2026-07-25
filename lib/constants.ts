@@ -83,14 +83,14 @@ export const EXPLORATION_STATUS_META: Record<
   },
 };
 
-/** Single source of truth for the "sheet" numbering used in section mastheads and the nav rail. */
+/** Single source of truth for the section list used by the nav rail. */
 export const SHEET_INDEX = [
-  { id: SECTION_IDS.hero, num: "01", label: "Hero" },
-  { id: SECTION_IDS.intro, num: "02", label: "Approach" },
-  { id: SECTION_IDS.projects, num: "03", label: "Projects" },
-  { id: SECTION_IDS.about, num: "04", label: "Profile" },
-  { id: SECTION_IDS.skills, num: "05", label: "Schedule" },
-  { id: SECTION_IDS.process, num: "06", label: "Pipeline" },
-  { id: SECTION_IDS.explorations, num: "07", label: "R&D Log" },
-  { id: SECTION_IDS.contact, num: "08", label: "Contact" },
+  { id: SECTION_IDS.hero, label: "Hero" },
+  { id: SECTION_IDS.intro, label: "Approach" },
+  { id: SECTION_IDS.projects, label: "Projects" },
+  { id: SECTION_IDS.about, label: "Profile" },
+  { id: SECTION_IDS.skills, label: "Schedule" },
+  { id: SECTION_IDS.process, label: "Pipeline" },
+  { id: SECTION_IDS.explorations, label: "R&D Log" },
+  { id: SECTION_IDS.contact, label: "Contact" },
 ] as const;

@@ -105,7 +105,6 @@
   --font-mono: var(--font-mono-family), ui-monospace, "SF Mono", Consolas, monospace;
 
   --animate-fade-in: fade-in 0.8s ease-out forwards;
-  --animate-rail-flow: rail-flow 1.4s linear infinite;
   --animate-rail-pulse: rail-pulse 1.8s ease-in-out infinite;
 }
 
@@ -117,6 +116,7 @@
   html {
     scroll-behavior: smooth;
     color-scheme: dark;
+    -webkit-tap-highlight-color: transparent;
   }
 
   /* Every in-page anchor (Navbar links, Hero CTAs, SheetIndexRail) jumps a
@@ -136,6 +136,17 @@
   ::selection {
     background-color: var(--accent-soft);
     color: var(--text-primary);
+  }
+
+  /* Hides the native scrollbar on elements that draw their own custom
+     scroll-position indicator (e.g. ProjectGrid's horizontal card rail),
+     so only the one hand-drawn thumb shows instead of two overlapping. */
+  .no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
   }
 
   :focus-visible {
@@ -288,12 +299,6 @@
   }
   to {
     opacity: 1;
-  }
-}
-
-@keyframes rail-flow {
-  to {
-    background-position: 0 24px;
   }
 }
 

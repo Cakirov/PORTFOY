@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { X } from "lucide-react";
 import type { Project } from "@/types/project";
@@ -9,7 +9,6 @@ import { NodeGraphic } from "@/components/ui/NodeGraphic";
 import { Tag } from "@/components/ui/Tag";
 import { useFocusTrap } from "@/hooks/useFocusTrap";
 import { useLockBodyScroll } from "@/hooks/useLockBodyScroll";
-import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { skillGroups } from "@/data/skills";
 import { PROJECT_LAYOUT_SPAN_MAP, PROJECT_CAROUSEL_ITEM_CLASSES, PROJECT_CATEGORY_CODE } from "@/lib/constants";
 import { cn } from "@/lib/utils";
@@ -45,11 +44,23 @@ function getRelatedSkillGroups(project: Project): SkillGroup[] {
 export function ProjectDetailPanel({ project, sheetNumber, onClose }: ProjectDetailPanelProps) {
   const panelRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
-  const isMobile = useMediaQuery("(max-width: 767px)");
+  // This panel only ever mounts client-side (opened by a card click, never
+  // during SSR), so unlike the shared SSR-safe `useMediaQuery` hook — which
+  // must default to `false` to avoid a hydration mismatch — it's safe to
+  // read `matchMedia` synchronously on first render instead of flashing the
+  // desktop layout for one frame before flipping to mobile.
+  const [isMobile, setIsMobile] = useState(() => window.matchMedia("(max-width: 767px)").matches);
   const relatedSkills = getRelatedSkillGroups(project);
 
   useFocusTrap(panelRef, true);
   useLockBodyScroll(isMobile);
+
+  useEffect(() => {
+    const mediaQueryList = window.matchMedia("(max-width: 767px)");
+    const listener = () => setIsMobile(mediaQueryList.matches);
+    mediaQueryList.addEventListener("change", listener);
+    return () => mediaQueryList.removeEventListener("change", listener);
+  }, []);
 
   useEffect(() => {
     headingRef.current?.focus();

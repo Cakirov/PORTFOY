@@ -6,13 +6,26 @@ import { cn } from "@/lib/utils";
 import { EASE_STANDARD } from "@/lib/motion";
 import { PROJECT_DIAGRAMS } from "@/components/ui/projectDiagrams";
 
-/** Shared "draw the wire in" treatment for connector paths across every variant. */
-function wireDrawProps(index = 0) {
+/**
+ * Shared "draw the wire in" treatment for connector paths across every
+ * variant. `animate` must not change the shape of the `initial` prop across
+ * renders — Framer Motion only reads `initial` once, at mount, so if this
+ * ever mounted with `animate: true` (e.g. the `isMobile` media query below
+ * still reporting its SSR-safe default of `false` on the very first paint)
+ * and then flipped to `false`, a path left with `initial={{ pathLength: 0 }}`
+ * but no more `whileInView`/`animate` prop to drive it forward would stay
+ * invisible forever. `animate` is used instead of touching `initial`, since
+ * — unlike `initial` — it's re-evaluated on every render and can always pull
+ * the path back to fully drawn.
+ */
+function wireDrawProps(index = 0, animate = true) {
+  const transition = { duration: 0.9, ease: EASE_STANDARD, delay: 0.15 + index * 0.08 };
   return {
     initial: { pathLength: 0 } as const,
-    whileInView: { pathLength: 1 } as const,
-    viewport: { once: true, amount: 0.5 } as const,
-    transition: { duration: 0.9, ease: EASE_STANDARD, delay: 0.15 + index * 0.08 },
+    whileInView: animate ? ({ pathLength: 1 } as const) : undefined,
+    viewport: animate ? ({ once: true, amount: 0.5 } as const) : undefined,
+    animate: animate ? undefined : ({ pathLength: 1 } as const),
+    transition: animate ? transition : { duration: 0 },
   };
 }
 
@@ -168,6 +181,11 @@ interface NodeGraphicProps {
   hubLabel?: string;
   accent?: "primary" | "secondary";
   className?: string;
+  /** Set to `false` when this graphic sits inside a horizontally-clipped
+      container (the mobile project carousel) — `whileInView` there only
+      fires once swiped into view, drawing the diagram mid-swipe instead of
+      once on reveal. When `false`, wires/ports render fully in place immediately. */
+  animateOnScroll?: boolean;
 }
 
 /**
@@ -181,7 +199,14 @@ interface NodeGraphicProps {
  * built from that project's own tech stack (`techLabels`); otherwise the
  * fixed default demo layout (Hero, which has no project of its own).
  */
-export function NodeGraphic({ slug, techLabels, hubLabel = "CORE", accent = "primary", className }: NodeGraphicProps) {
+export function NodeGraphic({
+  slug,
+  techLabels,
+  hubLabel = "CORE",
+  accent = "primary",
+  className,
+  animateOnScroll = true,
+}: NodeGraphicProps) {
   const colorClass = accent === "primary" ? "text-accent" : "text-secondary";
   const [hoveredPort, setHoveredPort] = useState<string | null>(null);
 
@@ -199,7 +224,7 @@ export function NodeGraphic({ slug, techLabels, hubLabel = "CORE", accent = "pri
       aria-hidden="true"
     >
       {Bespoke ? (
-        <Bespoke />
+        <Bespoke animate={animateOnScroll} />
       ) : (
       <g>
         <g fill="none" strokeWidth={1}>
@@ -211,7 +236,7 @@ export function NodeGraphic({ slug, techLabels, hubLabel = "CORE", accent = "pri
                 "transition-[stroke] duration-500 ease-out",
                 hoveredPort && wire.connects.includes(hoveredPort) ? "stroke-accent" : "stroke-border-strong",
               )}
-              {...wireDrawProps(i)}
+              {...wireDrawProps(i, animateOnScroll)}
             />
           ))}
         </g>
@@ -263,9 +288,10 @@ export function NodeGraphic({ slug, techLabels, hubLabel = "CORE", accent = "pri
               className="group"
               style={{ transformBox: "fill-box", transformOrigin: "center" }}
               initial={{ opacity: 0, scale: 0.8 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true, amount: 0.5 }}
-              transition={{ duration: 0.5, ease: EASE_STANDARD, delay: entranceDelay }}
+              whileInView={animateOnScroll ? { opacity: 1, scale: 1 } : undefined}
+              viewport={animateOnScroll ? { once: true, amount: 0.5 } : undefined}
+              animate={animateOnScroll ? undefined : { opacity: 1, scale: 1 }}
+              transition={animateOnScroll ? { duration: 0.5, ease: EASE_STANDARD, delay: entranceDelay } : { duration: 0 }}
               onMouseEnter={() => setHoveredPort(port.id)}
               onMouseLeave={() => setHoveredPort((current) => (current === port.id ? null : current))}
             >

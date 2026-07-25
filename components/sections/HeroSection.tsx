@@ -37,7 +37,7 @@ export function HeroSection() {
         </ParallaxLayer>
 
         <motion.div
-          className="relative mt-16"
+          className="relative mt-6 md:mt-16"
           initial="hidden"
           animate="visible"
           variants={fadeInUp}
@@ -46,7 +46,12 @@ export function HeroSection() {
           <Masthead fig="01" name="HERO" view="ISOMETRIC" sheet="1 / 8" />
         </motion.div>
 
-        <div className="relative grid flex-1 grid-cols-1 items-start gap-16 py-10 md:grid-cols-12 md:items-center md:gap-6 lg:gap-4">
+        {/* Below `md:` the vertical stack (headline + subtext + CTAs) needs
+            to fit inside one mobile viewport without scrolling — the CTAs
+            are the page's primary calls to action and shouldn't require a
+            scroll to discover. Tighter gaps/padding + a smaller headline
+            floor below `md:` claw back ~180px versus the desktop spacing. */}
+        <div className="relative grid flex-1 grid-cols-1 items-start gap-16 py-6 md:grid-cols-12 md:items-center md:gap-6 md:py-10 lg:gap-4">
           {/* Content layer — the whole text column drifts together as one composition. */}
           <ParallaxLayer layer="content" className="md:col-span-7 md:-mt-16 lg:col-span-6 lg:-mt-28">
             <motion.div initial="hidden" animate="visible" variants={fadeInUp} transition={heroTransition(0.1)}>
@@ -57,7 +62,7 @@ export function HeroSection() {
             </motion.div>
 
             <motion.div initial="hidden" animate="visible" variants={fadeInUp} transition={heroTransition(0.16)}>
-              <Eyebrow size="lg" className="mb-[1.1rem]">
+              <Eyebrow size="lg" className="mb-2 md:mb-[1.1rem]">
                 <span lang="en">{hero.eyebrow}</span>
               </Eyebrow>
             </motion.div>
@@ -67,12 +72,12 @@ export function HeroSection() {
               trigger="mount"
               delay={0.28}
               lines={hero.headline.split("\n")}
-              className="text-display max-w-[20ch] font-display font-bold text-text-primary [font-size:clamp(2.6rem,5.6cqw,4.8rem)]"
+              className="text-display max-w-[20ch] font-display font-bold text-text-primary [font-size:clamp(1.9rem,7cqw,4.8rem)] md:[font-size:clamp(2.6rem,5.6cqw,4.8rem)]"
             />
 
             <motion.div
               aria-hidden="true"
-              className="mt-5 mb-6 h-[3px] w-20 bg-accent"
+              className="mt-3 mb-4 h-[3px] w-20 bg-accent md:mt-5 md:mb-6"
               style={{ transformOrigin: "left" }}
               initial={{ scaleX: 0 }}
               animate={{ scaleX: 1 }}
@@ -84,8 +89,7 @@ export function HeroSection() {
               animate="visible"
               variants={fadeInUp}
               transition={heroTransition(0.34)}
-              className="text-body mb-[2.25rem] max-w-[34rem] border-l-2 border-accent-soft pl-4 text-text-secondary"
-              style={{ fontSize: "1.15rem" }}
+              className="text-body mb-5 max-w-[34rem] border-l-2 border-accent-soft pl-4 text-text-secondary [font-size:1rem] md:mb-[2.25rem] md:[font-size:1.15rem]"
             >
               {hero.subtext}
             </motion.p>

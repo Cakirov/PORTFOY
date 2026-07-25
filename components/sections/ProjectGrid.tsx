@@ -59,7 +59,7 @@ export function ProjectGrid({ projects }: ProjectGridProps) {
     <LayoutGroup>
       <div
         ref={scrollRef}
-        className="flex snap-x snap-mandatory gap-5 overflow-x-auto pb-2 md:grid md:grid-cols-12 md:overflow-visible md:pb-0"
+        className="no-scrollbar flex snap-x snap-mandatory gap-5 overflow-x-auto pb-2 md:grid md:grid-cols-12 md:overflow-visible md:pb-0"
         style={{ gridAutoFlow: "row dense" }}
       >
         {projects.map((project, index) => (

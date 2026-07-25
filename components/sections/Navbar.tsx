@@ -8,7 +8,6 @@ import { navLinks } from "@/data/navigation";
 import { useActiveSection } from "@/hooks/useActiveSection";
 import { useFocusTrap } from "@/hooks/useFocusTrap";
 import { useLockBodyScroll } from "@/hooks/useLockBodyScroll";
-import { useScrollDirection } from "@/hooks/useScrollDirection";
 import { StaggerGroup } from "@/components/motion/StaggerGroup";
 import { cn } from "@/lib/utils";
 import { fadeInUp, motionTokens, EASE_STANDARD } from "@/lib/motion";
@@ -17,19 +16,17 @@ import { PERSON_NAME } from "@/lib/constants";
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const activeSectionId = useActiveSection(navLinks.map((link) => link.sectionId));
-  const { direction, isAtTop } = useScrollDirection();
   const menuRef = useRef<HTMLDivElement>(null);
   const toggleButtonRef = useRef<HTMLButtonElement>(null);
   const wasOpenRef = useRef(false);
-  // Hide only when actively scrolling down past the top — never while the
-  // mobile menu is open (it would rip a modal off-screen mid-interaction).
-  const hideHeader = direction === "down" && !isAtTop && !isMenuOpen;
 
   useFocusTrap(menuRef, isMenuOpen);
   useLockBodyScroll(isMenuOpen);
 
   useEffect(() => {
-    if (wasOpenRef.current && !isMenuOpen) {
+    if (isMenuOpen) {
+      menuRef.current?.querySelector<HTMLElement>("a[href]")?.focus();
+    } else if (wasOpenRef.current) {
       toggleButtonRef.current?.focus();
     }
     wasOpenRef.current = isMenuOpen;
@@ -45,9 +42,7 @@ export function Navbar() {
   }, [isMenuOpen]);
 
   return (
-    <motion.header
-      animate={{ y: hideHeader ? "-100%" : "0%" }}
-      transition={{ duration: motionTokens.duration.fast, ease: EASE_STANDARD }}
+    <header
       className={cn(
         "fixed inset-x-0 top-0 z-40 border-b border-border-strong bg-bg/95 py-5 shadow-[0_12px_32px_-16px_rgba(0,0,0,0.6)] backdrop-blur-md",
         // The mobile overlay below is a DOM descendant of this header, so it's
@@ -144,7 +139,7 @@ export function Navbar() {
         <button
           ref={toggleButtonRef}
           type="button"
-          className="inline-flex items-center justify-center border border-border-strong p-2 text-text-primary md:hidden"
+          className="inline-flex h-10 w-10 items-center justify-center border border-border-strong text-text-primary md:hidden"
           aria-expanded={isMenuOpen}
           aria-controls="mobile-menu"
           aria-label={isMenuOpen ? "Menüyü kapat" : "Menüyü aç"}
@@ -189,6 +184,6 @@ export function Navbar() {
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.header>
+    </header>
   );
 }
