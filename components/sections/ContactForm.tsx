@@ -2,14 +2,16 @@
 
 import { useActionState } from "react";
 import { Button } from "@/components/ui/Button";
-import { submitContactForm, initialContactFormState } from "@/lib/actions/contact";
+import { submitContactForm, type ContactFormState } from "@/lib/actions/contact";
 import { cn } from "@/lib/utils";
 
 const FIELD_CLASSES =
   "w-full border border-border-strong bg-bg-elevated px-4 py-3 text-body text-text-primary placeholder:text-text-tertiary focus:border-accent focus:outline-none";
 
+const INITIAL_STATE: ContactFormState = { status: "idle", message: "" };
+
 export function ContactForm() {
-  const [state, formAction, pending] = useActionState(submitContactForm, initialContactFormState);
+  const [state, formAction, pending] = useActionState(submitContactForm, INITIAL_STATE);
 
   return (
     <form action={formAction} className="flex w-full flex-col gap-5 text-left">

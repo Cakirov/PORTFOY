@@ -11,16 +11,16 @@ const contactSchema = z.object({
   message: z.string().trim().min(10, "En az 10 karakter olmalı").max(2000, "Çok uzun"),
 });
 
+// Only types (erased at compile time, so they aren't subject to the "a
+// 'use server' file may only export async functions" rule below) and the
+// action itself belong in this file — a plain object export like an
+// "initial state" constant would break the server-reference transform this
+// directive applies to every other export in the module.
 export interface ContactFormState {
   status: "idle" | "success" | "error";
   message: string;
   fieldErrors?: Partial<Record<"name" | "email" | "message", string>>;
 }
-
-export const initialContactFormState: ContactFormState = {
-  status: "idle",
-  message: "",
-};
 
 const SUCCESS_MESSAGE = "Mesajın için teşekkürler, en kısa sürede dönüş yapacağım.";
 const GENERIC_ERROR_MESSAGE = "Mesaj gönderilemedi, lütfen doğrudan e-posta ile ulaş.";
