@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/Button";
 import { GridBackdrop } from "@/components/ui/GridBackdrop";
 import { SectionFigure } from "@/components/ui/SectionFigure";
 import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
+import { ContactForm } from "@/components/sections/ContactForm";
 import { socialLinks } from "@/data/socialLinks";
 import { siteContent } from "@/data/siteContent";
 import { SECTION_IDS } from "@/lib/constants";
@@ -36,7 +37,7 @@ export function ContactSection() {
           <Masthead fig="08" name="CONTACT" view="SIGNATURE" sheet="8 / 8" />
         </ScrollReveal>
 
-        <div className="relative mx-auto flex max-w-3xl flex-col items-center gap-8 border border-border-strong bg-bg px-6 py-16 text-center sm:px-12">
+        <div className="relative mx-auto flex max-w-3xl flex-col items-center gap-10 border border-border-strong bg-bg px-6 py-16 text-center sm:px-12">
           <ScrollReveal className="flex flex-col items-center gap-8">
             <Eyebrow className="justify-center">{contact.eyebrow}</Eyebrow>
 
@@ -47,17 +48,20 @@ export function ContactSection() {
             <p className="text-body max-w-xl text-text-secondary">{contact.body}</p>
           </ScrollReveal>
 
-          <ScrollReveal delay={0.12} className="mt-4 flex flex-wrap items-center justify-center gap-4">
-            {ctaLinks.map((link) => (
-              <Button
-                key={link.platform}
-                href={link.href}
-                variant={link.platform === "email" ? "primary" : "secondary"}
-              >
-                <link.icon className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
-                {link.label}
-              </Button>
-            ))}
+          <ScrollReveal delay={0.12} className="w-full max-w-xl">
+            <ContactForm />
+          </ScrollReveal>
+
+          <ScrollReveal delay={0.18} className="flex w-full flex-col items-center gap-4 border-t border-dashed border-border pt-8">
+            <span className="font-mono-ui text-label text-text-tertiary">Ya da doğrudan</span>
+            <div className="flex flex-wrap items-center justify-center gap-4">
+              {ctaLinks.map((link) => (
+                <Button key={link.platform} href={link.href} variant="secondary">
+                  <link.icon className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
+                  {link.label}
+                </Button>
+              ))}
+            </div>
           </ScrollReveal>
         </div>
       </div>
