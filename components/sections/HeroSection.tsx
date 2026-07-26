@@ -51,7 +51,7 @@ export function HeroSection() {
             are the page's primary calls to action and shouldn't require a
             scroll to discover. Tighter gaps/padding + a smaller headline
             floor below `md:` claw back ~180px versus the desktop spacing. */}
-        <div className="relative grid flex-1 grid-cols-1 items-start gap-16 py-6 md:grid-cols-12 md:items-center md:gap-6 md:py-10 lg:gap-4">
+        <div className="relative grid flex-1 grid-cols-1 items-start gap-10 py-6 md:grid-cols-12 md:items-center md:gap-6 md:py-10 lg:gap-4">
           {/* Content layer — the whole text column drifts together as one composition. */}
           <ParallaxLayer layer="content" className="md:col-span-7 md:-mt-16 lg:col-span-6 lg:-mt-28">
             <motion.div initial="hidden" animate="visible" variants={fadeInUp} transition={heroTransition(0.1)}>
@@ -115,9 +115,12 @@ export function HeroSection() {
           </ParallaxLayer>
 
           {/* Foreground layer — drifts slightly faster than content, for
-              depth; isolated in its own column so it can never overlap the
-              readable text. */}
-          <ParallaxLayer layer="foreground" className="hidden md:col-span-5 md:block lg:col-span-6">
+              depth. Below `md:` the grid has one column, so this simply
+              falls to its own full-width row underneath the content (after
+              the CTAs/ScaleBar) instead of sharing a row with it — same
+              isolation guarantee (never overlaps the readable text), just
+              stacked instead of side-by-side. */}
+          <ParallaxLayer layer="foreground" className="md:col-span-5 lg:col-span-6">
             <motion.div
               className="crosshair-zone relative aspect-square"
               initial="hidden"
