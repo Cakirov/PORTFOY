@@ -128,7 +128,14 @@ export function HeroSection() {
               variants={fadeInUp}
               transition={heroTransition(0.28)}
             >
-              <NodeGraphic accent="primary" className="h-full w-full" />
+              {/* animateOnScroll={false}: the port boxes/labels inside
+                  otherwise wait on a `whileInView` viewport check per SVG
+                  element, which — on mobile especially — doesn't reliably
+                  fire (same root cause fixed for the mobile project-card
+                  diagrams earlier). Wires drew in fine on their own; port
+                  rects/text just never appeared. Rendering everything
+                  immediately on mount sidesteps that entirely. */}
+              <NodeGraphic accent="primary" className="h-full w-full" animateOnScroll={false} />
             </motion.div>
           </ParallaxLayer>
         </div>
