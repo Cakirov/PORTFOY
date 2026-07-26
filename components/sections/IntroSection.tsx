@@ -2,11 +2,9 @@
 
 import { motion } from "framer-motion";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { SectionFigure } from "@/components/ui/SectionFigure";
 import { Masthead } from "@/components/ui/Masthead";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { GridBackdrop } from "@/components/ui/GridBackdrop";
-import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
 import { StaggerGroup } from "@/components/motion/StaggerGroup";
 import { focusAreas } from "@/data/focusAreas";
 import { siteContent } from "@/data/siteContent";
@@ -23,10 +21,6 @@ export function IntroSection() {
         parallax
         className="opacity-[0.18] [mask-image:linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)]"
       />
-      <ParallaxLayer layer="foreground" className="pointer-events-none absolute inset-0">
-        <SectionFigure figure="02" />
-      </ParallaxLayer>
-
       <div className="container-max relative px-(--section-px) py-(--section-py)">
         <ScrollReveal>
           <Masthead fig="02" name="APPROACH" view="DETAIL" sheet="2 / 8" />

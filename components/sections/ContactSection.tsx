@@ -3,8 +3,6 @@ import { Masthead } from "@/components/ui/Masthead";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { Button } from "@/components/ui/Button";
 import { GridBackdrop } from "@/components/ui/GridBackdrop";
-import { SectionFigure } from "@/components/ui/SectionFigure";
-import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
 import { ContactForm } from "@/components/sections/ContactForm";
 import { socialLinks } from "@/data/socialLinks";
 import { siteContent } from "@/data/siteContent";
@@ -28,9 +26,6 @@ export function ContactSection() {
         parallax
         className="opacity-[0.35] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,transparent,black_75%)]"
       />
-      <ParallaxLayer layer="foreground" className="pointer-events-none absolute inset-0">
-        <SectionFigure figure="08" />
-      </ParallaxLayer>
 
       <div className="container-max relative px-(--section-px) py-(--section-py)">
         <ScrollReveal>

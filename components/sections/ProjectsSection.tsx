@@ -1,9 +1,7 @@
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { SectionFigure } from "@/components/ui/SectionFigure";
 import { Masthead } from "@/components/ui/Masthead";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { GridBackdrop } from "@/components/ui/GridBackdrop";
-import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
 import { ProjectGrid } from "@/components/sections/ProjectGrid";
 import { projects } from "@/data/projects";
 import { siteContent } from "@/data/siteContent";
@@ -21,10 +19,6 @@ export function ProjectsSection() {
         parallax
         className="opacity-[0.12] [mask-image:linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)]"
       />
-      <ParallaxLayer layer="foreground" className="pointer-events-none absolute inset-0">
-        <SectionFigure figure="03" />
-      </ParallaxLayer>
-
       <div className="container-max relative px-(--section-px) py-(--section-py)">
         <ScrollReveal>
           <Masthead fig="03" name="PROJECTS" view="PLAN" sheet="3 / 8" />
