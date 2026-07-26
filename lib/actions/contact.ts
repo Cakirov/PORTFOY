@@ -64,10 +64,7 @@ export async function submitContactForm(
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
     console.error("submitContactForm: RESEND_API_KEY is not set.");
-    // TEMPORARY (debugging the current "gönderilemedi" report on the live
-    // site): surfaces which of the two branches below actually fired,
-    // since there's no access to Vercel's runtime logs from here.
-    return { status: "error", message: `${GENERIC_ERROR_MESSAGE} (debug: RESEND_API_KEY tanımlı değil)` };
+    return { status: "error", message: GENERIC_ERROR_MESSAGE };
   }
 
   const { name, email, message } = parsed.data;
@@ -83,7 +80,7 @@ export async function submitContactForm(
 
   if (error) {
     console.error("submitContactForm: Resend error", error);
-    return { status: "error", message: `${GENERIC_ERROR_MESSAGE} (debug: ${error.name}: ${error.message})` };
+    return { status: "error", message: GENERIC_ERROR_MESSAGE };
   }
 
   return { status: "success", message: SUCCESS_MESSAGE };
