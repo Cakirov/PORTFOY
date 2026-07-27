@@ -509,6 +509,127 @@ function WayfinderDiagram({ animate }: DiagramProps) {
   );
 }
 
+// 11 — Config Drift Detective: two "identical" environments, one row of
+// config quietly diverged between them, caught mid-scan.
+function ConfigDriftDiagram({ animate }: DiagramProps) {
+  const boxes = [
+    { x: 30, y: 110, w: 150, h: 170, label: "STAGING" },
+    { x: 220, y: 110, w: 150, h: 170, label: "PROD" },
+  ];
+  const rowOffsets = [46, 86, 126];
+  const diffRow = 1;
+  const beamY = boxes[0].y + rowOffsets[diffRow];
+  const beamMidX = 200;
+
+  return (
+    <>
+      {boxes.map((b, bi) => (
+        <motion.g key={b.label} {...popIn(bi, animate)}>
+          <rect x={b.x} y={b.y} width={b.w} height={b.h} className="fill-bg-elevated stroke-text-tertiary" strokeWidth={1} />
+          <text x={b.x + 14} y={b.y + 26} fontSize={10} fontFamily="var(--font-mono)" className="fill-text-tertiary">
+            {b.label}
+          </text>
+          {rowOffsets.map((dy, ri) => (
+            <line
+              key={ri}
+              x1={b.x + 14}
+              y1={b.y + dy}
+              x2={b.x + b.w - 14}
+              y2={b.y + dy}
+              strokeWidth={ri === diffRow ? 2 : 1}
+              className={ri === diffRow ? "stroke-current" : "stroke-border-strong"}
+            />
+          ))}
+        </motion.g>
+      ))}
+
+      <motion.line
+        x1={boxes[0].x + boxes[0].w}
+        y1={beamY}
+        x2={boxes[1].x}
+        y2={beamY}
+        className="stroke-current"
+        strokeWidth={1.5}
+        strokeDasharray="5 4"
+        {...drawIn(2, 0.7, animate)}
+      />
+
+      <motion.circle cx={beamMidX} cy={beamY} r={5} className="fill-current" {...popIn(2, animate)} />
+      <PingRing cx={beamMidX} cy={beamY} r={5} delay={1.3} />
+
+      <motion.text
+        x={beamMidX - 24}
+        y={beamY - 16}
+        fontSize={9}
+        fontFamily="var(--font-mono)"
+        className="fill-current"
+        {...fadeIn(1, 1, animate)}
+      >
+        DRIFT
+      </motion.text>
+    </>
+  );
+}
+
+// 12 — Argument Cartographer: a claim's well-supported branches next to the
+// one unstated assumption holding it up — the diagram's only accent element.
+function ArgumentCartographerDiagram({ animate }: DiagramProps) {
+  const claim = { x: 145, y: 40, w: 110, h: 46, label: "CLAIM" };
+  const supports = [
+    { x: 40, y: 190, w: 110, h: 46, label: "SUPPORT" },
+    { x: 250, y: 190, w: 110, h: 46, label: "SUPPORT" },
+  ];
+  const assumption = { x: 145, y: 320, w: 110, h: 46, label: "ASSUMPTION" };
+  const claimCx = claim.x + claim.w / 2;
+  const claimBottom = claim.y + claim.h;
+  const assumptionCx = assumption.x + assumption.w / 2;
+  const assumptionCy = assumption.y + assumption.h / 2;
+
+  return (
+    <>
+      <g className="stroke-border-strong" strokeWidth={1}>
+        {supports.map((s, i) => (
+          <motion.path key={i} d={`M${claimCx},${claimBottom} L${s.x + s.w / 2},${s.y}`} fill="none" {...drawIn(i, 0.6, animate)} />
+        ))}
+      </g>
+
+      <motion.g {...popIn(0, animate)}>
+        <rect x={claim.x} y={claim.y} width={claim.w} height={claim.h} className="fill-bg-elevated stroke-text-tertiary" strokeWidth={1} />
+        <text x={claim.x + 10} y={claim.y + claim.h / 2 + 4} fontSize={9} fontFamily="var(--font-mono)" className="fill-text-tertiary">
+          {claim.label}
+        </text>
+      </motion.g>
+
+      {supports.map((s, i) => (
+        <motion.g key={i} {...popIn(i + 1, animate)}>
+          <rect x={s.x} y={s.y} width={s.w} height={s.h} className="fill-bg-elevated stroke-text-tertiary" strokeWidth={1} />
+          <text x={s.x + 10} y={s.y + s.h / 2 + 4} fontSize={9} fontFamily="var(--font-mono)" className="fill-text-tertiary">
+            {s.label}
+          </text>
+        </motion.g>
+      ))}
+
+      <motion.path
+        d={`M${claimCx},${claimBottom} L${assumptionCx},${assumption.y}`}
+        fill="none"
+        className="stroke-current"
+        strokeWidth={1.5}
+        strokeDasharray="5 4"
+        {...drawIn(2, 0.8, animate)}
+      />
+
+      <motion.g {...popIn(3, animate)}>
+        <rect x={assumption.x} y={assumption.y} width={assumption.w} height={assumption.h} className="fill-bg-elevated stroke-current" strokeWidth={1.25} />
+        <text x={assumption.x + 10} y={assumptionCy + 4} fontSize={9} fontFamily="var(--font-mono)" className="fill-current">
+          {assumption.label}
+        </text>
+      </motion.g>
+
+      <PingRing cx={assumptionCx} cy={assumptionCy} r={68} delay={1.2} />
+    </>
+  );
+}
+
 /** slug → bespoke diagram, keyed to today's placeholder project set (see data/projects.ts). */
 export const PROJECT_DIAGRAMS: Record<string, (props: DiagramProps) => React.JSX.Element> = {
   "project-nova": NovaDiagram,
@@ -521,4 +642,6 @@ export const PROJECT_DIAGRAMS: Record<string, (props: DiagramProps) => React.JSX
   "echo-notes": EchoNotesDiagram,
   "living-systems-lab": LivingSystemsDiagram,
   wayfinder: WayfinderDiagram,
+  "config-drift-detective": ConfigDriftDiagram,
+  "argument-cartographer": ArgumentCartographerDiagram,
 };

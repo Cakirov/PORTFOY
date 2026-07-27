@@ -35,6 +35,11 @@ export const PROJECT_CAROUSEL_ITEM_CLASSES =
 /** Single source of truth for the site owner's name — used in the navbar, footer, and page metadata. */
 export const PERSON_NAME = "Ömer Çakıroğlu";
 
+/** How many of `data/projects.ts` (front of the array, its strongest-first
+    order) show on the homepage grid — the rest live on the `/projects`
+    index page, reachable via the "Tüm Projeleri Gör" banner below the grid. */
+export const HOME_PROJECT_COUNT = 6;
+
 /** Short code shown in each project card's diagram hub (NodeGraphic) — ties
     the schematic back to that project's own category instead of a generic
     "CORE" label, keyed off the same category already shown in its Tag. */

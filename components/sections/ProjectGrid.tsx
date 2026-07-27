@@ -8,9 +8,13 @@ import { ProjectDetailPanel } from "@/components/sections/ProjectDetailPanel";
 
 interface ProjectGridProps {
   projects: Project[];
+  /** Added to each card's 1-based position to get its "SHEET N" number —
+      lets the `/projects` index page continue the homepage's numbering
+      instead of restarting at 1 for what's actually project 7, 8, ... */
+  startIndex?: number;
 }
 
-export function ProjectGrid({ projects }: ProjectGridProps) {
+export function ProjectGrid({ projects, startIndex = 0 }: ProjectGridProps) {
   const [activeSlug, setActiveSlug] = useState<string | null>(null);
   const triggerRefs = useRef(new Map<string, HTMLButtonElement | null>());
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -67,7 +71,7 @@ export function ProjectGrid({ projects }: ProjectGridProps) {
             {activeSlug === project.slug ? null : (
               <ProjectCard
                 project={project}
-                sheetNumber={index + 1}
+                sheetNumber={startIndex + index + 1}
                 onOpen={handleOpen}
                 triggerRef={(el) => triggerRefs.current.set(project.slug, el)}
                 initialRevealed={revealedSlugs.has(project.slug)}
@@ -81,7 +85,7 @@ export function ProjectGrid({ projects }: ProjectGridProps) {
                 <ProjectDetailPanel
                   key={project.slug}
                   project={project}
-                  sheetNumber={index + 1}
+                  sheetNumber={startIndex + index + 1}
                   onClose={handleClose}
                 />
               )}

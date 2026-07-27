@@ -4,8 +4,38 @@ import type { Project } from "@/types/project";
  * NOTE: Aşağıdaki tüm projeler yer tutucu (placeholder) örnek verilerdir.
  * Gerçek proje bilgileri eklenene kadar tasarım ve UX'i sergilemek için kullanılır.
  * Gerçek içerik eklerken yalnızca bu dosya güncellenir — component/layout kodu değişmez.
+ *
+ * Sıralama kasıtlı: en güçlü (en keskin problem/çözüm eşleşmesi, en özgün
+ * mekanizma) en üstte. İlk `HOME_PROJECT_COUNT` (bkz. lib/constants.ts) tanesi
+ * ana sayfada görünür, geri kalanı yalnızca `/projects` sayfasında.
  */
 export const projects: Project[] = [
+  {
+    id: "config-drift-detective",
+    slug: "config-drift-detective",
+    title: "Config Drift Detective",
+    category: "Developer Tool",
+    shortDescription:
+      "Ortamlar arasındaki gerçek altyapı farkını, ham bir diff değil nedensel bir açıklama olarak sunan bir DevOps aracı.",
+    longDescription:
+      "Config Drift Detective, staging ve production gibi ortamların IaC kaynağında 'aynı' göründüğü ama gerçekte farklı davrandığı durumları yakalamak için kuruldu. Araç, Terraform tanımlarını değil, bulut sağlayıcı API'lerinden çektiği gerçek çalışan altyapı durumunu karşılaştırır ve aradaki farkı düz dille, nedensel bir cümleye çevirir.",
+    purpose:
+      "Bir mühendisin 'staging'de çalışıyordu, prod'da neden farklı davranıyor?' sorusuna dakikalar içinde, nedensel bir cevap verebilmesini sağlamak.",
+    role: "DevOps & Backend Mühendisi",
+    technologies: ["Go", "Terraform", "AWS SDK", "PostgreSQL", "gRPC", "Docker"],
+    year: 2025,
+    featured: true,
+    layoutSize: "featured",
+    visual: { accent: "secondary" },
+    challenge:
+      "Ekipler ortamlar arası farkları yalnızca Terraform/IaC kaynağını karşılaştırarak denetliyordu; kaynak aynı göründüğünde bile gerçek çalışan sistemde elle değiştirilmiş bir parametre (rate limit, ölçekleme eşiği, feature flag) sessizce kalıyor ve prod'da sürpriz hatalara yol açıyordu.",
+    solution:
+      "Bulut sağlayıcı API'lerinden her ortamın gerçek çalışan yapılandırmasını periyodik olarak çeken bir tarayıcı kurduk; farkları ham bir JSON diff olarak değil, hangi parametrenin neden farklı olduğunu ve olası etkisini açıklayan bir cümleye çeviren bir katman ekledik.",
+    outcome:
+      "'Neden staging'de çalışıyor da prod'da çalışmıyor' tipi sorulara harcanan debug süresi belirgin şekilde kısaldı; sessiz kalmış elle yapılan altyapı değişiklikleri devreye girmeden önce yakalanır hale geldi.",
+    learnings:
+      "Gerçek altyapı durumu, IaC kaynağından bağımsız kendi 'gerçekliğine' sahip — sadece kaynağı okumak yeterli değil, çalışan sistemin kendisini sorgulamak gerekiyor. Ham bir diff yerine nedensel bir açıklama üretmek, aracın ekipler tarafından gerçekten güvenilip kullanılmasını sağlayan asıl fark oldu.",
+  },
   {
     id: "project-nova",
     slug: "project-nova",
@@ -21,7 +51,7 @@ export const projects: Project[] = [
     technologies: ["Next.js", "TypeScript", "PostgreSQL", "WebSockets", "Docker", "Redis"],
     year: 2025,
     featured: true,
-    layoutSize: "featured",
+    layoutSize: "tall",
     visual: { accent: "primary" },
     challenge:
       "Ekipler, yüzlerce mikroservisten gelen uyarılar arasında asıl kök nedeni bulmakta zorlanıyor, önemli olaylar gürültüye karışıyordu. Nöbetçi mühendisler genellikle birbirine bağlı onlarca uyarıyı tek tek inceleyerek zaman kaybediyordu.",
@@ -33,30 +63,81 @@ export const projects: Project[] = [
       "Gerçek zamanlı sistemlerde kullanıcıya güven vermek, doğruluktan çok tutarlılık ve şeffaflıkla ilgili — sistemin neden o kararı verdiğini göstermek kritik. İlişkilendirme mantığını kara kutu olarak bırakmak yerine her adımı izlenebilir kılmak, benimsenmeyi hızlandırdı.",
   },
   {
-    id: "atlas-commerce",
-    slug: "atlas-commerce",
-    title: "Atlas Commerce",
-    category: "E-Commerce",
+    id: "fleetwatch",
+    slug: "fleetwatch",
+    title: "Fleetwatch",
+    category: "Systems",
     shortDescription:
-      "Orta ölçekli perakendeciler için modüler, hızlı ve özelleştirilebilir e-ticaret altyapısı.",
+      "Lojistik filoları için canlı konum, yakıt ve bakım durumunu tek ekranda birleştiren izleme sistemi.",
     longDescription:
-      "Atlas Commerce, hazır e-ticaret platformlarının esneklik sınırlarına takılan işletmeler için tasarlanmış modüler bir altyapıdır. Katalog, ödeme ve envanter yönetimi bağımsız servisler olarak çalışır ve her biri kendi veri modeliyle, kendi hızında yayına alınabilir. Çok kanallı satış (web, mobil, pazar yeri) tek bir sipariş çekirdeği üzerinden yönetilir.",
+      "Fleetwatch, saha araçlarından gelen telemetri verisini (konum, yakıt, motor durumu) tek bir operasyon panelinde birleştiren bir filo izleme sistemidir. Sürücü, araç ve rota verisini ilişkilendirerek operasyon ekiplerine anomalileri fark ettikleri anda bildirir.",
+    purpose: "Saha filosundaki bir arızayı, belirtiler ağırlaşmadan önce, tek bir ekrandan fark edilebilir hale getirmek.",
+    role: "IoT & Backend Mühendisi",
+    technologies: ["Go", "PostgreSQL", "MQTT", "React", "Docker"],
+    year: 2023,
+    featured: true,
+    layoutSize: "standard",
+    visual: { accent: "secondary" },
+    challenge:
+      "Operasyon ekibi, araç durumu bilgisini üç farklı tedarikçi sisteminden manuel olarak birleştiriyor; bir arızayı fark etmek genellikle saatler alıyordu.",
+    solution:
+      "Tüm cihazlardan gelen MQTT tabanlı telemetriyi tek bir şemaya normalize eden bir alım hattı kurduk; anomali tespiti basit eşik kurallarıyla değil, aracın kendi geçmişiyle karşılaştırılarak yapılıyor.",
+    outcome:
+      "Saha ekipleri, olası arızaları belirtiler ağırlaşmadan önce fark etmeye başladı; plansız duruşlarda gözle görülür bir azalma yaşandı.",
+    learnings:
+      "IoT verisinde asıl zorluk toplama değil, cihazdan cihaza tutarsız formatları güvenilir şekilde normalize etmek — bu katmana erken yatırım yapmak sonraki her şeyi kolaylaştırdı.",
+  },
+  {
+    id: "argument-cartographer",
+    slug: "argument-cartographer",
+    title: "Argument Cartographer",
+    category: "AI",
+    shortDescription:
+      "Uzun bir metnin mantıksal iskeletini — iddia, destek, varsayım — görsel bir grafiğe döken, zayıf noktaları işaretleyen bir yazma aracı.",
+    longDescription:
+      "Argument Cartographer, uzun bir deneme, öneri ya da rapor metnini okuyup altındaki mantıksal yapıyı çıkaran bir yazma aracıdır. Her iddiayı, onu destekleyen kanıtı ve metnin hiç söylemeden varsaydığı öncülleri ayrıştırıp tek bir görsel grafikte birbirine bağlar. Amaç, yazarın kendi akıl yürütmesine çok yakın olduğu için fark edemediği zayıf halkaları — desteksiz kalmış bir iddiayı ya da hiç sorgulanmamış bir varsayımı — yayınlanmadan önce görünür kılmak.",
     purpose:
-      "Büyüyen perakendecilerin, hazır platformların esneklik sınırına takılmadan kendi hızlarında özelleştirebilecekleri bir e-ticaret temeli sunmak.",
-    role: "Backend & Sistem Mimarisi",
-    technologies: ["Node.js", "Next.js", "PostgreSQL", "Redis", "Stripe API", "Docker"],
+      "Bir yazarın, kendi argümanındaki desteksiz iddiaları ve söylenmemiş varsayımları, okuyucu fark etmeden önce kendisinin görebilmesini sağlamak.",
+    role: "Full-stack & AI Mühendisi",
+    technologies: ["TypeScript", "Next.js", "LLM API", "D3.js", "PostgreSQL"],
+    year: 2025,
+    featured: true,
+    layoutSize: "standard",
+    visual: { accent: "secondary" },
+    challenge:
+      "Yazarlar kendi argümanlarına çok yakın oldukları için mantıksal boşlukları (desteksiz bir iddia, hiç sorgulanmamış bir varsayım) genellikle göremiyordu; bu boşluklar çoğu zaman ancak okuyucu ya da hakem eleştirisinde ortaya çıkıyor, bu da geç ve maliyetli bir geri bildirim döngüsü yaratıyordu.",
+    solution:
+      "Metni cümle cümle analiz edip her cümleyi 'iddia', 'destek' ya da 'varsayım' olarak sınıflandıran, aralarındaki mantıksal bağı çıkaran bir işlem hattı kurduk; sonucu düzyazı olarak değil, düğümleri ve bağlantıları olan bir grafik olarak gösterdik — desteksiz kalan iddialar ve zincirin dışında kalan varsayımlar otomatik olarak vurgulanıyor.",
+    outcome:
+      "Erken kullanıcılar, taslak aşamasında normalde son okumada ya da hakem sürecinde yakalanacak zayıf mantıksal bağları fark etmeye başladı; özellikle uzun, çok iddialı metinlerde revizyon turlarının sayısı azaldı.",
+    learnings:
+      "Bir metnin 'iyi yazılmış' olması ile 'mantıksal olarak sağlam' olması aynı şey değil — dil bilgisi ve akış kusursuz olsa bile altındaki iddia zinciri kırık olabiliyor. Yapıyı görselleştirmek, metni tekrar tekrar okumaktan çok daha hızlı bir şekilde bu farkı ortaya çıkarıyor.",
+  },
+  {
+    id: "authcore",
+    slug: "authcore",
+    title: "AuthCore",
+    category: "Developer Tool",
+    shortDescription:
+      "Geliştiricilerin birkaç satır kodla güvenli kimlik doğrulama ekleyebildiği açık kaynaklı kütüphane.",
+    longDescription:
+      "AuthCore, kimlik doğrulama akışlarını sıfırdan yazmak yerine güvenli, denetlenmiş ve genişletilebilir bir temel sunan hafif bir kütüphanedir. Oturum yönetimi, çok faktörlü doğrulama ve OAuth2 sağlayıcı entegrasyonlarını varsayılan olarak güvenli şekilde uygular. Kütüphane, framework'e özel bağımlılık taşımaz.",
+    purpose:
+      "Geliştiricilerin kimlik doğrulamayı sıfırdan ve güvensiz şekilde yazmak yerine, güvenli varsayımlarla hızla entegre edebilmesini sağlamak.",
+    role: "Kütüphane Yazarı",
+    technologies: ["TypeScript", "Node.js", "JWT", "OAuth2"],
     year: 2024,
     featured: true,
-    layoutSize: "wide",
-    visual: { accent: "primary" },
+    layoutSize: "tall",
+    visual: { accent: "secondary" },
     challenge:
-      "Müşteri, büyüdükçe hazır platformun özelleştirme kısıtlarına takılıyor ve her yeni entegrasyon haftalar sürüyordu. Kampanya dönemlerinde envanter senkronizasyonu sık sık gecikiyor, stok tutarsızlıkları satış kaybına yol açıyordu.",
+      "Küçük ekipler, kimlik doğrulamayı her projede yeniden ve genellikle güvenlik açıklarıyla yazıyordu; oturum yönetimi ve token yenileme mantığı her seferinde farklı şekilde hatalıydı.",
     solution:
-      "Katalog, sipariş ve ödeme akışlarını bağımsız modüllere ayırarak her birinin kendi hızında geliştirilebildiği bir mimari kurduk. Envanteri olay tabanlı bir senkronizasyon katmanı üzerinden gerçek zamanlı güncelleyen bir tasarım benimsedik.",
+      "Yaygın güvenlik hatalarını (zayıf token saklama, eksik süre sonu kontrolü) varsayılan olarak engelleyen, buna karşın tamamen özelleştirilebilir bir API tasarladık. Güvenlik varsayımlarını dokümantasyonda açıkça gerekçelendirdik.",
     outcome:
-      "Yeni satış kanalı entegrasyonları haftalar yerine günler içinde tamamlanır hale geldi. Yoğun kampanya dönemlerinde stok tutarsızlığı kaynaklı iptaller belirgin şekilde azaldı.",
+      "Kütüphane, birden fazla iç projede kimlik doğrulama geliştirme süresini kısalttı; bağımsız güvenlik incelemesinde önceki elle yazılmış çözümlere kıyasla belirgin şekilde daha az bulgu çıktı.",
     learnings:
-      "Modülerlik, doğru sınırları çizmeden sadece ek karmaşıklık getirir. Servisler arası sözleşmeyi (contract) en başta net tanımlamak, sonradan yeniden bölmekten çok daha ucuza geliyor.",
+      "Güvenlik odaklı bir kütüphanede en değerli özellik esneklik değil, 'yanlış kullanmayı zorlaştırmak' — varsayılan davranışın güvenli olması, dokümantasyondan çok daha etkili bir koruma.",
   },
   {
     id: "neural-workspace",
@@ -73,7 +154,7 @@ export const projects: Project[] = [
     technologies: ["Python", "Next.js", "Vector DB", "LLM API", "TypeScript"],
     year: 2025,
     featured: true,
-    layoutSize: "tall",
+    layoutSize: "wide",
     visual: { accent: "secondary" },
     challenge:
       "Genel amaçlı asistanlar, ekip içi özel bilgiye erişemediği için yüzeysel cevaplar veriyordu. Kullanıcılar, bir yanıtın nereden geldiğini doğrulayamadıkları için sonuçlara güvenmekte tereddüt ediyordu.",
@@ -85,55 +166,30 @@ export const projects: Project[] = [
       "Bir yapay zekâ ürününde 'doğru cevap' tek başına yetmiyor — kullanıcının cevaba neden güvenmesi gerektiğini göstermek, benimseme için doğruluğun kendisi kadar önemli.",
   },
   {
-    id: "fleetwatch",
-    slug: "fleetwatch",
-    title: "Fleetwatch",
-    category: "Systems",
+    id: "wayfinder",
+    slug: "wayfinder",
+    title: "Wayfinder",
+    category: "Product",
     shortDescription:
-      "Lojistik filoları için canlı konum, yakıt ve bakım durumunu tek ekranda birleştiren izleme sistemi.",
+      "Ekiplerin Confluence, GitHub ve Slack'e dağılmış teknik bilgisini tek aramadan bulabildiği bir arama aracı.",
     longDescription:
-      "Fleetwatch, saha araçlarından gelen telemetri verisini (konum, yakıt, motor durumu) tek bir operasyon panelinde birleştiren bir filo izleme sistemidir. Sürücü, araç ve rota verisini ilişkilendirerek operasyon ekiplerine anomalileri fark ettikleri anda bildirir.",
-    purpose: "Saha filosundaki bir arızayı, belirtiler ağırlaşmadan önce, tek bir ekrandan fark edilebilir hale getirmek.",
-    role: "IoT & Backend Mühendisi",
-    technologies: ["Go", "PostgreSQL", "MQTT", "React", "Docker"],
-    year: 2023,
+      "Wayfinder, mühendislik ekiplerinin dağınık dokümantasyon kaynakları arasında kaybolan bilgiyi tek bir semantik aramadan bulmasını sağlayan bir araçtır. Anahtar kelime eşleşmesi yerine anlam benzerliğine dayanır, böylece sonuç dokümanda geçen kelimelerle birebir aynı olmasa da doğru cevabı bulabilir.",
+    purpose:
+      "Mühendislik ekiplerinin, dağınık dokümantasyon kaynakları arasında kaybolan bilgiyi tek aramadan bulabilmesini sağlamak.",
+    role: "Arama & Backend Mühendisi",
+    technologies: ["TypeScript", "Vector DB", "Next.js", "PostgreSQL"],
+    year: 2024,
     featured: false,
-    layoutSize: "tall",
+    layoutSize: "wide",
     visual: { accent: "secondary" },
     challenge:
-      "Operasyon ekibi, araç durumu bilgisini üç farklı tedarikçi sisteminden manuel olarak birleştiriyor; bir arızayı fark etmek genellikle saatler alıyordu.",
+      "Yeni katılan mühendisler, aynı sorunun cevabının hangi araçta (Confluence, eski bir GitHub issue'su, Slack konuşması) olduğunu bilmediği için aynı soruları tekrar tekrar soruyordu.",
     solution:
-      "Tüm cihazlardan gelen MQTT tabanlı telemetriyi tek bir şemaya normalize eden bir alım hattı kurduk; anomali tespiti basit eşik kurallarıyla değil, aracın kendi geçmişiyle karşılaştırılarak yapılıyor.",
+      "Üç kaynağı da düzenli olarak tarayıp semantik bir indekste birleştiren, sonuçları kaynağıyla birlikte gösteren tek bir arama çubuğu kurduk; sonuçlar orijinal belgeye doğrudan bağlanıyor.",
     outcome:
-      "Saha ekipleri, olası arızaları belirtiler ağırlaşmadan önce fark etmeye başladı; plansız duruşlarda gözle görülür bir azalma yaşandı.",
+      "Yeni ekip üyelerinin ilk haftalardaki tekrarlayan sorularında belirgin bir azalma gözlendi; mevcut mühendisler de dağınık geçmiş kararları yeniden bulmak için araca yöneldi.",
     learnings:
-      "IoT verisinde asıl zorluk toplama değil, cihazdan cihaza tutarsız formatları güvenilir şekilde normalize etmek — bu katmana erken yatırım yapmak sonraki her şeyi kolaylaştırdı.",
-  },
-  {
-    id: "horizon-platform",
-    slug: "horizon-platform",
-    title: "Horizon Platform",
-    category: "Web Platform",
-    shortDescription:
-      "Küçük ekiplerin proje, zaman ve kaynak yönetimini tek yerden yapabildiği çalışma platformu.",
-    longDescription:
-      "Horizon Platform, dağınık araçlar arasında geçiş yapmak zorunda kalan küçük ekipler için proje takibi, zaman çizelgesi ve kaynak planlamasını birleştiren tek bir çalışma alanı sunar. Görev, zaman ve kişi verisi aynı model üzerinde yaşadığı için raporlar ek entegrasyon gerektirmeden otomatik oluşur.",
-    purpose:
-      "Küçük ekiplerin görev, zaman ve kaynak takibini üç ayrı araç arasında geçmeden tek yerden yönetebilmesini sağlamak.",
-    role: "Full-stack Geliştirici",
-    technologies: ["React", "Node.js", "MongoDB", "Tailwind CSS"],
-    year: 2023,
-    featured: false,
-    layoutSize: "standard",
-    visual: { accent: "primary" },
-    challenge:
-      "Ekipler; görev takibi, zaman çizelgesi ve kaynak planlaması için üç ayrı araç kullanmak zorunda kalıyordu. Bu araçlar arasında veri elle taşındığı için raporlar sık sık güncel değildi.",
-    solution:
-      "Üç ihtiyacı da aynı veri modeli üzerinde birleştiren, tek bir görünümden yönetilebilen bir arayüz geliştirdik. Zaman çizelgesi ve kaynak planlaması aynı görev nesnesinden türetildiği için ayrı senkronizasyona gerek kalmadı.",
-    outcome:
-      "Ekipler araçlar arası geçiş yapmayı bırakarak günlük planlama süresinden tasarruf etti; yöneticiler kaynak çakışmalarını rapor beklemeden anlık olarak görebildi.",
-    learnings:
-      "Bir arayüzü birleştirmek yetmiyor; asıl kazanım, altta yatan veri modelini de birleştirmekten geliyor — aksi halde 'tek panel' sadece görsel bir katman olarak kalıyor.",
+      "Arama kalitesini artırmak çoğu zaman daha iyi bir model değil, daha iyi kaynak seçimi ve güncel tutma disiplini gerektiriyor — indeks ne kadar akıllı olursa olsun güncel olmayan bir kaynaktan doğru cevap çıkmıyor.",
   },
   {
     id: "compose-design-system",
@@ -150,7 +206,7 @@ export const projects: Project[] = [
     technologies: ["TypeScript", "React", "Storybook", "Radix UI", "Style Dictionary"],
     year: 2024,
     featured: false,
-    layoutSize: "standard",
+    layoutSize: "tall",
     visual: { accent: "primary" },
     challenge:
       "Her ürün ekibi kendi buton, form ve modal bileşenlerini yeniden yazıyordu; aynı hata (odak kaybı, kontrast yetersizliği) birden fazla üründe tekrar ediyordu.",
@@ -160,32 +216,6 @@ export const projects: Project[] = [
       "Yeni bir ekranın arayüzü, sıfırdan bileşen yazmak yerine var olan bileşenlerden kurulur hale geldi; erişilebilirlik denetimlerinde tekrar eden hatalar büyük ölçüde ortadan kalktı.",
     learnings:
       "Paylaşılan bir kütüphanenin en büyük riski benimsenmemesi — erken aşamada gerçek ekiplerin gerçek ekranlarını kütüphaneyle birlikte inşa etmek, sonradan 'kullanın' demekten çok daha etkili oldu.",
-  },
-  {
-    id: "authcore",
-    slug: "authcore",
-    title: "AuthCore",
-    category: "Developer Tool",
-    shortDescription:
-      "Geliştiricilerin birkaç satır kodla güvenli kimlik doğrulama ekleyebildiği açık kaynaklı kütüphane.",
-    longDescription:
-      "AuthCore, kimlik doğrulama akışlarını sıfırdan yazmak yerine güvenli, denetlenmiş ve genişletilebilir bir temel sunan hafif bir kütüphanedir. Oturum yönetimi, çok faktörlü doğrulama ve OAuth2 sağlayıcı entegrasyonlarını varsayılan olarak güvenli şekilde uygular. Kütüphane, framework'e özel bağımlılık taşımaz.",
-    purpose:
-      "Geliştiricilerin kimlik doğrulamayı sıfırdan ve güvensiz şekilde yazmak yerine, güvenli varsayımlarla hızla entegre edebilmesini sağlamak.",
-    role: "Kütüphane Yazarı",
-    technologies: ["TypeScript", "Node.js", "JWT", "OAuth2"],
-    year: 2024,
-    featured: false,
-    layoutSize: "standard",
-    visual: { accent: "secondary" },
-    challenge:
-      "Küçük ekipler, kimlik doğrulamayı her projede yeniden ve genellikle güvenlik açıklarıyla yazıyordu; oturum yönetimi ve token yenileme mantığı her seferinde farklı şekilde hatalıydı.",
-    solution:
-      "Yaygın güvenlik hatalarını (zayıf token saklama, eksik süre sonu kontrolü) varsayılan olarak engelleyen, buna karşın tamamen özelleştirilebilir bir API tasarladık. Güvenlik varsayımlarını dokümantasyonda açıkça gerekçelendirdik.",
-    outcome:
-      "Kütüphane, birden fazla iç projede kimlik doğrulama geliştirme süresini kısalttı; bağımsız güvenlik incelemesinde önceki elle yazılmış çözümlere kıyasla belirgin şekilde daha az bulgu çıktı.",
-    learnings:
-      "Güvenlik odaklı bir kütüphanede en değerli özellik esneklik değil, 'yanlış kullanmayı zorlaştırmak' — varsayılan davranışın güvenli olması, dokümantasyondan çok daha etkili bir koruma.",
   },
   {
     id: "echo-notes",
@@ -214,6 +244,58 @@ export const projects: Project[] = [
       "Otomatik özetleme tek başına yeterli değil — kullanıcıya düzenleme ve onaylama adımı bırakmak, yapay zekânın hatalı çıkardığı bir maddeyi sessizce panoya göndermekten çok daha güvenli.",
   },
   {
+    id: "atlas-commerce",
+    slug: "atlas-commerce",
+    title: "Atlas Commerce",
+    category: "E-Commerce",
+    shortDescription:
+      "Orta ölçekli perakendeciler için modüler, hızlı ve özelleştirilebilir e-ticaret altyapısı.",
+    longDescription:
+      "Atlas Commerce, hazır e-ticaret platformlarının esneklik sınırlarına takılan işletmeler için tasarlanmış modüler bir altyapıdır. Katalog, ödeme ve envanter yönetimi bağımsız servisler olarak çalışır ve her biri kendi veri modeliyle, kendi hızında yayına alınabilir. Çok kanallı satış (web, mobil, pazar yeri) tek bir sipariş çekirdeği üzerinden yönetilir.",
+    purpose:
+      "Büyüyen perakendecilerin, hazır platformların esneklik sınırına takılmadan kendi hızlarında özelleştirebilecekleri bir e-ticaret temeli sunmak.",
+    role: "Backend & Sistem Mimarisi",
+    technologies: ["Node.js", "Next.js", "PostgreSQL", "Redis", "Stripe API", "Docker"],
+    year: 2024,
+    featured: false,
+    layoutSize: "standard",
+    visual: { accent: "primary" },
+    challenge:
+      "Müşteri, büyüdükçe hazır platformun özelleştirme kısıtlarına takılıyor ve her yeni entegrasyon haftalar sürüyordu. Kampanya dönemlerinde envanter senkronizasyonu sık sık gecikiyor, stok tutarsızlıkları satış kaybına yol açıyordu.",
+    solution:
+      "Katalog, sipariş ve ödeme akışlarını bağımsız modüllere ayırarak her birinin kendi hızında geliştirilebildiği bir mimari kurduk. Envanteri olay tabanlı bir senkronizasyon katmanı üzerinden gerçek zamanlı güncelleyen bir tasarım benimsedik.",
+    outcome:
+      "Yeni satış kanalı entegrasyonları haftalar yerine günler içinde tamamlanır hale geldi. Yoğun kampanya dönemlerinde stok tutarsızlığı kaynaklı iptaller belirgin şekilde azaldı.",
+    learnings:
+      "Modülerlik, doğru sınırları çizmeden sadece ek karmaşıklık getirir. Servisler arası sözleşmeyi (contract) en başta net tanımlamak, sonradan yeniden bölmekten çok daha ucuza geliyor.",
+  },
+  {
+    id: "horizon-platform",
+    slug: "horizon-platform",
+    title: "Horizon Platform",
+    category: "Web Platform",
+    shortDescription:
+      "Küçük ekiplerin proje, zaman ve kaynak yönetimini tek yerden yapabildiği çalışma platformu.",
+    longDescription:
+      "Horizon Platform, dağınık araçlar arasında geçiş yapmak zorunda kalan küçük ekipler için proje takibi, zaman çizelgesi ve kaynak planlamasını birleştiren tek bir çalışma alanı sunar. Görev, zaman ve kişi verisi aynı model üzerinde yaşadığı için raporlar ek entegrasyon gerektirmeden otomatik oluşur.",
+    purpose:
+      "Küçük ekiplerin görev, zaman ve kaynak takibini üç ayrı araç arasında geçmeden tek yerden yönetebilmesini sağlamak.",
+    role: "Full-stack Geliştirici",
+    technologies: ["React", "Node.js", "MongoDB", "Tailwind CSS"],
+    year: 2023,
+    featured: false,
+    layoutSize: "wide",
+    visual: { accent: "primary" },
+    challenge:
+      "Ekipler; görev takibi, zaman çizelgesi ve kaynak planlaması için üç ayrı araç kullanmak zorunda kalıyordu. Bu araçlar arasında veri elle taşındığı için raporlar sık sık güncel değildi.",
+    solution:
+      "Üç ihtiyacı da aynı veri modeli üzerinde birleştiren, tek bir görünümden yönetilebilen bir arayüz geliştirdik. Zaman çizelgesi ve kaynak planlaması aynı görev nesnesinden türetildiği için ayrı senkronizasyona gerek kalmadı.",
+    outcome:
+      "Ekipler araçlar arası geçiş yapmayı bırakarak günlük planlama süresinden tasarruf etti; yöneticiler kaynak çakışmalarını rapor beklemeden anlık olarak görebildi.",
+    learnings:
+      "Bir arayüzü birleştirmek yetmiyor; asıl kazanım, altta yatan veri modelini de birleştirmekten geliyor — aksi halde 'tek panel' sadece görsel bir katman olarak kalıyor.",
+  },
+  {
     id: "living-systems-lab",
     slug: "living-systems-lab",
     title: "Living Systems Lab",
@@ -228,7 +310,7 @@ export const projects: Project[] = [
     technologies: ["Python", "Kubernetes", "Go", "Prometheus"],
     year: 2025,
     featured: false,
-    layoutSize: "wide",
+    layoutSize: "tall",
     visual: { accent: "primary" },
     challenge:
       "Geleneksel otomatik ölçeklendirme, ani ve düzensiz yük değişimlerinde gecikmeli ve verimsiz kalıyordu; sistem tepki verdiğinde yük zirvesi genellikle çoktan geçmiş oluyordu.",
@@ -238,31 +320,5 @@ export const projects: Project[] = [
       "Simüle edilmiş senaryolarda kaynak israfı azalırken tepki süresi iyileşti; çalışma devam eden bir araştırmadır ve henüz üretim ortamında doğrulanmadı.",
     learnings:
       "Biyolojik sistemlerden ilham almak, mühendislik problemlerine taze bir çerçeve sunuyor — ama araştırma niteliğindeki bir fikri üretime taşımadan önce sınırlarını açıkça belirtmek, güveni korumak için en az çözümün kendisi kadar önemli.",
-  },
-  {
-    id: "wayfinder",
-    slug: "wayfinder",
-    title: "Wayfinder",
-    category: "Product",
-    shortDescription:
-      "Ekiplerin Confluence, GitHub ve Slack'e dağılmış teknik bilgisini tek aramadan bulabildiği bir arama aracı.",
-    longDescription:
-      "Wayfinder, mühendislik ekiplerinin dağınık dokümantasyon kaynakları arasında kaybolan bilgiyi tek bir semantik aramadan bulmasını sağlayan bir araçtır. Anahtar kelime eşleşmesi yerine anlam benzerliğine dayanır, böylece sonuç dokümanda geçen kelimelerle birebir aynı olmasa da doğru cevabı bulabilir.",
-    purpose:
-      "Mühendislik ekiplerinin, dağınık dokümantasyon kaynakları arasında kaybolan bilgiyi tek aramadan bulabilmesini sağlamak.",
-    role: "Arama & Backend Mühendisi",
-    technologies: ["TypeScript", "Vector DB", "Next.js", "PostgreSQL"],
-    year: 2024,
-    featured: false,
-    layoutSize: "tall",
-    visual: { accent: "secondary" },
-    challenge:
-      "Yeni katılan mühendisler, aynı sorunun cevabının hangi araçta (Confluence, eski bir GitHub issue'su, Slack konuşması) olduğunu bilmediği için aynı soruları tekrar tekrar soruyordu.",
-    solution:
-      "Üç kaynağı da düzenli olarak tarayıp semantik bir indekste birleştiren, sonuçları kaynağıyla birlikte gösteren tek bir arama çubuğu kurduk; sonuçlar orijinal belgeye doğrudan bağlanıyor.",
-    outcome:
-      "Yeni ekip üyelerinin ilk haftalardaki tekrarlayan sorularında belirgin bir azalma gözlendi; mevcut mühendisler de dağınık geçmiş kararları yeniden bulmak için araca yöneldi.",
-    learnings:
-      "Arama kalitesini artırmak çoğu zaman daha iyi bir model değil, daha iyi kaynak seçimi ve güncel tutma disiplini gerektiriyor — indeks ne kadar akıllı olursa olsun güncel olmayan bir kaynaktan doğru cevap çıkmıyor.",
   },
 ];

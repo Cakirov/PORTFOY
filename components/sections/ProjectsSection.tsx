@@ -1,3 +1,5 @@
+import { ArrowUpRight } from "lucide-react";
+import Link from "next/link";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Masthead } from "@/components/ui/Masthead";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
@@ -5,10 +7,12 @@ import { GridBackdrop } from "@/components/ui/GridBackdrop";
 import { ProjectGrid } from "@/components/sections/ProjectGrid";
 import { projects } from "@/data/projects";
 import { siteContent } from "@/data/siteContent";
-import { SECTION_IDS } from "@/lib/constants";
+import { HOME_PROJECT_COUNT, SECTION_IDS } from "@/lib/constants";
 
 export function ProjectsSection() {
   const { projects: content } = siteContent;
+  const featuredProjects = projects.slice(0, HOME_PROJECT_COUNT);
+  const remainingCount = projects.length - featuredProjects.length;
 
   return (
     <section id={SECTION_IDS.projects} aria-labelledby="projects-heading" className="relative border-t border-border">
@@ -30,7 +34,22 @@ export function ProjectsSection() {
           body={content.body}
           className="mb-[clamp(2rem,4vw,3rem)]"
         />
-        <ProjectGrid projects={projects} />
+        <ProjectGrid projects={featuredProjects} />
+
+        {remainingCount > 0 ? (
+          <ScrollReveal delay={0.1}>
+            <Link
+              href="/projects"
+              className="group mt-6 flex items-center justify-between gap-4 border border-border-strong bg-bg-elevated/40 px-6 py-5 font-mono-ui text-small text-text-primary transition-colors duration-(--motion-fast) hover:border-accent hover:text-accent"
+            >
+              <span className="uppercase tracking-wide">
+                Tüm Projeleri Gör{" "}
+                <span className="text-text-tertiary group-hover:text-accent">— {remainingCount} proje daha</span>
+              </span>
+              <ArrowUpRight className="h-4 w-4 shrink-0 transition-[transform,color] duration-(--motion-fast) group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </Link>
+          </ScrollReveal>
+        ) : null}
       </div>
     </section>
   );
