@@ -1,36 +1,19 @@
-import type { ProjectCategory, ProjectLayoutSize } from "@/types/project";
+import type { ProjectCategory } from "@/types/project";
 import type { ExplorationStatus } from "@/types/content";
 
 /**
- * Editorial grid rhythm: a project's visual weight is driven entirely by
- * this lookup, keyed off its `layoutSize` — applies at `md:` and up only.
- * Below `md:` the projects grid becomes a horizontal snap-scroll strip
- * (see `PROJECT_CAROUSEL_ITEM_CLASSES`) where layoutSize's visual-weight
- * distinction isn't a meaningful concept. Cards always stack head-bar →
- * visual → body vertically; only the column span and (for featured/tall)
- * a minimum height vary at `md:` — there is no row-spanning grid track.
+ * The vertical project-card stack (`ProjectGrid`) pins in place (via a tall
+ * scroll spacer + `position: sticky`, set up by its caller — see
+ * `ProjectsSection`/`app/projects/page.tsx`) while the page's own scroll —
+ * mouse wheel, trackpad, or a touch swipe, no custom gesture handling needed
+ * for any of them — steps through its cards; only once the last one has
+ * been reached does scrolling continue on to whatever comes next. This is
+ * how many "flip through the work" sections on portfolio/agency sites
+ * behave, instead of a normal in-flow grid the page just scrolls past.
+ * This constant is how much extra scroll distance (in `vh`) one step (one
+ * card) accounts for — the spacer's total height is `cardCount * this`.
  */
-export const PROJECT_LAYOUT_SPAN_MAP: Record<ProjectLayoutSize, string> = {
-  featured: "md:col-span-8 md:min-h-[420px]",
-  wide: "md:col-span-8",
-  tall: "md:col-span-4 md:min-h-[420px]",
-  standard: "md:col-span-6",
-};
-
-/** layoutSizes that reserve extra vertical room (`md:min-h-[420px]` above) —
-    these should render the taller card image so the diagram doesn't look
-    disproportionately small inside the extra height. `wide` gets more width,
-    not height, so it's excluded. */
-export const PROJECT_LARGE_IMAGE_LAYOUT_SIZES: ProjectLayoutSize[] = ["featured", "tall"];
-
-/**
- * Shared mobile-carousel sizing for both `ProjectCard` and the open
- * `ProjectDetailPanel` — every item (open or closed) needs the same fixed
- * width/shrink/snap behavior in the horizontal strip, regardless of its
- * desktop layoutSize.
- */
-export const PROJECT_CAROUSEL_ITEM_CLASSES =
-  "w-[85vw] shrink-0 snap-start sm:w-[380px] md:w-auto md:shrink md:snap-align-none";
+export const PROJECT_STACK_STEP_VH = 70;
 
 /** Single source of truth for the site owner's name — used in the navbar, footer, and page metadata. */
 export const PERSON_NAME = "Ömer Çakıroğlu";

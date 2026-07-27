@@ -6,9 +6,6 @@ export type ProjectCategory =
   | "Systems"
   | "Product";
 
-/** Editorial grid rhythm — drives grid span, not visual one-offs. */
-export type ProjectLayoutSize = "featured" | "wide" | "tall" | "standard";
-
 export interface Project {
   id: string;
   slug: string;
@@ -23,7 +20,6 @@ export interface Project {
   technologies: string[];
   year: number;
   featured: boolean;
-  layoutSize: ProjectLayoutSize;
   visual: {
     accent?: "primary" | "secondary";
   };

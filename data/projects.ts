@@ -25,7 +25,6 @@ export const projects: Project[] = [
     technologies: ["Go", "Terraform", "AWS SDK", "PostgreSQL", "gRPC", "Docker"],
     year: 2025,
     featured: true,
-    layoutSize: "featured",
     visual: { accent: "secondary" },
     challenge:
       "Ekipler ortamlar arası farkları yalnızca Terraform/IaC kaynağını karşılaştırarak denetliyordu; kaynak aynı göründüğünde bile gerçek çalışan sistemde elle değiştirilmiş bir parametre (rate limit, ölçekleme eşiği, feature flag) sessizce kalıyor ve prod'da sürpriz hatalara yol açıyordu.",
@@ -51,7 +50,6 @@ export const projects: Project[] = [
     technologies: ["Next.js", "TypeScript", "PostgreSQL", "WebSockets", "Docker", "Redis"],
     year: 2025,
     featured: true,
-    layoutSize: "tall",
     visual: { accent: "primary" },
     challenge:
       "Ekipler, yüzlerce mikroservisten gelen uyarılar arasında asıl kök nedeni bulmakta zorlanıyor, önemli olaylar gürültüye karışıyordu. Nöbetçi mühendisler genellikle birbirine bağlı onlarca uyarıyı tek tek inceleyerek zaman kaybediyordu.",
@@ -76,7 +74,6 @@ export const projects: Project[] = [
     technologies: ["Go", "PostgreSQL", "MQTT", "React", "Docker"],
     year: 2023,
     featured: true,
-    layoutSize: "standard",
     visual: { accent: "secondary" },
     challenge:
       "Operasyon ekibi, araç durumu bilgisini üç farklı tedarikçi sisteminden manuel olarak birleştiriyor; bir arızayı fark etmek genellikle saatler alıyordu.",
@@ -102,7 +99,6 @@ export const projects: Project[] = [
     technologies: ["TypeScript", "Next.js", "LLM API", "D3.js", "PostgreSQL"],
     year: 2025,
     featured: true,
-    layoutSize: "standard",
     visual: { accent: "secondary" },
     challenge:
       "Yazarlar kendi argümanlarına çok yakın oldukları için mantıksal boşlukları (desteksiz bir iddia, hiç sorgulanmamış bir varsayım) genellikle göremiyordu; bu boşluklar çoğu zaman ancak okuyucu ya da hakem eleştirisinde ortaya çıkıyor, bu da geç ve maliyetli bir geri bildirim döngüsü yaratıyordu.",
@@ -128,7 +124,6 @@ export const projects: Project[] = [
     technologies: ["TypeScript", "Node.js", "JWT", "OAuth2"],
     year: 2024,
     featured: true,
-    layoutSize: "tall",
     visual: { accent: "secondary" },
     challenge:
       "Küçük ekipler, kimlik doğrulamayı her projede yeniden ve genellikle güvenlik açıklarıyla yazıyordu; oturum yönetimi ve token yenileme mantığı her seferinde farklı şekilde hatalıydı.",
@@ -154,7 +149,6 @@ export const projects: Project[] = [
     technologies: ["Python", "Next.js", "Vector DB", "LLM API", "TypeScript"],
     year: 2025,
     featured: true,
-    layoutSize: "wide",
     visual: { accent: "secondary" },
     challenge:
       "Genel amaçlı asistanlar, ekip içi özel bilgiye erişemediği için yüzeysel cevaplar veriyordu. Kullanıcılar, bir yanıtın nereden geldiğini doğrulayamadıkları için sonuçlara güvenmekte tereddüt ediyordu.",
@@ -180,7 +174,6 @@ export const projects: Project[] = [
     technologies: ["TypeScript", "Vector DB", "Next.js", "PostgreSQL"],
     year: 2024,
     featured: false,
-    layoutSize: "wide",
     visual: { accent: "secondary" },
     challenge:
       "Yeni katılan mühendisler, aynı sorunun cevabının hangi araçta (Confluence, eski bir GitHub issue'su, Slack konuşması) olduğunu bilmediği için aynı soruları tekrar tekrar soruyordu.",
@@ -206,7 +199,6 @@ export const projects: Project[] = [
     technologies: ["TypeScript", "React", "Storybook", "Radix UI", "Style Dictionary"],
     year: 2024,
     featured: false,
-    layoutSize: "tall",
     visual: { accent: "primary" },
     challenge:
       "Her ürün ekibi kendi buton, form ve modal bileşenlerini yeniden yazıyordu; aynı hata (odak kaybı, kontrast yetersizliği) birden fazla üründe tekrar ediyordu.",
@@ -232,7 +224,6 @@ export const projects: Project[] = [
     technologies: ["React Native", "Next.js", "Whisper API", "PostgreSQL"],
     year: 2023,
     featured: false,
-    layoutSize: "standard",
     visual: { accent: "primary" },
     challenge:
       "Saha ve toplantı notları çoğunlukla sesli kaydediliyor ama sonrasında dinlenip elle özetlenmediği için aylar sonra hiç kullanılmadan unutuluyordu.",
@@ -258,7 +249,6 @@ export const projects: Project[] = [
     technologies: ["Node.js", "Next.js", "PostgreSQL", "Redis", "Stripe API", "Docker"],
     year: 2024,
     featured: false,
-    layoutSize: "standard",
     visual: { accent: "primary" },
     challenge:
       "Müşteri, büyüdükçe hazır platformun özelleştirme kısıtlarına takılıyor ve her yeni entegrasyon haftalar sürüyordu. Kampanya dönemlerinde envanter senkronizasyonu sık sık gecikiyor, stok tutarsızlıkları satış kaybına yol açıyordu.",
@@ -284,7 +274,6 @@ export const projects: Project[] = [
     technologies: ["React", "Node.js", "MongoDB", "Tailwind CSS"],
     year: 2023,
     featured: false,
-    layoutSize: "wide",
     visual: { accent: "primary" },
     challenge:
       "Ekipler; görev takibi, zaman çizelgesi ve kaynak planlaması için üç ayrı araç kullanmak zorunda kalıyordu. Bu araçlar arasında veri elle taşındığı için raporlar sık sık güncel değildi.",
@@ -310,7 +299,6 @@ export const projects: Project[] = [
     technologies: ["Python", "Kubernetes", "Go", "Prometheus"],
     year: 2025,
     featured: false,
-    layoutSize: "tall",
     visual: { accent: "primary" },
     challenge:
       "Geleneksel otomatik ölçeklendirme, ani ve düzensiz yük değişimlerinde gecikmeli ve verimsiz kalıyordu; sistem tepki verdiğinde yük zirvesi genellikle çoktan geçmiş oluyordu.",

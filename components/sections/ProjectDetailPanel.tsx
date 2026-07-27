@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { motion } from "framer-motion";
-import { X } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import type { Project } from "@/types/project";
 import type { SkillGroup } from "@/types/skill";
 import { NodeGraphic } from "@/components/ui/NodeGraphic";
@@ -10,8 +11,7 @@ import { Tag } from "@/components/ui/Tag";
 import { useFocusTrap } from "@/hooks/useFocusTrap";
 import { useLockBodyScroll } from "@/hooks/useLockBodyScroll";
 import { skillGroups } from "@/data/skills";
-import { PROJECT_LAYOUT_SPAN_MAP, PROJECT_CAROUSEL_ITEM_CLASSES, PROJECT_CATEGORY_CODE } from "@/lib/constants";
-import { cn } from "@/lib/utils";
+import { PROJECT_CATEGORY_CODE } from "@/lib/constants";
 
 interface ProjectDetailPanelProps {
   project: Project;
@@ -44,23 +44,10 @@ function getRelatedSkillGroups(project: Project): SkillGroup[] {
 export function ProjectDetailPanel({ project, sheetNumber, onClose }: ProjectDetailPanelProps) {
   const panelRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
-  // This panel only ever mounts client-side (opened by a card click, never
-  // during SSR), so unlike the shared SSR-safe `useMediaQuery` hook — which
-  // must default to `false` to avoid a hydration mismatch — it's safe to
-  // read `matchMedia` synchronously on first render instead of flashing the
-  // desktop layout for one frame before flipping to mobile.
-  const [isMobile, setIsMobile] = useState(() => window.matchMedia("(max-width: 767px)").matches);
   const relatedSkills = getRelatedSkillGroups(project);
 
   useFocusTrap(panelRef, true);
-  useLockBodyScroll(isMobile);
-
-  useEffect(() => {
-    const mediaQueryList = window.matchMedia("(max-width: 767px)");
-    const listener = () => setIsMobile(mediaQueryList.matches);
-    mediaQueryList.addEventListener("change", listener);
-    return () => mediaQueryList.removeEventListener("change", listener);
-  }, []);
+  useLockBodyScroll(true);
 
   useEffect(() => {
     headingRef.current?.focus();
@@ -74,7 +61,16 @@ export function ProjectDetailPanel({ project, sheetNumber, onClose }: ProjectDet
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [onClose]);
 
-  return (
+  // Portaled straight to `document.body`: this panel renders inside
+  // `ProjectGrid`'s pinned `position: sticky` stack, and sticky elements
+  // always establish their own stacking context — which trapped this
+  // panel's `z-[60]` underneath the fixed navbar's `z-40` (the comparison
+  // that matters happens one level up, at the sticky wrapper's own, unset
+  // stacking position, not here) and made the close button unclickable.
+  // Rendering into `body` escapes any ancestor's stacking context
+  // entirely — the standard fix for this exact class of bug in any
+  // fixed-position overlay/dialog.
+  return createPortal(
     <motion.div
       layoutId={`project-card-${project.slug}`}
       id={`project-panel-${project.slug}`}
@@ -82,16 +78,7 @@ export function ProjectDetailPanel({ project, sheetNumber, onClose }: ProjectDet
       aria-modal="true"
       aria-label={`${project.title} detayları`}
       ref={panelRef}
-      className={cn(
-        "border border-border-strong bg-bg-elevated",
-        isMobile
-          ? "fixed inset-0 z-[60] h-[100dvh] overflow-y-auto overscroll-contain"
-          : cn(
-              PROJECT_CAROUSEL_ITEM_CLASSES,
-              PROJECT_LAYOUT_SPAN_MAP.featured,
-              "overflow-hidden md:col-span-12 md:row-span-1",
-            ),
-      )}
+      className="fixed inset-0 z-[60] h-[100dvh] overflow-y-auto overscroll-contain border border-border-strong bg-bg-elevated"
     >
       <div className="flex items-center border-b border-border-strong px-5 py-3 font-mono-ui text-[0.68rem] tracking-wide text-text-tertiary uppercase">
         <span>
@@ -100,8 +87,16 @@ export function ProjectDetailPanel({ project, sheetNumber, onClose }: ProjectDet
       </div>
 
       <div className="relative">
-        <motion.div layoutId={`project-image-${project.slug}`} className="relative aspect-[21/9] w-full overflow-hidden bg-panel-2">
-          <div className="absolute inset-0 p-12 opacity-90">
+        {/* Fixed, modest height instead of `aspect-[21/9]` — at full panel
+            width that ratio scaled the box (and the mostly-empty space
+            around the diagram inside it) up with the viewport, ending up
+            enormous on wide screens. A diagram this size doesn't need — or
+            benefit from — more room than this to read clearly. */}
+        <motion.div
+          layoutId={`project-image-${project.slug}`}
+          className="relative h-[220px] w-full overflow-hidden bg-panel-2 md:h-[300px]"
+        >
+          <div className="absolute inset-0 p-8 opacity-90 md:p-12">
             <NodeGraphic
               slug={project.slug}
               techLabels={project.technologies}
@@ -114,10 +109,11 @@ export function ProjectDetailPanel({ project, sheetNumber, onClose }: ProjectDet
         <button
           type="button"
           onClick={onClose}
-          aria-label="Detayı kapat"
-          className="absolute top-5 right-5 inline-flex h-9 w-9 items-center justify-center border border-border-strong bg-bg/80 text-text-primary backdrop-blur-md transition-colors hover:border-accent hover:text-accent"
+          aria-label="Geri dön"
+          className="absolute top-5 left-5 inline-flex items-center gap-2 border border-border-strong bg-bg/80 px-4 py-2 font-mono-ui text-small text-text-primary backdrop-blur-md transition-colors hover:border-accent hover:text-accent"
         >
-          <X className="h-5 w-5" />
+          <ArrowLeft className="h-4 w-4" />
+          Geri Dön
         </button>
       </div>
 
@@ -196,6 +192,7 @@ export function ProjectDetailPanel({ project, sheetNumber, onClose }: ProjectDet
           ) : null}
         </div>
       </motion.div>
-    </motion.div>
+    </motion.div>,
+    document.body,
   );
 }

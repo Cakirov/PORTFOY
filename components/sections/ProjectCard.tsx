@@ -1,67 +1,65 @@
 "use client";
 
-import { useEffect, useRef, type MouseEvent } from "react";
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { useRef, type MouseEvent } from "react";
+import { motion, useMotionValue, useSpring } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import type { Project } from "@/types/project";
 import { NodeGraphic } from "@/components/ui/NodeGraphic";
 import { Tag } from "@/components/ui/Tag";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { cn } from "@/lib/utils";
-import { fadeInUp, motionTokens, transitionBase, EASE_STANDARD } from "@/lib/motion";
-import {
-  PROJECT_LAYOUT_SPAN_MAP,
-  PROJECT_CAROUSEL_ITEM_CLASSES,
-  PROJECT_LARGE_IMAGE_LAYOUT_SIZES,
-  PROJECT_CATEGORY_CODE,
-} from "@/lib/constants";
+import { PROJECT_CATEGORY_CODE } from "@/lib/constants";
 
 interface ProjectCardProps {
   project: Project;
   sheetNumber: number;
   onOpen: (slug: string) => void;
   triggerRef: (el: HTMLButtonElement | null) => void;
-  /** True once this card has already played its scroll-in entrance —
-      it unmounts while its detail panel is open (see ProjectGrid), so
-      without this it would replay the fade-in every time a user closes
-      the panel. */
-  initialRevealed: boolean;
-  onRevealed: () => void;
+  /** True only for the card currently on top of the stack. The parked
+      neighbor (see ProjectGrid) is rendered too but sits behind an `inert`
+      wrapper — this just keeps its own trigger out of the tab order and
+      skips the tilt/depth treatment meant for the one interactive card. */
+  isCurrent: boolean;
 }
 
-export function ProjectCard({
-  project,
-  sheetNumber,
-  onOpen,
-  triggerRef,
-  initialRevealed,
-  onRevealed,
-}: ProjectCardProps) {
-  const hasLargeImage = PROJECT_LARGE_IMAGE_LAYOUT_SIZES.includes(project.layoutSize);
+// Max rotation in degrees.
+const MAX_TILT_DEG = 9;
 
+/**
+ * A previous version combined this tilt with `whileHover={{ y: -6 }}` — at
+ * this card's size (most of a viewport, not a small grid tile), that lift
+ * could push the pointer past the card's own edge, firing `mouseleave`,
+ * un-lifting it, and letting the pointer re-enter — a flicker loop right at
+ * the border. The lift is gone for good; the tilt alone doesn't reproduce it.
+ *
+ * The card is one single rigid rotating plane — no separate transform on
+ * the image (an earlier version parallax-shifted it a few px opposite the
+ * tilt for a fake-depth cue). Layering a second, independently-computed
+ * transform on a child already inside a `perspective`/`preserve-3d`
+ * rotating parent — one that ALSO carries its own `layoutId` for the
+ * shared-transition into the detail panel — is exactly the kind of nested
+ * transform stack that renders inconsistently at steep angles (borders and
+ * the image appearing to separate from the rest of the card right at the
+ * edges). One rotation, applied once, is what actually holds together at
+ * any angle.
+ */
+export function ProjectCard({ project, sheetNumber, onOpen, triggerRef, isCurrent }: ProjectCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
-  const canTilt = useMediaQuery("(hover: hover) and (pointer: fine)");
-  // The mobile carousel clips cards horizontally (`overflow-x-auto`), so an
-  // IntersectionObserver-driven `whileInView` only fires once a card is
-  // swiped into view — animating it mid-swipe instead of once on reveal.
-  // Below `md:` the entrance is decoupled from viewport/scroll entirely and
-  // just plays once on mount instead.
-  const isMobile = useMediaQuery("(max-width: 767px)");
+  const canHover = useMediaQuery("(hover: hover) and (pointer: fine)");
+  const canTilt = isCurrent && canHover;
 
   const rotateX = useMotionValue(0);
   const rotateY = useMotionValue(0);
-  const springRotateX = useSpring(rotateX, { stiffness: 350, damping: 28 });
-  const springRotateY = useSpring(rotateY, { stiffness: 350, damping: 28 });
-  const imageY = useTransform(springRotateX, [-11, 11], [7, -7]);
-  const imageX = useTransform(springRotateY, [-11, 11], [-7, 7]);
+  const springRotateX = useSpring(rotateX, { stiffness: 300, damping: 30 });
+  const springRotateY = useSpring(rotateY, { stiffness: 300, damping: 30 });
 
   function handleMouseMove(event: MouseEvent<HTMLDivElement>) {
     if (!canTilt || !cardRef.current) return;
     const rect = cardRef.current.getBoundingClientRect();
     const px = (event.clientX - rect.left) / rect.width - 0.5;
     const py = (event.clientY - rect.top) / rect.height - 0.5;
-    rotateY.set(px * 11);
-    rotateX.set(-py * 11);
+    rotateY.set(px * MAX_TILT_DEG);
+    rotateX.set(-py * MAX_TILT_DEG);
   }
 
   function handleMouseLeave() {
@@ -69,36 +67,21 @@ export function ProjectCard({
     rotateY.set(0);
   }
 
-  // Mirrors the `onViewportEnter` anti-replay marking below, just triggered
-  // by mount instead of by an (unreliable, on mobile) viewport crossing.
-  useEffect(() => {
-    if (isMobile && !initialRevealed) onRevealed();
-  }, [isMobile, initialRevealed, onRevealed]);
-
   return (
     <motion.div
       layoutId={`project-card-${project.slug}`}
-      className={cn(
-        "relative hover:z-10",
-        PROJECT_CAROUSEL_ITEM_CLASSES,
-        PROJECT_LAYOUT_SPAN_MAP[project.layoutSize],
-      )}
-      style={canTilt ? { perspective: 1200 } : undefined}
+      className="relative h-full w-full"
+      style={canTilt ? { perspective: 1000 } : undefined}
     >
       <motion.div
         ref={cardRef}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
-        variants={fadeInUp}
-        initial={initialRevealed ? false : "hidden"}
-        animate={isMobile ? "visible" : undefined}
-        whileInView={isMobile ? undefined : "visible"}
-        viewport={isMobile ? undefined : { once: true, amount: 0.15 }}
-        onViewportEnter={isMobile || initialRevealed ? undefined : onRevealed}
-        whileHover={canTilt ? { y: -6, transition: { duration: motionTokens.duration.fast, ease: EASE_STANDARD } } : undefined}
-        transition={{ ...transitionBase, delay: (sheetNumber - 1) * motionTokens.stagger.item }}
         style={canTilt ? { rotateX: springRotateX, rotateY: springRotateY, transformStyle: "preserve-3d" } : undefined}
-        className="crosshair-zone group relative flex h-full flex-col overflow-hidden border border-border-strong bg-bg-elevated transition-[border-color,box-shadow] duration-(--motion-fast) hover:border-accent hover:shadow-[0_24px_48px_-20px_rgba(0,0,0,0.55)]"
+        className={cn(
+          "group relative flex h-full flex-col overflow-hidden border border-border-strong bg-bg-elevated transition-[border-color,box-shadow] duration-(--motion-normal) hover:border-accent",
+          isCurrent && "shadow-[0_24px_48px_-20px_rgba(0,0,0,0.55)]",
+        )}
       >
         <div className="relative flex items-center justify-between border-b border-border-strong px-5 py-2 font-mono-ui text-[0.65rem] tracking-wide text-text-tertiary uppercase md:py-3">
           <span>Sheet {String(sheetNumber).padStart(2, "0")}</span>
@@ -112,43 +95,27 @@ export function ProjectCard({
           onClick={() => onOpen(project.slug)}
           aria-expanded={false}
           aria-controls={`project-panel-${project.slug}`}
-          className="relative flex w-full flex-1 flex-col text-left"
+          tabIndex={isCurrent ? 0 : -1}
+          className="relative flex w-full flex-1 flex-col text-left md:flex-row"
         >
           <motion.div
             layoutId={`project-image-${project.slug}`}
-            style={{ x: imageX, y: imageY }}
-            className={cn(
-              "relative w-full overflow-hidden border-b border-border-strong bg-panel-2",
-              // NodeGraphic's viewBox is a square (0 0 400 400) — any box
-              // shorter than it is wide forces the SVG to scale down to fit
-              // the shorter dimension (`preserveAspectRatio="meet"`),
-              // shrinking the whole diagram and wasting space as empty
-              // side-margins. A fixed short height (what this used to be)
-              // always underfills a wide mobile card; `aspect-square` instead
-              // matches the box to the viewBox's own ratio exactly, so the
-              // diagram fills it edge-to-edge with no waste at any width.
-              // `md:` and up goes back to a fixed height (existing desktop
-              // cards aren't full-width, so a fixed short box is intentional
-              // there, not the bug this fixes).
-              "aspect-square",
-              hasLargeImage ? "md:aspect-auto md:h-[260px]" : "md:aspect-auto md:h-[200px]",
-            )}
+            className="relative aspect-square w-full shrink-0 overflow-hidden border-b border-border-strong bg-panel-2 md:aspect-auto md:h-full md:w-[40%] md:border-r md:border-b-0"
           >
-            <div className="absolute inset-0 p-3 opacity-90 transition-transform duration-(--motion-normal) group-hover:scale-[1.06] md:p-5">
+            <div className="absolute inset-0 p-6 opacity-90 transition-transform duration-(--motion-normal) group-hover:scale-[1.06] md:p-8">
               <NodeGraphic
                 slug={project.slug}
                 techLabels={project.technologies}
                 hubLabel={PROJECT_CATEGORY_CODE[project.category]}
                 accent={project.visual.accent ?? "primary"}
-                animateOnScroll={!isMobile}
+                animateOnScroll={false}
               />
             </div>
           </motion.div>
 
-          <div className="flex flex-1 flex-col gap-2 p-4 md:gap-3 md:p-6">
-            <Tag variant="accent">{project.category}</Tag>
-            <h3 className="text-h3 font-display font-bold text-text-primary">{project.title}</h3>
-            <p className="text-body line-clamp-2 text-text-secondary md:line-clamp-none">{project.shortDescription}</p>
+          <div className="flex flex-1 flex-col gap-3 overflow-hidden p-5 md:gap-4 md:p-10">
+            <h3 className="text-h2 font-display font-bold text-text-primary">{project.title}</h3>
+            <p className="text-body line-clamp-2 text-text-secondary md:line-clamp-3">{project.shortDescription}</p>
 
             <div className="mt-auto flex flex-wrap gap-1.5">
               {project.technologies.map((tech, i) => (

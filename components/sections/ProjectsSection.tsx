@@ -23,24 +23,31 @@ export function ProjectsSection() {
         parallax
         className="opacity-[0.12] [mask-image:linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)]"
       />
-      <div className="container-max relative px-(--section-px) py-(--section-py)">
-        <ScrollReveal>
-          <Masthead fig="03" name="PROJECTS" view="PLAN" sheet="3 / 8" />
-        </ScrollReveal>
-        <SectionHeading
-          id="projects-heading"
-          eyebrow={content.eyebrow}
-          heading={content.heading}
-          body={content.body}
-          className="mb-[clamp(2rem,4vw,3rem)]"
-        />
-        <ProjectGrid projects={featuredProjects} />
 
-        {remainingCount > 0 ? (
-          <ScrollReveal delay={0.1}>
+      <ProjectGrid
+        projects={featuredProjects}
+        heading={
+          <>
+            <ScrollReveal>
+              <Masthead fig="03" name="PROJECTS" view="PLAN" sheet="3 / 8" className="mb-4" />
+            </ScrollReveal>
+            <SectionHeading
+              id="projects-heading"
+              eyebrow={content.eyebrow}
+              heading={content.heading}
+              body={content.body}
+              className="mb-0"
+            />
+          </>
+        }
+      />
+
+      {remainingCount > 0 ? (
+        <div className="container-max relative px-(--section-px) pb-(--section-py)">
+          <ScrollReveal>
             <Link
               href="/projects"
-              className="group mt-6 flex items-center justify-between gap-4 border border-border-strong bg-bg-elevated/40 px-6 py-5 font-mono-ui text-small text-text-primary transition-colors duration-(--motion-fast) hover:border-accent hover:text-accent"
+              className="group flex items-center justify-between gap-4 border border-border-strong bg-bg-elevated/40 px-6 py-5 font-mono-ui text-small text-text-primary transition-colors duration-(--motion-fast) hover:border-accent hover:text-accent"
             >
               <span className="uppercase tracking-wide">
                 Tüm Projeleri Gör{" "}
@@ -49,8 +56,8 @@ export function ProjectsSection() {
               <ArrowUpRight className="h-4 w-4 shrink-0 transition-[transform,color] duration-(--motion-fast) group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </Link>
           </ScrollReveal>
-        ) : null}
-      </div>
+        </div>
+      ) : null}
     </section>
   );
 }
