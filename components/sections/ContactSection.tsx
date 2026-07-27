@@ -1,12 +1,22 @@
+import { ArrowUpRight } from "lucide-react";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Masthead } from "@/components/ui/Masthead";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
-import { Button } from "@/components/ui/Button";
 import { GridBackdrop } from "@/components/ui/GridBackdrop";
 import { ContactForm } from "@/components/sections/ContactForm";
 import { socialLinks } from "@/data/socialLinks";
 import { siteContent } from "@/data/siteContent";
 import { SECTION_IDS } from "@/lib/constants";
+
+// Small "clamped corner" marks on the form panel — the same motif as the
+// intro loader's signal-lock brackets, echoed here as static (non-animated)
+// chrome to read as a fixed instrument rather than a one-time flourish.
+const CORNERS = [
+  "-top-1 -left-1 border-t-2 border-l-2",
+  "-top-1 -right-1 border-t-2 border-r-2",
+  "-bottom-1 -left-1 border-b-2 border-l-2",
+  "-bottom-1 -right-1 border-b-2 border-r-2",
+] as const;
 
 export function ContactSection() {
   const { contact } = siteContent;
@@ -32,31 +42,38 @@ export function ContactSection() {
           <Masthead fig="08" name="CONTACT" view="SIGNATURE" sheet="8 / 8" />
         </ScrollReveal>
 
-        <div className="relative mx-auto flex max-w-3xl flex-col items-center gap-10 border border-border-strong bg-bg px-6 py-16 text-center sm:px-12">
-          <ScrollReveal className="flex flex-col items-center gap-8">
-            <Eyebrow className="justify-center">{contact.eyebrow}</Eyebrow>
-
+        <div className="grid gap-14 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-16 lg:items-start">
+          {/* Pitch + direct contact methods. */}
+          <ScrollReveal className="flex flex-col gap-8">
+            <Eyebrow>{contact.eyebrow}</Eyebrow>
             <h2 id="contact-heading" className="text-h1 font-display font-bold text-text-primary">
               {contact.heading}
             </h2>
+            <p className="text-body max-w-md text-text-secondary">{contact.body}</p>
 
-            <p className="text-body max-w-xl text-text-secondary">{contact.body}</p>
-          </ScrollReveal>
-
-          <ScrollReveal delay={0.12} className="w-full max-w-xl">
-            <ContactForm />
-          </ScrollReveal>
-
-          <ScrollReveal delay={0.18} className="flex w-full flex-col items-center gap-4 border-t border-dashed border-border pt-8">
-            <span className="font-mono-ui text-label text-text-tertiary">Ya da doğrudan</span>
-            <div className="flex flex-wrap items-center justify-center gap-4">
+            <div className="mt-2 flex flex-col border-t border-dashed border-border">
               {ctaLinks.map((link) => (
-                <Button key={link.platform} href={link.href} variant="secondary">
-                  <link.icon className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
-                  {link.label}
-                </Button>
+                <a
+                  key={link.platform}
+                  href={link.href}
+                  className="group flex items-center justify-between gap-4 border-b border-dashed border-border py-4 font-mono-ui text-small text-text-primary transition-colors duration-(--motion-fast) hover:text-accent"
+                >
+                  <span className="flex items-center gap-3">
+                    <link.icon className="h-4 w-4 text-accent" strokeWidth={1.75} aria-hidden="true" />
+                    {link.label}
+                  </span>
+                  <ArrowUpRight className="h-4 w-4 shrink-0 text-text-tertiary transition-[transform,color] duration-(--motion-fast) group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-accent" />
+                </a>
               ))}
             </div>
+          </ScrollReveal>
+
+          {/* The form itself, framed as a distinct "submitted sheet" panel. */}
+          <ScrollReveal delay={0.12} className="relative border border-border-strong bg-bg-elevated/60 p-6 sm:p-8 md:p-10">
+            {CORNERS.map((pos) => (
+              <span key={pos} aria-hidden="true" className={`pointer-events-none absolute h-3 w-3 border-accent ${pos}`} />
+            ))}
+            <ContactForm />
           </ScrollReveal>
         </div>
       </div>

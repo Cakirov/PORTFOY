@@ -1,12 +1,15 @@
 "use client";
 
 import { useActionState } from "react";
+import { AlertCircle, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { submitContactForm, type ContactFormState } from "@/lib/actions/contact";
 import { cn } from "@/lib/utils";
 
+// bg-bg (not bg-bg-elevated, the panel's own background) so fields read as
+// recessed against the surrounding form panel.
 const FIELD_CLASSES =
-  "w-full border border-border-strong bg-bg-elevated px-4 py-3 text-body text-text-primary placeholder:text-text-tertiary focus:border-accent focus:outline-none";
+  "w-full border border-border-strong bg-bg px-4 py-3 text-body text-text-primary placeholder:text-text-tertiary transition-[border-color,box-shadow] duration-(--motion-fast) focus:border-accent focus:shadow-[0_0_0_3px_var(--accent-soft)] focus:outline-none";
 
 const INITIAL_STATE: ContactFormState = { status: "idle", message: "" };
 
@@ -94,12 +97,31 @@ export function ContactForm() {
         ) : null}
       </div>
 
-      <div className="flex flex-wrap items-center gap-4">
-        <Button type="submit" variant="primary" disabled={pending} className="disabled:opacity-60">
+      <div className="mt-1 flex flex-col gap-3">
+        <Button
+          type="submit"
+          variant="primary"
+          showArrow={!pending}
+          disabled={pending}
+          className="self-start disabled:opacity-60"
+        >
           {pending ? "Gönderiliyor..." : "Mesajı Gönder"}
         </Button>
-        <p role="status" aria-live="polite" className={cn("text-small", state.status === "error" ? "text-red-400" : "text-accent")}>
-          {state.status !== "idle" ? state.message : null}
+        <p
+          role="status"
+          aria-live="polite"
+          className={cn("flex items-center gap-2 text-small", state.status === "error" ? "text-red-400" : "text-accent")}
+        >
+          {state.status !== "idle" ? (
+            <>
+              {state.status === "error" ? (
+                <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
+              ) : (
+                <CheckCircle2 className="h-4 w-4 shrink-0" aria-hidden="true" />
+              )}
+              {state.message}
+            </>
+          ) : null}
         </p>
       </div>
     </form>
