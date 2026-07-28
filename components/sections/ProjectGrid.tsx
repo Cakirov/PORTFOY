@@ -213,10 +213,21 @@ export function ProjectGrid({ projects, startIndex = 0, heading }: ProjectGridPr
           card area below is `flex-1` (fills whatever's left after the
           heading) rather than a fixed height, specifically so the position
           bar/buttons at the bottom can never end up pushed below the fold
-          on a shorter viewport. Compact, fixed `py`/`gap` here on purpose —
-          the site's usual `--section-py` token is sized for independently-
-          scrolling sections, not a height-constrained pinned one. */}
-      <div className="sticky top-(--nav-height) container-max flex h-[calc(100svh-var(--nav-height))] flex-col gap-4 px-(--section-px) py-6 md:py-8">
+          on a shorter viewport. `py`/`gap` here are deliberately tighter
+          than the site's usual `--section-py` (sized for independently-
+          scrolling sections, not this height-constrained pinned one) —
+          tightened further still so the card itself claims as much of the
+          fixed height budget as possible, since the heading/position-bar
+          around it don't need to grow with the viewport the way the card
+          benefits from. */}
+      {/* Wider than the site's usual `.container-max` (1240px): this is the
+          flagship, most interactive section, and the fixed viewport height
+          here (unlike normal sections) means there's headroom on large
+          screens that a fixed 1240px cap left unused. `max-w-[1400px]`
+          composes the same `mx-auto`/`container-type` behavior manually
+          instead of using the `container-max` utility class, so it isn't
+          fighting that class's own hardcoded 1240px over specificity. */}
+      <div className="sticky top-(--nav-height) mx-auto flex h-[calc(100svh-var(--nav-height))] w-full max-w-[1400px] flex-col gap-2 px-(--section-px) py-3 [container-type:inline-size] md:py-4">
         <div className="shrink-0">{heading}</div>
 
         <LayoutGroup>
@@ -227,6 +238,18 @@ export function ProjectGrid({ projects, startIndex = 0, heading }: ProjectGridPr
             onKeyDown={handleKeyDown}
             className="relative mx-auto flex w-full min-h-0 flex-1 flex-col"
           >
+            {/* `min-h` is only a worst-case floor for unusually short
+                viewports — on anything reasonably tall, `flex-1` alone
+                already grows the card to fill whatever room the fixed
+                `h-[calc(100svh-var(--nav-height))]` budget leaves after the
+                heading/position-bar, which is where the real size increase
+                below comes from. Raising this floor doesn't make the card
+                any bigger on normal screens; it only raises how much
+                vertical space the *worst case* needs, which is the opposite
+                of what's wanted — confirmed by testing narrow-but-short
+                viewports (1366×650, a plausible laptop window) where a
+                taller floor pushed the buttons below the fold. Left at the
+                original size. */}
             <div className="relative min-h-[18rem] w-full flex-1 overflow-hidden">
               {/* No `AnimatePresence`/`exit` here on purpose: a departing
                   slot's `opacity` target already flips to 0 the instant it
@@ -287,7 +310,7 @@ export function ProjectGrid({ projects, startIndex = 0, heading }: ProjectGridPr
             </div>
 
             {projects.length > 1 ? (
-              <div className="mt-4 flex shrink-0 items-center gap-4">
+              <div className="mt-2 flex shrink-0 items-center gap-4">
                 <div className="relative h-[3px] flex-1 rounded-full bg-border">
                   <motion.div
                     className="absolute inset-y-0 left-0 rounded-full bg-accent"

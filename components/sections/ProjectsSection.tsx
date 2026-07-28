@@ -29,7 +29,7 @@ export function ProjectsSection() {
         heading={
           <>
             <ScrollReveal>
-              <Masthead fig="03" name="PROJECTS" view="PLAN" sheet="3 / 8" className="mb-4" />
+              <Masthead fig="03" name="PROJECTS" view="PLAN" sheet="3 / 8" className="mb-2" />
             </ScrollReveal>
             <SectionHeading
               id="projects-heading"

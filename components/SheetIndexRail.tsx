@@ -39,19 +39,18 @@ export function SheetIndexRail() {
   return (
     <nav
       aria-label="Sayfa içi hızlı erişim"
-      // Was `lg:block` (1024px) — the rail is `fixed left-6`, and each
-      // tick's name label pops out further right still (`left-full
-      // ml-[0.6rem]`), reaching about 95px from the viewport edge. But
-      // `.container-max`'s own left margin shrinks as the viewport narrows,
-      // so anywhere from ~1024px up to roughly 1330px, that margin is
-      // *smaller* than 95px — the label ends up sitting on top of section
-      // headings/content instead of in the empty gutter next to them
-      // (confirmed by measuring the actual overlap: 54px at 1024px, still
-      // 27px at 1280px, gone by 1440px). This is exactly why the page
-      // looked different on a laptop vs. a wider monitor — laptops commonly
-      // sit in that 1024–1330px window, external/desktop monitors don't.
-      // `min-[1400px]` clears the crossover with margin to spare.
-      className="fixed top-1/2 left-6 z-[55] hidden -translate-y-1/2 font-mono-ui min-[1400px]:block"
+      // Was `lg:block` (1024px), then `min-[1400px]:block`. The rail is
+      // `fixed left-6`, and each tick's name label pops out further right
+      // still (`left-full ml-[0.6rem]`), reaching about 120px from the
+      // viewport edge. Section content's own left margin shrinks as the
+      // viewport narrows, so below some width that margin is *smaller* than
+      // 120px and the label sits on top of headings/content instead of in
+      // the gutter next to them. The Projects section widened its card
+      // stack past the site's usual 1240px cap (see `ProjectGrid.tsx`), which
+      // pushed that crossover further out than the rest of the page's:
+      // measured overlap of 72px at 1400px, still 4px at 1536px, clear by
+      // 1600px. `min-[1650px]` clears it with margin to spare.
+      className="fixed top-1/2 left-6 z-[55] hidden -translate-y-1/2 font-mono-ui min-[1650px]:block"
     >
       <div className="relative flex flex-col gap-[1.35rem] pl-[0.3rem]">
         {/* Base (unfilled) rule, full height. */}
