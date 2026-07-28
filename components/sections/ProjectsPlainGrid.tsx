@@ -21,8 +21,18 @@ interface ProjectsPlainGridProps {
 export function ProjectsPlainGrid({ projects, startIndex = 0 }: ProjectsPlainGridProps) {
   const [activeSlug, setActiveSlug] = useState<string | null>(null);
   const triggerRefs = useRef(new Map<string, HTMLButtonElement | null>());
+  // Captured *before* `setActiveSlug` below — opening removes the clicked
+  // tile from the grid (see the render below), which reflows the grid and
+  // can shrink the page enough that the browser clamps `window.scrollY`
+  // before the panel's own scroll-lock would otherwise read it. Reading it
+  // here, ahead of that reflow, is what `useLockBodyScroll`'s `restoreY`
+  // param is for.
+  const [restoreScrollY, setRestoreScrollY] = useState(0);
 
-  const handleOpen = useCallback((slug: string) => setActiveSlug(slug), []);
+  const handleOpen = useCallback((slug: string) => {
+    setRestoreScrollY(window.scrollY);
+    setActiveSlug(slug);
+  }, []);
 
   const handleClose = useCallback(() => {
     const slug = activeSlug;
@@ -58,6 +68,7 @@ export function ProjectsPlainGrid({ projects, startIndex = 0 }: ProjectsPlainGri
             project={activeProject}
             sheetNumber={startIndex + activeIndex + 1}
             onClose={handleClose}
+            restoreScrollY={restoreScrollY}
           />
         ) : null}
       </AnimatePresence>

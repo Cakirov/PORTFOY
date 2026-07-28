@@ -17,6 +17,10 @@ interface ProjectDetailPanelProps {
   project: Project;
   sheetNumber: number;
   onClose: () => void;
+  /** See `useLockBodyScroll`'s `restoreY` param — pass the scroll position
+      captured *before* opening if the caller might reflow the page the
+      moment this mounts (e.g. removing the clicked tile from a CSS grid). */
+  restoreScrollY?: number;
 }
 
 const DETAIL_BLOCKS: Array<{ key: keyof Project; label: string }> = [
@@ -41,13 +45,13 @@ function getRelatedSkillGroups(project: Project): SkillGroup[] {
   });
 }
 
-export function ProjectDetailPanel({ project, sheetNumber, onClose }: ProjectDetailPanelProps) {
+export function ProjectDetailPanel({ project, sheetNumber, onClose, restoreScrollY }: ProjectDetailPanelProps) {
   const panelRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const relatedSkills = getRelatedSkillGroups(project);
 
   useFocusTrap(panelRef, true);
-  useLockBodyScroll(true);
+  useLockBodyScroll(true, restoreScrollY);
 
   useEffect(() => {
     headingRef.current?.focus();
