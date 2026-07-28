@@ -37,7 +37,7 @@ export function ProjectsPlainGrid({ projects, startIndex = 0 }: ProjectsPlainGri
 
   return (
     <LayoutGroup>
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-6">
         {projects.map((project, index) =>
           project.slug === activeSlug ? null : (
             <ProjectGridCard

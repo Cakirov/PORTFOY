@@ -27,6 +27,14 @@ export default function ProjectsIndexPage() {
       />
 
       <div className="container-max relative px-(--section-px) py-(--section-py)">
+        <Link
+          href="/#projects"
+          className="group mb-6 inline-flex items-center gap-2 font-mono-ui text-small uppercase tracking-wide text-text-secondary transition-colors duration-(--motion-fast) hover:text-accent"
+        >
+          <ArrowLeft className="h-4 w-4 transition-transform duration-(--motion-fast) group-hover:-translate-x-0.5" />
+          Ana Sayfaya Dön
+        </Link>
+
         <ScrollReveal>
           <Masthead fig="—" name="ALL PROJECTS" view="INDEX" sheet="— / 8" />
         </ScrollReveal>
@@ -34,19 +42,10 @@ export default function ProjectsIndexPage() {
           id="all-projects-heading"
           eyebrow="Tüm Projeler"
           heading="Ana sayfadaki seçkinin devamı."
-          body={`Ana sayfada öne çıkan ${HOME_PROJECT_COUNT} çalışmanın yanında, burada anlatmaya değer bulduğum geri kalan ${restProjects.length} proje yer alıyor.`}
           className="mb-[clamp(2rem,4vw,3rem)]"
         />
 
         <ProjectsPlainGrid projects={restProjects} startIndex={HOME_PROJECT_COUNT} />
-
-        <Link
-          href="/#projects"
-          className="group mt-16 inline-flex items-center gap-2 font-mono-ui text-small uppercase tracking-wide text-text-secondary transition-colors duration-(--motion-fast) hover:text-accent"
-        >
-          <ArrowLeft className="h-4 w-4 transition-transform duration-(--motion-fast) group-hover:-translate-x-0.5" />
-          Ana Sayfaya Dön
-        </Link>
       </div>
     </section>
   );
