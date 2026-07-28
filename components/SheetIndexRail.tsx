@@ -39,7 +39,19 @@ export function SheetIndexRail() {
   return (
     <nav
       aria-label="Sayfa içi hızlı erişim"
-      className="fixed top-1/2 left-6 z-[55] hidden -translate-y-1/2 font-mono-ui lg:block"
+      // Was `lg:block` (1024px) — the rail is `fixed left-6`, and each
+      // tick's name label pops out further right still (`left-full
+      // ml-[0.6rem]`), reaching about 95px from the viewport edge. But
+      // `.container-max`'s own left margin shrinks as the viewport narrows,
+      // so anywhere from ~1024px up to roughly 1330px, that margin is
+      // *smaller* than 95px — the label ends up sitting on top of section
+      // headings/content instead of in the empty gutter next to them
+      // (confirmed by measuring the actual overlap: 54px at 1024px, still
+      // 27px at 1280px, gone by 1440px). This is exactly why the page
+      // looked different on a laptop vs. a wider monitor — laptops commonly
+      // sit in that 1024–1330px window, external/desktop monitors don't.
+      // `min-[1400px]` clears the crossover with margin to spare.
+      className="fixed top-1/2 left-6 z-[55] hidden -translate-y-1/2 font-mono-ui min-[1400px]:block"
     >
       <div className="relative flex flex-col gap-[1.35rem] pl-[0.3rem]">
         {/* Base (unfilled) rule, full height. */}
