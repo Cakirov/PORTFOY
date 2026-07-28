@@ -12,6 +12,17 @@ import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
 import { siteContent } from "@/data/siteContent";
 import { EASE_STANDARD, fadeInUp, heroTransition, motionTokens } from "@/lib/motion";
 import { PERSON_NAME, SECTION_IDS } from "@/lib/constants";
+import { cn } from "@/lib/utils";
+
+/** Echoes `IntroLoader`'s corner-bracket motif — a literal nod to the
+    "technical drawing sheet" identity (registration/crop marks at the
+    edges of the page), independent JSX, not a shared import. */
+const CORNER_MARKS = [
+  "top-0 left-0 border-t border-l",
+  "top-0 right-0 border-t border-r",
+  "bottom-0 left-0 border-b border-l",
+  "bottom-0 right-0 border-b border-r",
+] as const;
 
 export function HeroSection() {
   const { hero } = siteContent;
@@ -128,6 +139,27 @@ export function HeroSection() {
               variants={fadeInUp}
               transition={heroTransition(0.28)}
             >
+              {/* Ambient depth behind the diagram — a soft glow plus two
+                  counter-rotating dashed rings, giving the "core" hub an
+                  instrument/radar-display feel. Pure sibling decoration:
+                  NodeGraphic itself (shared with every project card) is
+                  untouched. Declarative `animate`, so `Providers.tsx`'s
+                  global `MotionConfig reducedMotion="user"` freezes these
+                  automatically — no manual reduced-motion check needed. */}
+              <div aria-hidden="true" className="pointer-events-none absolute -inset-[6%] rounded-full bg-accent/10 blur-3xl" />
+              <motion.div
+                aria-hidden="true"
+                className="pointer-events-none absolute -inset-[9%] rounded-full border border-dashed border-accent/20"
+                animate={{ rotate: 360 }}
+                transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
+              />
+              <motion.div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-[6%] rounded-full border border-dashed border-secondary/15"
+                animate={{ rotate: -360 }}
+                transition={{ duration: 90, repeat: Infinity, ease: "linear" }}
+              />
+
               {/* animateOnScroll={false}: the port boxes/labels inside
                   otherwise wait on a `whileInView` viewport check per SVG
                   element, which — on mobile especially — doesn't reliably
@@ -149,8 +181,30 @@ export function HeroSection() {
           className="absolute bottom-8 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 text-text-tertiary lg:flex"
         >
           <span className="font-mono-ui text-label">SCROLL</span>
-          <span className="h-8 w-px bg-border-strong" />
+          <span className="relative h-8 w-px overflow-hidden bg-border-strong">
+            <motion.span
+              aria-hidden="true"
+              className="absolute inset-x-0 top-0 h-2 bg-accent"
+              animate={{ y: [-8, 40] }}
+              transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut", repeatDelay: 0.6 }}
+            />
+          </span>
         </motion.div>
+
+        {/* Corner registration marks — a literal echo of a technical
+            drawing sheet's crop/registration marks, framing the whole
+            Hero composition. Purely decorative, zero layout impact. */}
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+          {CORNER_MARKS.map((pos, i) => (
+            <motion.span
+              key={pos}
+              className={cn("absolute h-5 w-5 border-accent/35", pos)}
+              initial={{ opacity: 0, scale: 1.3 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={heroTransition(motionTokens.stagger.item * i)}
+            />
+          ))}
+        </div>
       </div>
     </section>
   );

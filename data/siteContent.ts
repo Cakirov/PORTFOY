@@ -5,7 +5,7 @@ import { PERSON_NAME } from "@/lib/constants";
 export const siteContent: SiteContent = {
   hero: {
     eyebrow: "Full Stack Developer - IoT - DevOps",
-    headline: "Fikirleri çalışan dijital sistemlere dönüştürüyorum.",
+    headline: "Fikirleri çalışan dijital sistemlere\ndönüştürüyorum.",
     subtext:
       "Yazılım, ürün geliştirme ve yeni nesil teknolojiler üzerine çalışan bir yazılım mühendisiyim.",
     primaryCta: "Projeleri İncele",
