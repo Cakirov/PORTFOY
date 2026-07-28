@@ -23,10 +23,10 @@ interface ProjectGridProps {
   heading: ReactNode;
 }
 
-/** How long scroll must sit quiet before a pending card change commits —
-    see the note on `useMotionValueEvent` below for why this is debounced
-    at all instead of committing on every scroll-progress change. */
-const SETTLE_DELAY_MS = 160;
+/** Minimum time between committed card changes from scroll — see the note
+    on `useMotionValueEvent` below for why this is throttled at all instead
+    of committing on every scroll-progress change. */
+const COMMIT_INTERVAL_MS = 380;
 
 /**
  * Vertical single-card "stack" — exactly one project fully visible at a
@@ -52,9 +52,18 @@ export function ProjectGrid({ projects, startIndex = 0, heading }: ProjectGridPr
   const [activeSlug, setActiveSlug] = useState<string | null>(null);
   const currentTriggerRef = useRef<HTMLButtonElement | null>(null);
   const prefersReducedMotion = useReducedMotion();
-  const settleTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const latestProgress = useRef(0);
+  const lastCommitTime = useRef(0);
+  const trailingTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   const { scrollYProgress } = useScroll({ target: spacerRef, offset: ["start start", "end end"] });
+
+  const commitFromProgress = useCallback(() => {
+    lastCommitTime.current = Date.now();
+    setActiveIndex(
+      Math.min(projects.length - 1, Math.max(0, Math.round(latestProgress.current * (projects.length - 1)))),
+    );
+  }, [projects.length]);
 
   // Committing `activeIndex` the instant scroll progress changes worked
   // fine for mouse-wheel notches — naturally spaced far enough apart for
@@ -62,21 +71,46 @@ export function ProjectGrid({ projects, startIndex = 0, heading }: ProjectGridPr
   // a touch flick: its momentum can cross several card boundaries within a
   // couple hundred milliseconds, and each crossing re-triggered a fresh
   // slide before the last one had finished, so several cards visibly moved
-  // at once. Debouncing the commit means the whole gesture (flick +
-  // momentum) settles first, then the stack makes exactly one clean slide
-  // straight to wherever it landed — a single, complete card every time,
-  // never a fragment of one mid-transition.
+  // at once.
+  //
+  // A *debounce* (wait until scroll goes fully quiet, then commit once)
+  // fixed that but broke something worse: this spacer is many screen-
+  // heights tall, and an ordinary scroll-down gesture on a phone can carry
+  // enough momentum to coast all the way through it in one continuous
+  // motion — debounced, nothing would update until that whole coast
+  // finished, so the stack seemed to sit frozen on the first card and then
+  // suddenly jump straight to whichever one momentum happened to land on.
+  //
+  // A *throttle* instead: commit immediately on the first change (so the
+  // stack starts responding right away), then during continuous scrolling
+  // allow at most one commit per `COMMIT_INTERVAL_MS` — close to, but a
+  // touch shorter than, the slide's own duration, so consecutive cards
+  // still progress past one at a time as a long scroll carries through
+  // them, without committing so often that transitions pile up and
+  // overlap. A trailing commit after the last change guarantees the final
+  // resting position is always reflected exactly, even if it lands
+  // mid-interval.
   useMotionValueEvent(scrollYProgress, "change", (v) => {
+    latestProgress.current = v;
     if (activeSlug !== null) return;
-    if (settleTimer.current) clearTimeout(settleTimer.current);
-    settleTimer.current = setTimeout(() => {
-      setActiveIndex(Math.min(projects.length - 1, Math.max(0, Math.round(v * (projects.length - 1)))));
-    }, SETTLE_DELAY_MS);
+    const elapsed = Date.now() - lastCommitTime.current;
+    if (elapsed >= COMMIT_INTERVAL_MS) {
+      if (trailingTimer.current) {
+        clearTimeout(trailingTimer.current);
+        trailingTimer.current = undefined;
+      }
+      commitFromProgress();
+    } else if (!trailingTimer.current) {
+      trailingTimer.current = setTimeout(() => {
+        trailingTimer.current = undefined;
+        commitFromProgress();
+      }, COMMIT_INTERVAL_MS - elapsed);
+    }
   });
 
   useEffect(() => {
     return () => {
-      if (settleTimer.current) clearTimeout(settleTimer.current);
+      if (trailingTimer.current) clearTimeout(trailingTimer.current);
     };
   }, []);
 
@@ -111,18 +145,20 @@ export function ProjectGrid({ projects, startIndex = 0, heading }: ProjectGridPr
   // the page — unlike wheel/touch, a button press is an unambiguous, single
   // step with no risk of several rapid-fire changes to coalesce, so there's
   // no reason to make it wait through both the native smooth-scroll *and*
-  // the settle debounce above (stacking both made a single click feel like
-  // it took over a second to respond). The debounced commit still fires
-  // once the resulting scroll settles, but by then it's just confirming the
-  // same index this already set.
+  // the throttle window above. Resetting `lastCommitTime` keeps the two
+  // paths from fighting: without it, the scroll set off by this same click
+  // could still be mid-throttle-window and momentarily re-commit a stale
+  // in-between value once the button's own update has already landed.
   const goPrev = useCallback(() => {
     if (activeSlug) return;
+    lastCommitTime.current = Date.now();
     setActiveIndex((i) => Math.max(0, i - 1));
     scrollByStep(-1);
   }, [activeSlug, scrollByStep]);
 
   const goNext = useCallback(() => {
     if (activeSlug) return;
+    lastCommitTime.current = Date.now();
     setActiveIndex((i) => Math.min(projects.length - 1, i + 1));
     scrollByStep(1);
   }, [activeSlug, scrollByStep, projects.length]);
@@ -201,7 +237,7 @@ export function ProjectGrid({ projects, startIndex = 0, heading }: ProjectGridPr
                   "already invisible" to "still invisible" is a pure no-op
                   visually, but it DOES keep the old node mounted for its
                   full fade duration — harmless at wheel-notch speed, but
-                  without the settle-debounce above it let old slots pile up
+                  without the commit throttle above it let old slots pile up
                   during a fast flick. Removing `exit` lets React unmount a
                   departed slot the instant it leaves the window. */}
               {windowIndices.map((index) => {
