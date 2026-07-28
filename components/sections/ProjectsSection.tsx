@@ -49,10 +49,7 @@ export function ProjectsSection() {
               href="/projects"
               className="group flex items-center justify-between gap-4 border border-border-strong bg-bg-elevated/40 px-6 py-5 font-mono-ui text-small text-text-primary transition-colors duration-(--motion-fast) hover:border-accent hover:text-accent"
             >
-              <span className="uppercase tracking-wide">
-                Tüm Projeleri Gör{" "}
-                <span className="text-text-tertiary group-hover:text-accent">— {remainingCount} proje daha</span>
-              </span>
+              <span className="uppercase tracking-wide">Tüm Projeleri Gör</span>
               <ArrowUpRight className="h-4 w-4 shrink-0 transition-[transform,color] duration-(--motion-fast) group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </Link>
           </ScrollReveal>
