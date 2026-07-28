@@ -139,27 +139,6 @@ export function HeroSection() {
               variants={fadeInUp}
               transition={heroTransition(0.28)}
             >
-              {/* Ambient depth behind the diagram — a soft glow plus two
-                  counter-rotating dashed rings, giving the "core" hub an
-                  instrument/radar-display feel. Pure sibling decoration:
-                  NodeGraphic itself (shared with every project card) is
-                  untouched. Declarative `animate`, so `Providers.tsx`'s
-                  global `MotionConfig reducedMotion="user"` freezes these
-                  automatically — no manual reduced-motion check needed. */}
-              <div aria-hidden="true" className="pointer-events-none absolute -inset-[6%] rounded-full bg-accent/10 blur-3xl" />
-              <motion.div
-                aria-hidden="true"
-                className="pointer-events-none absolute -inset-[9%] rounded-full border border-dashed border-accent/20"
-                animate={{ rotate: 360 }}
-                transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
-              />
-              <motion.div
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-[6%] rounded-full border border-dashed border-secondary/15"
-                animate={{ rotate: -360 }}
-                transition={{ duration: 90, repeat: Infinity, ease: "linear" }}
-              />
-
               {/* animateOnScroll={false}: the port boxes/labels inside
                   otherwise wait on a `whileInView` viewport check per SVG
                   element, which — on mobile especially — doesn't reliably
