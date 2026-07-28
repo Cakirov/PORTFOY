@@ -19,7 +19,7 @@ export const siteContent: SiteContent = {
   projects: {
     eyebrow: "Seçili Çalışmalar",
     heading: "Projeler",
-    body: "Farklı ölçek ve alanlarda geliştirdiğim, sistem düşüncesini öne çıkaran seçili çalışmalar.",
+    body: "Farklı ölçek ve alanlarda geliştirdiğim, sistem düşüncesini öne çıkaran çalışmalar.",
   },
   about: {
     eyebrow: "Hakkımda",

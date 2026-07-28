@@ -31,7 +31,7 @@ export function SectionHeading({
         lines={heading.split("\n")}
         className="text-h1 mb-[0.9rem] font-display font-bold text-text-primary"
       />
-      {body ? <p className="text-body text-text-secondary">{body}</p> : null}
+      {body ? <p className="text-body text-balance text-text-secondary">{body}</p> : null}
     </ScrollReveal>
   );
 }
