@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
-import { AnimatePresence, LayoutGroup, motion, useMotionValueEvent, useScroll } from "framer-motion";
+import { LayoutGroup, motion, useMotionValueEvent, useScroll } from "framer-motion";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import type { Project } from "@/types/project";
 import { ProjectCard } from "@/components/sections/ProjectCard";
@@ -156,53 +156,68 @@ export function ProjectGrid({ projects, startIndex = 0, heading }: ProjectGridPr
             className="relative mx-auto flex w-full min-h-0 flex-1 flex-col"
           >
             <div className="relative min-h-[18rem] w-full flex-1 overflow-hidden">
-              <AnimatePresence initial={false}>
-                {windowIndices.map((index) => {
-                  const project = projects[index];
-                  const offset = index - activeIndex;
-                  const isCurrent = offset === 0;
-                  const y = offset === 0 ? "0%" : offset === 1 ? "100%" : "-100%";
-                  const zIndex = offset === 0 ? 3 : offset === 1 ? 2 : 1;
-                  const isPanelOpen = isCurrent && activeSlug === project.slug;
+              {/* No `AnimatePresence`/`exit` here on purpose: a departing
+                  slot's `opacity` target already flips to 0 the instant it
+                  stops being current (the very first step of it leaving),
+                  well before it's dropped from the ±1 window — so by the
+                  time React actually removes it, it's already invisible and
+                  off-screen (`y` pinned at ±100%). An `exit` fade animating
+                  "already invisible" to "still invisible" is a pure no-op
+                  visually, but it DOES keep the old node mounted for its
+                  full fade duration — harmless at wheel-notch speed (index
+                  changes land far enough apart for each exit to finish
+                  first), but on a fast mobile flick `activeIndex` can change
+                  every ~50-100ms, faster than one exit animation completes,
+                  so old exiting slots piled up (confirmed: 4 mounted nodes
+                  grew to 10+ within one rapid scroll gesture) — the actual
+                  cause of the janky/incorrect card behavior on touch.
+                  Removing `exit` lets React unmount a departed slot the
+                  instant it leaves the window, so nothing ever accumulates
+                  regardless of scroll speed. */}
+              {windowIndices.map((index) => {
+                const project = projects[index];
+                const offset = index - activeIndex;
+                const isCurrent = offset === 0;
+                const y = offset === 0 ? "0%" : offset === 1 ? "100%" : "-100%";
+                const zIndex = offset === 0 ? 3 : offset === 1 ? 2 : 1;
+                const isPanelOpen = isCurrent && activeSlug === project.slug;
 
-                  return (
-                    <motion.div
-                      key={project.slug}
-                      // `p-6`: the current card tilts in 3D (see ProjectCard) —
-                      // a rotated rectangle's rendered corners bulge slightly
-                      // beyond its own unrotated box. With zero gap between the
-                      // card and this slot's edge (which is also exactly where
-                      // the viewport's `overflow-hidden` clips), those corners
-                      // got clipped mid-tilt, cutting the border off right where
-                      // the effect was most visible. This padding is pure
-                      // clipping headroom, invisible at rest (same background
-                      // behind it), giving the tilt room to bulge without
-                      // hitting the clip edge.
-                      className="absolute inset-0 p-6"
-                      style={{ zIndex }}
-                      initial={false}
-                      animate={{ y, opacity: isCurrent ? 1 : 0 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ y: positionTransition, opacity: fadeTransition }}
-                      inert={!isCurrent}
-                    >
-                      {isPanelOpen ? (
-                        <ProjectDetailPanel project={project} sheetNumber={startIndex + index + 1} onClose={handleClose} />
-                      ) : (
-                        <ProjectCard
-                          project={project}
-                          sheetNumber={startIndex + index + 1}
-                          onOpen={handleOpen}
-                          triggerRef={(el) => {
-                            if (isCurrent) currentTriggerRef.current = el;
-                          }}
-                          isCurrent={isCurrent}
-                        />
-                      )}
-                    </motion.div>
-                  );
-                })}
-              </AnimatePresence>
+                return (
+                  <motion.div
+                    key={project.slug}
+                    // `p-6`: the current card tilts in 3D (see ProjectCard) —
+                    // a rotated rectangle's rendered corners bulge slightly
+                    // beyond its own unrotated box. With zero gap between the
+                    // card and this slot's edge (which is also exactly where
+                    // the viewport's `overflow-hidden` clips), those corners
+                    // got clipped mid-tilt, cutting the border off right where
+                    // the effect was most visible. This padding is pure
+                    // clipping headroom, invisible at rest (same background
+                    // behind it), giving the tilt room to bulge without
+                    // hitting the clip edge.
+                    className="absolute inset-0 p-6"
+                    style={{ zIndex }}
+                    initial={false}
+                    animate={{ y, opacity: isCurrent ? 1 : 0 }}
+                    transition={{ y: positionTransition, opacity: fadeTransition }}
+                    inert={!isCurrent}
+                  >
+                    {isPanelOpen ? (
+                      <ProjectDetailPanel project={project} sheetNumber={startIndex + index + 1} onClose={handleClose} />
+                    ) : (
+                      <ProjectCard
+                        project={project}
+                        sheetNumber={startIndex + index + 1}
+                        onOpen={handleOpen}
+                        triggerRef={(el) => {
+                          if (isCurrent) currentTriggerRef.current = el;
+                        }}
+                        isCurrent={isCurrent}
+                      />
+                    )}
+                  </motion.div>
+                );
+              })}
             </div>
 
             {projects.length > 1 ? (
