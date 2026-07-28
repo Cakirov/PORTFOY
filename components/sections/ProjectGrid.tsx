@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import { LayoutGroup, motion, useMotionValueEvent, useScroll } from "framer-motion";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import type { Project } from "@/types/project";
@@ -23,6 +23,11 @@ interface ProjectGridProps {
   heading: ReactNode;
 }
 
+/** How long scroll must sit quiet before a pending card change commits —
+    see the note on `useMotionValueEvent` below for why this is debounced
+    at all instead of committing on every scroll-progress change. */
+const SETTLE_DELAY_MS = 160;
+
 /**
  * Vertical single-card "stack" — exactly one project fully visible at a
  * time, nothing of its neighbors showing. It pins in place while the page's
@@ -38,8 +43,8 @@ interface ProjectGridProps {
  * PROJECT_STACK_STEP_VH` tall) with a `position: sticky` block inside it —
  * the same self-contained "own ref, own `useScroll`" shape as
  * `ParallaxLayer`, just driving a stepped index instead of a continuous
- * transform. Scroll progress through the spacer maps directly to
- * `activeIndex`; only a ±1 window (previous/current/next) is ever mounted.
+ * transform. Scroll progress through the spacer maps to `activeIndex`;
+ * only a ±1 window (previous/current/next) is ever mounted.
  */
 export function ProjectGrid({ projects, startIndex = 0, heading }: ProjectGridProps) {
   const spacerRef = useRef<HTMLDivElement>(null);
@@ -47,13 +52,33 @@ export function ProjectGrid({ projects, startIndex = 0, heading }: ProjectGridPr
   const [activeSlug, setActiveSlug] = useState<string | null>(null);
   const currentTriggerRef = useRef<HTMLButtonElement | null>(null);
   const prefersReducedMotion = useReducedMotion();
+  const settleTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   const { scrollYProgress } = useScroll({ target: spacerRef, offset: ["start start", "end end"] });
 
+  // Committing `activeIndex` the instant scroll progress changes worked
+  // fine for mouse-wheel notches — naturally spaced far enough apart for
+  // one card's slide to finish before the next notch arrives — but not for
+  // a touch flick: its momentum can cross several card boundaries within a
+  // couple hundred milliseconds, and each crossing re-triggered a fresh
+  // slide before the last one had finished, so several cards visibly moved
+  // at once. Debouncing the commit means the whole gesture (flick +
+  // momentum) settles first, then the stack makes exactly one clean slide
+  // straight to wherever it landed — a single, complete card every time,
+  // never a fragment of one mid-transition.
   useMotionValueEvent(scrollYProgress, "change", (v) => {
     if (activeSlug !== null) return;
-    setActiveIndex(Math.min(projects.length - 1, Math.max(0, Math.floor(v * projects.length))));
+    if (settleTimer.current) clearTimeout(settleTimer.current);
+    settleTimer.current = setTimeout(() => {
+      setActiveIndex(Math.min(projects.length - 1, Math.max(0, Math.round(v * (projects.length - 1)))));
+    }, SETTLE_DELAY_MS);
   });
+
+  useEffect(() => {
+    return () => {
+      if (settleTimer.current) clearTimeout(settleTimer.current);
+    };
+  }, []);
 
   const canGoPrev = activeIndex > 0;
   const canGoNext = activeIndex < projects.length - 1;
@@ -68,28 +93,39 @@ export function ProjectGrid({ projects, startIndex = 0, heading }: ProjectGridPr
   // progress 1 when the spacer's BOTTOM reaches the viewport's bottom, which
   // happens after scrolling `spacerHeight - viewportHeight` px from where
   // progress 0 (spacer's top at the viewport's top) starts — not
-  // `spacerHeight` px. Using the raw height overshot every click, and the
-  // error compounded across repeated clicks until it skipped a whole card.
+  // `spacerHeight` px. That range is then divided into `projects.length - 1`
+  // hops (N cards, N-1 gaps between them), matching how `activeIndex` above
+  // is derived from `v * (projects.length - 1)`.
   const scrollByStep = useCallback(
     (direction: 1 | -1) => {
       const node = spacerRef.current;
       if (!node) return;
       const scrollableRange = node.getBoundingClientRect().height - window.innerHeight;
-      const stepPx = scrollableRange / projects.length;
+      const stepPx = scrollableRange / Math.max(1, projects.length - 1);
       window.scrollBy({ top: direction * stepPx });
     },
     [projects.length],
   );
 
+  // Buttons/keyboard update `activeIndex` immediately, on top of scrolling
+  // the page — unlike wheel/touch, a button press is an unambiguous, single
+  // step with no risk of several rapid-fire changes to coalesce, so there's
+  // no reason to make it wait through both the native smooth-scroll *and*
+  // the settle debounce above (stacking both made a single click feel like
+  // it took over a second to respond). The debounced commit still fires
+  // once the resulting scroll settles, but by then it's just confirming the
+  // same index this already set.
   const goPrev = useCallback(() => {
     if (activeSlug) return;
+    setActiveIndex((i) => Math.max(0, i - 1));
     scrollByStep(-1);
   }, [activeSlug, scrollByStep]);
 
   const goNext = useCallback(() => {
     if (activeSlug) return;
+    setActiveIndex((i) => Math.min(projects.length - 1, i + 1));
     scrollByStep(1);
-  }, [activeSlug, scrollByStep]);
+  }, [activeSlug, scrollByStep, projects.length]);
 
   const handleOpen = useCallback((slug: string) => setActiveSlug(slug), []);
 
@@ -164,16 +200,10 @@ export function ProjectGrid({ projects, startIndex = 0, heading }: ProjectGridPr
                   off-screen (`y` pinned at ±100%). An `exit` fade animating
                   "already invisible" to "still invisible" is a pure no-op
                   visually, but it DOES keep the old node mounted for its
-                  full fade duration — harmless at wheel-notch speed (index
-                  changes land far enough apart for each exit to finish
-                  first), but on a fast mobile flick `activeIndex` can change
-                  every ~50-100ms, faster than one exit animation completes,
-                  so old exiting slots piled up (confirmed: 4 mounted nodes
-                  grew to 10+ within one rapid scroll gesture) — the actual
-                  cause of the janky/incorrect card behavior on touch.
-                  Removing `exit` lets React unmount a departed slot the
-                  instant it leaves the window, so nothing ever accumulates
-                  regardless of scroll speed. */}
+                  full fade duration — harmless at wheel-notch speed, but
+                  without the settle-debounce above it let old slots pile up
+                  during a fast flick. Removing `exit` lets React unmount a
+                  departed slot the instant it leaves the window. */}
               {windowIndices.map((index) => {
                 const project = projects[index];
                 const offset = index - activeIndex;
