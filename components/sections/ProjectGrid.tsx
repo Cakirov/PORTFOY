@@ -327,7 +327,7 @@ export function ProjectGrid({ projects, startIndex = 0, heading }: ProjectGridPr
                     onClick={goPrev}
                     disabled={!canGoPrev || activeSlug !== null}
                     aria-label="Önceki proje"
-                    className="inline-flex h-9 w-9 items-center justify-center border border-border-strong bg-bg/80 text-text-primary backdrop-blur-md transition-colors duration-(--motion-fast) hover:border-accent hover:text-accent disabled:pointer-events-none disabled:opacity-30"
+                    className="inline-flex h-10 w-10 items-center justify-center border border-border-strong bg-bg/80 text-text-primary backdrop-blur-md transition-colors duration-(--motion-fast) hover:border-accent hover:text-accent disabled:pointer-events-none disabled:opacity-30"
                   >
                     <ChevronDown className="h-4 w-4" />
                   </button>
@@ -336,7 +336,7 @@ export function ProjectGrid({ projects, startIndex = 0, heading }: ProjectGridPr
                     onClick={goNext}
                     disabled={!canGoNext || activeSlug !== null}
                     aria-label="Sonraki proje"
-                    className="inline-flex h-9 w-9 items-center justify-center border border-border-strong bg-bg/80 text-text-primary backdrop-blur-md transition-colors duration-(--motion-fast) hover:border-accent hover:text-accent disabled:pointer-events-none disabled:opacity-30"
+                    className="inline-flex h-10 w-10 items-center justify-center border border-border-strong bg-bg/80 text-text-primary backdrop-blur-md transition-colors duration-(--motion-fast) hover:border-accent hover:text-accent disabled:pointer-events-none disabled:opacity-30"
                   >
                     <ChevronUp className="h-4 w-4" />
                   </button>

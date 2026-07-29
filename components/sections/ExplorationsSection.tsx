@@ -5,6 +5,7 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Masthead } from "@/components/ui/Masthead";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { GridBackdrop } from "@/components/ui/GridBackdrop";
+import { IconBadge } from "@/components/ui/IconBadge";
 import { StaggerGroup } from "@/components/motion/StaggerGroup";
 import { explorations } from "@/data/explorations";
 import { siteContent } from "@/data/siteContent";
@@ -25,7 +26,7 @@ export function ExplorationsSection() {
     >
       <GridBackdrop
         parallax
-        className="opacity-[0.18] [mask-image:linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)]"
+        className="opacity-[0.13] [mask-image:linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)]"
       />
 
       <div className="container-max relative px-(--section-px) py-(--section-py)">
@@ -47,19 +48,21 @@ export function ExplorationsSection() {
               <motion.div
                 key={item.id}
                 variants={fadeInUp}
-                className="group relative flex flex-col gap-4 border border-border bg-bg-elevated/50 py-7 pr-7 pl-9 transition-colors duration-300 hover:border-secondary"
+                className="group relative flex flex-col gap-4 border border-border bg-bg-elevated/50 py-7 pr-7 pl-9 transition-[border-color,box-shadow] duration-300 hover:border-secondary hover:shadow-[0_16px_32px_-16px_rgba(0,0,0,0.45)]"
               >
                 <span
                   aria-hidden="true"
                   className="absolute top-6 bottom-6 left-4 w-px bg-[repeating-linear-gradient(to_bottom,var(--border-strong)_0_3px,transparent_3px_8px)] opacity-70"
                 />
 
-                <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 font-mono-ui text-[0.68rem] tracking-wide text-text-tertiary uppercase">
+                <IconBadge icon={item.icon} size="sm" />
+
+                <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 text-label-sm tracking-wide text-text-tertiary uppercase">
                   <span>Log.{String(i + 1).padStart(2, "0")}</span>
                   <span className="border border-secondary px-2.5 py-0.5 text-secondary">{item.tag}</span>
                 </div>
 
-                <div className="flex items-center gap-2 font-mono-ui text-[0.68rem] tracking-wide uppercase">
+                <div className="flex items-center gap-2 text-label-sm tracking-wide uppercase">
                   <span aria-hidden="true" className={cn("h-2 w-2 rounded-full", status.dotClass)} />
                   <span className={status.colorClass}>{status.label}</span>
                 </div>
@@ -69,7 +72,7 @@ export function ExplorationsSection() {
 
                 <span
                   className={cn(
-                    "font-mono-ui text-[0.62rem] tracking-wide text-text-tertiary uppercase",
+                    "text-label-sm tracking-wide text-text-tertiary uppercase",
                     canReveal &&
                       "opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-within:opacity-100",
                   )}

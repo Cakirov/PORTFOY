@@ -144,7 +144,7 @@ export function IntroLoader() {
         </div>
 
         <div className="flex flex-col items-center gap-3">
-          <div className="flex items-center gap-2 font-mono-ui text-[0.68rem] tracking-[0.15em] text-text-tertiary uppercase">
+          <div className="flex items-center gap-2 text-label-sm tracking-[0.15em] text-text-tertiary uppercase">
             <span>Initializing</span>
             <span className="text-accent tabular-nums">{String(count).padStart(2, "0")}%</span>
           </div>

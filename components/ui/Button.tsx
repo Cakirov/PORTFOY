@@ -2,13 +2,11 @@ import Link from "next/link";
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from "react";
 import { ArrowUpRight } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { MagneticWrapper } from "@/components/ui/MagneticWrapper";
 
 type ButtonVariant = "primary" | "secondary" | "ghost";
 
 interface SharedProps {
   variant?: ButtonVariant;
-  magnetic?: boolean;
   showArrow?: boolean;
   className?: string;
   children: ReactNode;
@@ -35,7 +33,6 @@ const VARIANT_CLASSES: Record<ButtonVariant, string> = {
 
 export function Button({
   variant = "primary",
-  magnetic = false,
   showArrow = false,
   className,
   children,
@@ -43,7 +40,7 @@ export function Button({
   ...rest
 }: ButtonProps) {
   const classes = cn(
-    "inline-flex items-center gap-2 px-[1.35rem] py-[0.85rem] font-mono-ui text-[0.76rem] tracking-wide uppercase transition-[background-color,border-color,color,transform] duration-(--motion-fast) active:scale-[0.97]",
+    "inline-flex items-center gap-2 px-[1.35rem] py-[0.85rem] text-label transition-[background-color,border-color,color,transform] duration-(--motion-fast) active:scale-[0.97]",
     VARIANT_CLASSES[variant],
     className,
   );
@@ -57,7 +54,7 @@ export function Button({
     </>
   );
 
-  const element = href ? (
+  return href ? (
     <Link
       href={href}
       className={cn(classes, "group")}
@@ -72,11 +69,5 @@ export function Button({
     >
       {content}
     </button>
-  );
-
-  return magnetic ? (
-    <MagneticWrapper className="inline-block">{element}</MagneticWrapper>
-  ) : (
-    element
   );
 }

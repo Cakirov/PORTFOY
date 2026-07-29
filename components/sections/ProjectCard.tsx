@@ -45,6 +45,11 @@ const MAX_TILT_DEG = 9;
  */
 export function ProjectCard({ project, sheetNumber, onOpen, triggerRef, isCurrent }: ProjectCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
+  // Cached on enter rather than re-measured on every mousemove — the card's
+  // box doesn't move while the pointer is inside it, so a fresh
+  // getBoundingClientRect() per raw mousemove event is an unnecessary
+  // synchronous layout read.
+  const rectRef = useRef<DOMRect | null>(null);
   const canHover = useMediaQuery("(hover: hover) and (pointer: fine)");
   const canTilt = isCurrent && canHover;
 
@@ -53,9 +58,14 @@ export function ProjectCard({ project, sheetNumber, onOpen, triggerRef, isCurren
   const springRotateX = useSpring(rotateX, { stiffness: 300, damping: 30 });
   const springRotateY = useSpring(rotateY, { stiffness: 300, damping: 30 });
 
-  function handleMouseMove(event: MouseEvent<HTMLDivElement>) {
+  function handleMouseEnter() {
     if (!canTilt || !cardRef.current) return;
-    const rect = cardRef.current.getBoundingClientRect();
+    rectRef.current = cardRef.current.getBoundingClientRect();
+  }
+
+  function handleMouseMove(event: MouseEvent<HTMLDivElement>) {
+    if (!canTilt || !rectRef.current) return;
+    const rect = rectRef.current;
     const px = (event.clientX - rect.left) / rect.width - 0.5;
     const py = (event.clientY - rect.top) / rect.height - 0.5;
     rotateY.set(px * MAX_TILT_DEG);
@@ -75,6 +85,7 @@ export function ProjectCard({ project, sheetNumber, onOpen, triggerRef, isCurren
     >
       <motion.div
         ref={cardRef}
+        onMouseEnter={handleMouseEnter}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         style={canTilt ? { rotateX: springRotateX, rotateY: springRotateY, transformStyle: "preserve-3d" } : undefined}

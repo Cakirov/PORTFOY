@@ -5,6 +5,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { motionTokens } from "@/lib/motion";
+import { BREAKPOINTS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
 type ParallaxLayerName = "background" | "content" | "foreground";
@@ -34,7 +35,10 @@ interface ParallaxLayerProps {
 export function ParallaxLayer({ children, layer = "content", range, className, mobileScale = 0.4 }: ParallaxLayerProps) {
   const ref = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion();
-  const isMobile = useMediaQuery("(max-width: 767px)");
+  // BREAKPOINTS.md is Tailwind's md: min-width (768px) — one pixel below
+  // that is this hook's "not md: yet" boundary, kept in sync with the same
+  // constant rather than a second hardcoded number.
+  const isMobile = useMediaQuery(`(max-width: ${BREAKPOINTS.md - 1}px)`);
 
   const [lo, hi] = range ?? motionTokens.parallax[layer];
   const scale = isMobile ? mobileScale : 1;

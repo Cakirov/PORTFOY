@@ -84,7 +84,7 @@ export function ProjectDetailPanel({ project, sheetNumber, onClose, restoreScrol
       ref={panelRef}
       className="fixed inset-0 z-[60] h-[100dvh] overflow-y-auto overscroll-contain border border-border-strong bg-bg-elevated"
     >
-      <div className="flex items-center border-b border-border-strong px-5 py-3 font-mono-ui text-[0.68rem] tracking-wide text-text-tertiary uppercase">
+      <div className="flex items-center border-b border-border-strong px-5 pt-[max(0.75rem,env(safe-area-inset-top))] pb-3 text-label-sm tracking-wide text-text-tertiary uppercase">
         <span>
           Sheet {String(sheetNumber).padStart(2, "0")} <span className="text-accent">Detail</span>
         </span>
@@ -114,7 +114,7 @@ export function ProjectDetailPanel({ project, sheetNumber, onClose, restoreScrol
           type="button"
           onClick={onClose}
           aria-label="Geri dön"
-          className="absolute top-5 left-5 inline-flex items-center gap-2 border border-border-strong bg-bg/80 px-4 py-2 font-mono-ui text-small text-text-primary backdrop-blur-md transition-colors hover:border-accent hover:text-accent"
+          className="absolute top-5 left-5 inline-flex min-h-10 items-center gap-2 border border-border-strong bg-bg/80 px-4 py-2 font-mono-ui text-small text-text-primary backdrop-blur-md transition-colors hover:border-accent hover:text-accent"
         >
           <ArrowLeft className="h-4 w-4" />
           Geri Dön
@@ -125,7 +125,12 @@ export function ProjectDetailPanel({ project, sheetNumber, onClose, restoreScrol
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.15, duration: 0.5 }}
-        className="grid grid-cols-1 gap-10 p-8 sm:p-12 lg:grid-cols-12"
+        // container-max caps this at the site's usual 1240px, same as every
+        // other section — without it, on very wide screens (2000px+) this
+        // grid stretches edge-to-edge and the text column's lines run
+        // uncomfortably long (this panel is the one place on the site that
+        // wasn't already capped this way).
+        className="container-max grid grid-cols-1 gap-10 p-8 sm:p-12 lg:grid-cols-12"
       >
         <div className="lg:col-span-7">
           <div className="mb-4 flex items-center gap-3">
@@ -165,7 +170,7 @@ export function ProjectDetailPanel({ project, sheetNumber, onClose, restoreScrol
 
         <div className="flex flex-col gap-8 lg:col-span-5">
           <div className="border border-border-strong">
-            <div className="grid grid-cols-[2.5rem_1fr] border-b border-border-strong px-3 py-2 font-mono-ui text-[0.62rem] tracking-wide text-text-tertiary uppercase">
+            <div className="grid grid-cols-[2.5rem_1fr] border-b border-border-strong px-3 py-2 text-label-sm tracking-wide text-text-tertiary uppercase">
               <span>No</span>
               <span>Parça / Teknoloji</span>
             </div>

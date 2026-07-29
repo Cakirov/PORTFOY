@@ -1,12 +1,17 @@
+"use client";
+
+import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Masthead } from "@/components/ui/Masthead";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { GridBackdrop } from "@/components/ui/GridBackdrop";
+import { StaggerGroup } from "@/components/motion/StaggerGroup";
 import { ContactForm } from "@/components/sections/ContactForm";
 import { socialLinks } from "@/data/socialLinks";
 import { siteContent } from "@/data/siteContent";
 import { SECTION_IDS } from "@/lib/constants";
+import { fadeInUp } from "@/lib/motion";
 
 // Small "clamped corner" marks on the form panel — the same motif as the
 // intro loader's signal-lock brackets, echoed here as static (non-animated)
@@ -51,11 +56,12 @@ export function ContactSection() {
             </h2>
             <p className="text-body max-w-md text-text-secondary">{contact.body}</p>
 
-            <div className="mt-2 flex flex-col border-t border-dashed border-border">
+            <StaggerGroup className="mt-2 flex flex-col border-t border-dashed border-border">
               {ctaLinks.map((link) => (
-                <a
+                <motion.a
                   key={link.platform}
                   href={link.href}
+                  variants={fadeInUp}
                   className="group flex items-center justify-between gap-4 border-b border-dashed border-border py-4 font-mono-ui text-small text-text-primary transition-colors duration-(--motion-fast) hover:text-accent"
                 >
                   <span className="flex items-center gap-3">
@@ -63,9 +69,9 @@ export function ContactSection() {
                     {link.label}
                   </span>
                   <ArrowUpRight className="h-4 w-4 shrink-0 text-text-tertiary transition-[transform,color] duration-(--motion-fast) group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-accent" />
-                </a>
+                </motion.a>
               ))}
-            </div>
+            </StaggerGroup>
           </ScrollReveal>
 
           {/* The form itself, framed as a distinct "submitted sheet" panel. */}

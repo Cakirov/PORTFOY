@@ -1,6 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useRef, type MouseEvent } from "react";
+import { motion, useMotionValue, useMotionTemplate, useSpring } from "framer-motion";
 import { Button } from "@/components/ui/Button";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { GridBackdrop } from "@/components/ui/GridBackdrop";
@@ -13,6 +14,14 @@ import { siteContent } from "@/data/siteContent";
 import { EASE_STANDARD, fadeInUp, heroTransition, motionTokens } from "@/lib/motion";
 import { PERSON_NAME, SECTION_IDS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
+
+// Max rotation in degrees. Far gentler than the project cards' 9° on
+// purpose: this tilts the *entire* framed sheet — headline included — not
+// a small self-contained card, so a couple of degrees is already plenty to
+// read as "the whole panel leans toward you" without ever blurring text.
+const HERO_MAX_TILT_DEG = 3;
 
 /** Echoes `IntroLoader`'s corner-bracket motif — a literal nod to the
     "technical drawing sheet" identity (registration/crop marks at the
@@ -27,25 +36,78 @@ const CORNER_MARKS = [
 export function HeroSection() {
   const { hero } = siteContent;
 
+  const sectionRef = useRef<HTMLElement>(null);
+  // Cached on enter rather than re-measured on every mousemove — the
+  // section's box doesn't move while the pointer is inside it, so a fresh
+  // getBoundingClientRect() per raw mousemove event (which can fire well
+  // over 60/sec) is a synchronous layout read this effect doesn't need.
+  const rectRef = useRef<DOMRect | null>(null);
+  const canHover = useMediaQuery("(hover: hover) and (pointer: fine)");
+  const prefersReducedMotion = useReducedMotion();
+  const canTilt = canHover && !prefersReducedMotion;
+
+  const rotateX = useMotionValue(0);
+  const rotateY = useMotionValue(0);
+  const springRotateX = useSpring(rotateX, motionTokens.spring.soft);
+  const springRotateY = useSpring(rotateY, motionTokens.spring.soft);
+
+  // Raw (unsprung) cursor position, 0–100 — feeds the glare's gradient
+  // position directly. Springing this too would make the highlight visibly
+  // lag the pointer, which reads as sluggish rather than glassy.
+  const glareX = useMotionValue(50);
+  const glareY = useMotionValue(50);
+  const glareBackground = useMotionTemplate`radial-gradient(circle at ${glareX}% ${glareY}%, rgba(255,146,87,0.14), transparent 60%)`;
+
+  function handleHeroMouseEnter() {
+    if (!canTilt || !sectionRef.current) return;
+    rectRef.current = sectionRef.current.getBoundingClientRect();
+  }
+
+  function handleHeroMouseMove(event: MouseEvent<HTMLElement>) {
+    if (!canTilt || !rectRef.current) return;
+    const rect = rectRef.current;
+    const px = (event.clientX - rect.left) / rect.width;
+    const py = (event.clientY - rect.top) / rect.height;
+    rotateY.set((px - 0.5) * HERO_MAX_TILT_DEG);
+    rotateX.set(-(py - 0.5) * HERO_MAX_TILT_DEG);
+    glareX.set(px * 100);
+    glareY.set(py * 100);
+  }
+
+  function handleHeroMouseLeave() {
+    rotateX.set(0);
+    rotateY.set(0);
+    glareX.set(50);
+    glareY.set(50);
+  }
+
   return (
     <section
+      ref={sectionRef}
       id={SECTION_IDS.hero}
       aria-label={hero.headline}
-      className="relative flex min-h-[100svh] flex-col overflow-hidden pt-(--nav-height)"
+      onMouseEnter={handleHeroMouseEnter}
+      onMouseMove={handleHeroMouseMove}
+      onMouseLeave={handleHeroMouseLeave}
+      className="crosshair-zone relative flex min-h-[100svh] flex-col overflow-hidden pt-(--nav-height)"
+      style={canTilt ? { perspective: 1600 } : undefined}
     >
-      <div className="container-max relative flex w-full flex-1 flex-col px-(--section-px)">
-        {/* Background layer — slowest-moving: the technical grid texture
-            plus two soft ambient glows, all barely-perceptible drift. */}
+      {/* The whole framed sheet — grid texture, corner registration marks,
+          headline and diagram alike — tilts together as one rigid plane
+          toward the cursor, rather than any single element inside it. Same
+          "one rotation, not a stack of independent ones" lesson the project
+          cards already learned, just applied to the frame instead of a
+          card. */}
+      <motion.div
+        className="container-max relative flex w-full flex-1 flex-col px-(--section-px)"
+        style={canTilt ? { rotateX: springRotateX, rotateY: springRotateY, transformStyle: "preserve-3d" } : undefined}
+      >
+        {/* Background layer — slowest-moving: the technical grid texture,
+            barely-perceptible drift. */}
         <GridBackdrop
           parallax
           className="border-x border-(--grid-line) [mask-image:linear-gradient(to_bottom,black,black_88%,transparent)]"
         />
-        <ParallaxLayer layer="background" className="pointer-events-none absolute -top-20 -left-32">
-          <div aria-hidden="true" className="h-[420px] w-[420px] rounded-full bg-accent/10 blur-3xl" />
-        </ParallaxLayer>
-        <ParallaxLayer layer="background" className="pointer-events-none absolute right-0 bottom-0">
-          <div aria-hidden="true" className="h-[380px] w-[380px] rounded-full bg-secondary/10 blur-3xl" />
-        </ParallaxLayer>
 
         <motion.div
           className="relative mt-6 md:mt-16"
@@ -133,7 +195,7 @@ export function HeroSection() {
               stacked instead of side-by-side. */}
           <ParallaxLayer layer="foreground" className="md:col-span-5 lg:col-span-6">
             <motion.div
-              className="crosshair-zone relative aspect-square"
+              className="relative aspect-square"
               initial="hidden"
               animate="visible"
               variants={fadeInUp}
@@ -184,7 +246,18 @@ export function HeroSection() {
             />
           ))}
         </div>
-      </div>
+
+        {/* Glass-sheen glare riding the same cursor position as the tilt —
+            reinforces the "framed panel" read (light catching a tilted
+            glass sheet) rather than reading as a page merely rotating. */}
+        {canTilt ? (
+          <motion.div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0"
+            style={{ background: glareBackground }}
+          />
+        ) : null}
+      </motion.div>
     </section>
   );
 }

@@ -47,7 +47,7 @@ export function ContactForm() {
             aria-describedby={state.fieldErrors?.name ? "contact-name-error" : undefined}
           />
           {state.fieldErrors?.name ? (
-            <p id="contact-name-error" className="text-small text-red-400">
+            <p id="contact-name-error" className="text-small text-danger">
               {state.fieldErrors.name}
             </p>
           ) : null}
@@ -68,7 +68,7 @@ export function ContactForm() {
             aria-describedby={state.fieldErrors?.email ? "contact-email-error" : undefined}
           />
           {state.fieldErrors?.email ? (
-            <p id="contact-email-error" className="text-small text-red-400">
+            <p id="contact-email-error" className="text-small text-danger">
               {state.fieldErrors.email}
             </p>
           ) : null}
@@ -91,7 +91,7 @@ export function ContactForm() {
           aria-describedby={state.fieldErrors?.message ? "contact-message-error" : undefined}
         />
         {state.fieldErrors?.message ? (
-          <p id="contact-message-error" className="text-small text-red-400">
+          <p id="contact-message-error" className="text-small text-danger">
             {state.fieldErrors.message}
           </p>
         ) : null}
@@ -110,7 +110,7 @@ export function ContactForm() {
         <p
           role="status"
           aria-live="polite"
-          className={cn("flex items-center gap-2 text-small", state.status === "error" ? "text-red-400" : "text-accent")}
+          className={cn("flex items-center gap-2 text-small", state.status === "error" ? "text-danger" : "text-accent")}
         >
           {state.status !== "idle" ? (
             <>

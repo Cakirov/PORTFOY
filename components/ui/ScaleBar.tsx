@@ -14,7 +14,7 @@ export function ScaleBar({ className }: { className?: string }) {
           )}
         />
       ))}
-      <span className="ml-[0.6rem] font-mono-ui text-[0.62rem] tracking-[0.06em] text-text-tertiary">
+      <span className="ml-[0.6rem] text-label-sm tracking-[0.06em] text-text-tertiary">
         0 — 50 — 100 SCALE
       </span>
     </div>

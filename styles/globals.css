@@ -9,6 +9,13 @@
 :root {
   /* Surfaces */
   --bg: #0e1b2e;
+  /* bg-elevated is used at a few different opacities depending on role:
+     bg-bg-elevated/50 — default for a card/tile sitting on a --bg section
+     (Intro/Skills/Explorations grid cards). bg-bg-elevated/60 — panels
+     hosting their own nested bg-bg "recessed" fields (Contact's form
+     panel), where the stronger opacity keeps that recess legible. Opaque
+     (no suffix) — section-level backgrounds, small fixed chrome (nav
+     logo/lab-link boxes), and full-screen dialog panels. */
   --bg-elevated: #142640;
   --panel-2: #0f2038;
 
@@ -31,6 +38,11 @@
   --secondary: #5ec8f2;
   --secondary-soft: rgba(94, 200, 242, 0.1);
 
+  /* Danger — form validation errors only (ContactForm). Same value as the
+     Tailwind red-400 it replaces; a rename for token-system consistency,
+     not a visual change. */
+  --danger: #f87171;
+
   /* Background gradients / textures */
   --gradient-surface-fade: linear-gradient(180deg, var(--bg) 0%, var(--bg-elevated) 100%);
   --grid-line: rgba(214, 225, 240, 0.14);
@@ -51,6 +63,13 @@
   /* Larger label variant — used where an eyebrow needs more presence than
      the default (e.g. Hero) without hardcoding a one-off, untracked size. */
   --font-size-label-lg: clamp(0.8rem, 0.78rem + 0.15cqw, 0.95rem);
+  /* Smaller label variant — consolidates the scattered one-off
+     text-[0.6Xrem] arbitrary sizes used for the densest mono chrome (sheet
+     numbering, rail tooltips, log timestamps) into one tracked value.
+     Deliberately size-only (unlike .text-label/-lg's full recipe) since
+     existing call sites don't agree on one tracking value — each keeps
+     its own. */
+  --font-size-label-sm: clamp(0.625rem, 0.6rem + 0.08cqw, 0.6875rem);
 
   --leading-display: 1.04;
   --leading-h1: 1.06;
@@ -99,6 +118,7 @@
   --color-accent-soft: var(--accent-soft);
   --color-secondary: var(--secondary);
   --color-secondary-soft: var(--secondary-soft);
+  --color-danger: var(--danger);
 
   --font-sans: var(--font-body-family), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-display-family), ui-sans-serif, system-ui, sans-serif;
@@ -229,6 +249,11 @@
     font-size: var(--font-size-label-lg);
     letter-spacing: var(--tracking-label);
     text-transform: uppercase;
+  }
+
+  .text-label-sm {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-label-sm);
   }
 
   .font-mono-ui {

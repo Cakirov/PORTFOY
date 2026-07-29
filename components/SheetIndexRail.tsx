@@ -5,6 +5,7 @@ import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { useActiveSection } from "@/hooks/useActiveSection";
 import { SHEET_INDEX } from "@/lib/constants";
 import { cn } from "@/lib/utils";
+import { motionTokens } from "@/lib/motion";
 
 /**
  * In-page section navigator styled as a blueprint scale bar (the same tick
@@ -29,7 +30,7 @@ export function SheetIndexRail() {
   const targetFraction = activeIndex >= 0 ? activeIndex / (SHEET_INDEX.length - 1) : 0;
 
   const fraction = useMotionValue(0);
-  const smoothFraction = useSpring(fraction, { stiffness: 260, damping: 32, mass: 0.4 });
+  const smoothFraction = useSpring(fraction, motionTokens.spring.snappy);
   const glowTop = useTransform(smoothFraction, [0, 1], ["0%", "100%"]);
 
   useEffect(() => {
@@ -98,13 +99,15 @@ export function SheetIndexRail() {
                 <motion.span
                   layoutId="rail-active-indicator"
                   aria-hidden="true"
+                  // Deliberately not motionTokens.spring — this "lock-on pop"
+                  // wants a snappier feel than either shared preset gives.
                   transition={{ type: "spring", stiffness: 380, damping: 30 }}
                   className="animate-rail-pulse absolute top-1/2 left-0 z-10 h-[7px] w-[7px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-accent bg-accent"
                 />
               ) : null}
               <span
                 className={cn(
-                  "absolute top-1/2 left-full ml-[0.6rem] translate-x-1 -translate-y-1/2 scale-95 border border-border-strong bg-bg-elevated px-[0.55rem] py-[0.2rem] text-[0.62rem] tracking-wide whitespace-nowrap text-text-primary opacity-0 transition-[opacity,transform] duration-(--motion-fast) ease-(--motion-ease-soft)",
+                  "absolute top-1/2 left-full ml-[0.6rem] translate-x-1 -translate-y-1/2 scale-95 border border-border-strong bg-bg-elevated px-[0.55rem] py-[0.2rem] text-label-sm tracking-wide whitespace-nowrap text-text-primary opacity-0 transition-[opacity,transform] duration-(--motion-fast) ease-(--motion-ease-soft)",
                   isActive && "translate-x-0 scale-100 border-accent text-accent opacity-100",
                   "group-hover:translate-x-0 group-hover:scale-100 group-hover:opacity-100",
                 )}

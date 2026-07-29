@@ -44,7 +44,11 @@ export function Navbar() {
   return (
     <header
       className={cn(
-        "fixed inset-x-0 top-0 z-40 border-b border-border-strong bg-bg/95 py-5 shadow-[0_12px_32px_-16px_rgba(0,0,0,0.6)] backdrop-blur-md",
+        // pt uses max() against env(safe-area-inset-top) so a notch/status-bar
+        // cutout (mostly landscape on phones) never sits under the header's
+        // own content — on any device without an inset this resolves to the
+        // exact same 1.25rem py-5 already gave it.
+        "fixed inset-x-0 top-0 z-40 border-b border-border-strong bg-bg/95 pt-[max(1.25rem,env(safe-area-inset-top))] pb-5 shadow-[0_12px_32px_-16px_rgba(0,0,0,0.6)] backdrop-blur-md",
         // The mobile overlay below is a DOM descendant of this header, so it's
         // capped at the header's own stacking level — bump it above
         // ScrollProgress (z-50) while the menu is open, rather than raising
@@ -59,7 +63,7 @@ export function Navbar() {
         <Link
           href="#hero"
           aria-label={PERSON_NAME}
-          className="group relative flex h-10 w-10 items-center justify-center border border-accent bg-bg-elevated font-mono-ui text-[0.68rem] font-bold tracking-wide text-accent transition-colors duration-(--motion-fast) ease-out hover:bg-accent-soft"
+          className="group relative flex h-10 w-10 items-center justify-center border border-accent bg-bg-elevated text-label-sm font-bold tracking-wide text-accent transition-colors duration-(--motion-fast) ease-out hover:bg-accent-soft"
         >
           CKR
           {/* Corner brackets snap inward and fade in on hover — a viewfinder
@@ -88,7 +92,7 @@ export function Navbar() {
               <Link
                 href={link.href}
                 className={cn(
-                  "relative py-1 font-mono-ui text-[0.76rem] tracking-wide uppercase transition-colors duration-(--motion-fast)",
+                  "relative py-1 text-label transition-colors duration-(--motion-fast)",
                   activeSectionId === link.sectionId
                     ? "text-text-primary"
                     : "text-text-secondary hover:text-text-primary",
@@ -115,7 +119,7 @@ export function Navbar() {
         <Link
           href="/lab"
           aria-label="Yapım aşamasında yeni bölüm"
-          className="group relative flex h-10 w-10 items-center justify-center border border-border-strong bg-bg-elevated font-mono-ui text-[0.68rem] font-bold tracking-wide text-text-tertiary transition-colors duration-(--motion-fast) ease-out hover:border-accent hover:bg-accent-soft hover:text-accent"
+          className="group relative flex h-10 w-10 items-center justify-center border border-border-strong bg-bg-elevated text-label-sm font-bold tracking-wide text-text-tertiary transition-colors duration-(--motion-fast) ease-out hover:border-accent hover:bg-accent-soft hover:text-accent"
         >
           +
           <span
@@ -163,7 +167,11 @@ export function Navbar() {
             transition={{ duration: motionTokens.duration.fast }}
             className="fixed inset-0 top-0 h-[100dvh] bg-bg md:hidden"
           >
-            <StaggerGroup as="ul" trigger="mount" className="flex flex-col gap-1 px-6 pt-28 pb-8">
+            <StaggerGroup
+              as="ul"
+              trigger="mount"
+              className="flex flex-col gap-1 px-6 pt-28 pb-[max(2rem,env(safe-area-inset-bottom))]"
+            >
               {navLinks.map((link) => (
                 <motion.li key={link.href} variants={fadeInUp}>
                   <Link

@@ -5,6 +5,7 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Masthead } from "@/components/ui/Masthead";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { GridBackdrop } from "@/components/ui/GridBackdrop";
+import { IconBadge } from "@/components/ui/IconBadge";
 import { StaggerGroup } from "@/components/motion/StaggerGroup";
 import { focusAreas } from "@/data/focusAreas";
 import { siteContent } from "@/data/siteContent";
@@ -19,7 +20,7 @@ export function IntroSection() {
       {/* Full-bleed section backdrop, same container-max split HeroSection uses. */}
       <GridBackdrop
         parallax
-        className="opacity-[0.18] [mask-image:linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)]"
+        className="opacity-[0.15] [mask-image:linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)]"
       />
       <div className="container-max relative px-(--section-px) py-(--section-py)">
         <ScrollReveal>
@@ -38,8 +39,9 @@ export function IntroSection() {
             <motion.div
               key={area.title}
               variants={fadeInUp}
-              className="flex flex-col gap-3 border border-border bg-bg-elevated/50 p-6"
+              className="flex flex-col gap-3 border border-border bg-bg-elevated/50 p-6 transition-[border-color,box-shadow] duration-(--motion-normal) hover:border-accent hover:shadow-[0_16px_32px_-16px_rgba(0,0,0,0.45)]"
             >
+              <IconBadge icon={area.icon} size="sm" />
               <span className="flex items-center gap-2 font-mono-ui text-label text-accent">
                 <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-accent" />
                 COMP.{String(i + 1).padStart(2, "0")}

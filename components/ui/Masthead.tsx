@@ -13,7 +13,7 @@ export function Masthead({ fig, name, view, sheet, className }: MastheadProps) {
   return (
     <div
       className={cn(
-        "mb-[clamp(2.25rem,5vw,3.5rem)] flex flex-wrap items-baseline justify-between gap-x-4 gap-y-[0.35rem] border-b border-border-strong pb-[0.9rem] font-mono-ui text-[0.68rem] tracking-[0.1em] text-text-tertiary uppercase",
+        "mb-[clamp(2.25rem,5vw,3.5rem)] flex flex-wrap items-baseline justify-between gap-x-4 gap-y-[0.35rem] border-b border-border-strong pb-[0.9rem] text-label-sm tracking-[0.1em] text-text-tertiary uppercase",
         className,
       )}
     >

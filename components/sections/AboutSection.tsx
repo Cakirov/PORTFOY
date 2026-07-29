@@ -26,7 +26,7 @@ export function AboutSection() {
           on wide screens instead of boxing at 1240px. */}
       <GridBackdrop
         parallax
-        className="opacity-[0.18] [mask-image:linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)]"
+        className="opacity-[0.21] [mask-image:linear-gradient(to_bottom,transparent,black_10%,black_90%,transparent)]"
       />
 
       <div className="container-max relative px-(--section-px) py-(--section-py)">
@@ -57,7 +57,7 @@ export function AboutSection() {
             </StaggerGroup>
           </div>
 
-          <StaggerGroup className="flex flex-col gap-6 lg:col-span-7 lg:col-start-6">
+          <StaggerGroup className="flex max-w-[42rem] flex-col gap-6 lg:col-span-7 lg:col-start-6 lg:max-w-none">
             {about.body.map((paragraph, i) => (
               <motion.div key={i} variants={fadeInUp} className="flex gap-4 text-body text-text-secondary">
                 <span className="font-mono-ui text-label text-accent">§{String(i + 1).padStart(2, "0")}</span>

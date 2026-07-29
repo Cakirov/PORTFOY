@@ -27,8 +27,8 @@ interface ProjectGridCardProps {
 export function ProjectGridCard({ project, sheetNumber, onOpen, triggerRef }: ProjectGridCardProps) {
   return (
     <motion.div layoutId={`project-card-${project.slug}`} className="h-full">
-      <div className="group crosshair-zone relative flex h-full w-full flex-col overflow-hidden border border-border-strong bg-bg-elevated transition-colors duration-(--motion-normal) hover:border-accent">
-        <div className="relative flex items-center justify-between border-b border-border-strong px-4 py-2 font-mono-ui text-[0.65rem] tracking-wide text-text-tertiary uppercase">
+      <div className="group crosshair-zone relative flex h-full w-full flex-col overflow-hidden border border-border-strong bg-bg-elevated shadow-[0_24px_48px_-20px_rgba(0,0,0,0.55)] transition-colors duration-(--motion-normal) hover:border-accent">
+        <div className="relative flex items-center justify-between border-b border-border-strong px-4 py-2 text-label-sm tracking-wide text-text-tertiary uppercase">
           <span>Sheet {String(sheetNumber).padStart(2, "0")}</span>
           <span>{project.year}</span>
         </div>

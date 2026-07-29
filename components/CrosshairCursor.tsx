@@ -21,16 +21,33 @@ export function CrosshairCursor() {
     const el = ref.current;
     if (!el) return;
 
-    function handleMove(e: MouseEvent) {
-      if (!el) return;
+    // rAF-batched: mousemove can fire well over 60/sec on a fast mouse or
+    // trackpad, but the cursor only needs to actually move once per
+    // painted frame — coalescing to the latest event per frame avoids
+    // redundant style writes without adding any perceptible lag.
+    let rafId: number | null = null;
+    let lastEvent: MouseEvent | null = null;
+
+    function applyLatest() {
+      rafId = null;
+      const e = lastEvent;
+      if (!e || !el) return;
       el.style.transform = `translate(${e.clientX}px, ${e.clientY}px) translate(-50%, -50%)`;
       const overZone = !!(e.target as Element | null)?.closest?.(".crosshair-zone");
       el.classList.toggle("opacity-100", overZone);
       el.classList.toggle("opacity-0", !overZone);
     }
 
+    function handleMove(e: MouseEvent) {
+      lastEvent = e;
+      if (rafId === null) rafId = requestAnimationFrame(applyLatest);
+    }
+
     document.addEventListener("mousemove", handleMove);
-    return () => document.removeEventListener("mousemove", handleMove);
+    return () => {
+      document.removeEventListener("mousemove", handleMove);
+      if (rafId !== null) cancelAnimationFrame(rafId);
+    };
   }, [enabled]);
 
   if (!enabled) return null;
