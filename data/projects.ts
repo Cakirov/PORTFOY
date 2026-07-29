@@ -27,11 +27,11 @@ export const projects: Project[] = [
     featured: true,
     visual: { accent: "secondary" },
     challenge:
-      "Ekipler ortamlar arası farkları yalnızca Terraform/IaC kaynağını karşılaştırarak denetliyordu; kaynak aynı göründüğünde bile gerçek çalışan sistemde elle değiştirilmiş bir parametre (rate limit, ölçekleme eşiği, feature flag) sessizce kalıyor ve prod'da sürpriz hatalara yol açıyordu.",
+      "Ekipler ortamlar arası farkları yalnızca Terraform/IaC kaynağını karşılaştırarak denetliyordu; kaynak aynı göründüğünde bile gerçek çalışan sistemde elle değiştirilmiş bir parametre sessizce kalıyordu — örneğin bir API gateway'in rate limit değeri Terraform'da 1000 req/s yazsa da, bir olay sırasında elle 400'e düşürülüp asla geri alınmamış olabiliyordu ve bunu kimse fark etmiyordu.",
     solution:
-      "Bulut sağlayıcı API'lerinden her ortamın gerçek çalışan yapılandırmasını periyodik olarak çeken bir tarayıcı kurduk; farkları ham bir JSON diff olarak değil, hangi parametrenin neden farklı olduğunu ve olası etkisini açıklayan bir cümleye çeviren bir katman ekledik.",
+      "Bulut sağlayıcı API'lerinden her ortamın gerçek çalışan yapılandırmasını 15 dakikada bir çeken bir tarayıcı kurduk; ham diff'i doğrudan göstermek yerine ~40 bilinen parametre kalıbına (rate limit, timeout, ölçekleme eşiği, feature flag) eşleyip her biri için 'X alanı Y'den Z'ye değişti, olası etkisi şu' diyen bir açıklama cümlesine çeviren bir katman ekledik; tanınmayan bir alan farkı için de en azından ham ama okunur bir cümle üretiliyor.",
     outcome:
-      "'Neden staging'de çalışıyor da prod'da çalışmıyor' tipi sorulara harcanan debug süresi belirgin şekilde kısaldı; sessiz kalmış elle yapılan altyapı değişiklikleri devreye girmeden önce yakalanır hale geldi.",
+      "'Neden staging'de çalışıyor da prod'da çalışmıyor' tipi sorulara harcanan debug süresi kısaldı — daha önce günler süren bu tür bir araştırma, tarayıcının bir sonraki turunda (en geç 15 dakika içinde) ilgili parametreyi işaretlemesiyle dakikalara indi; sessiz kalmış elle yapılan değişiklikler artık devreye girmeden önce yakalanıyor.",
     learnings:
       "Gerçek altyapı durumu, IaC kaynağından bağımsız kendi 'gerçekliğine' sahip — sadece kaynağı okumak yeterli değil, çalışan sistemin kendisini sorgulamak gerekiyor. Ham bir diff yerine nedensel bir açıklama üretmek, aracın ekipler tarafından gerçekten güvenilip kullanılmasını sağlayan asıl fark oldu.",
   },
@@ -43,20 +43,20 @@ export const projects: Project[] = [
     shortDescription:
       "Dağıtık ekipler için gerçek zamanlı sistem izleme ve olay yönetimi platformu.",
     longDescription:
-      "Project Nova, büyük ölçekli dağıtık sistemlerde meydana gelen olayları gerçek zamanlı olarak toplayan, ilişkilendiren ve ekiplere anlamlı öncelik sırasıyla sunan bir izleme platformudur. Amaç, gürültüyü azaltıp gerçekten kritik olan sinyale odaklanmaktı. Platform, yüzlerce servisten akan telemetriyi tek bir olay zaman çizelgesinde birleştirir ve nöbetçi mühendislerin kök nedene dakikalar içinde ulaşmasını hedefler.",
+      "Project Nova, dağıtık sistemlerde art arda gelen onlarca ilişkili uyarıyı tek bir olay altında toplayan bir izleme prototipidir. Kendi kurduğum, birbirine bağımlı servislerden oluşan bir test ortamında, servisler arası çağrı bağımlılık grafiğini ve uyarıların geldiği zaman penceresini birlikte kullanan bir ilişkilendirme motoru üzerine inşa edildi. Amaç, bir kök-nedenin tetiklediği düzinelerce aşağı akış uyarısını tek tek değil, tek bir kök-neden olayı olarak göstermekti.",
     purpose:
-      "Nöbetçi mühendislerin, yüzlerce mikroservisten gelen gürültülü uyarılar arasında asıl kök nedeni saniyeler içinde bulabilmesini sağlamak.",
+      "Nöbetçi mühendislerin, birbirine bağımlı mikroservislerden gelen gürültülü uyarılar arasında asıl kök nedeni saniyeler içinde bulabilmesini sağlamak.",
     role: "Kurucu Mühendis / Full-stack",
     technologies: ["Next.js", "TypeScript", "PostgreSQL", "WebSockets", "Docker", "Redis"],
     year: 2025,
     featured: true,
     visual: { accent: "primary" },
     challenge:
-      "Ekipler, yüzlerce mikroservisten gelen uyarılar arasında asıl kök nedeni bulmakta zorlanıyor, önemli olaylar gürültüye karışıyordu. Nöbetçi mühendisler genellikle birbirine bağlı onlarca uyarıyı tek tek inceleyerek zaman kaybediyordu.",
+      "Bağımlı servisler zincirleme uyarı ürettiğinde — örneğin bir veritabanı bağlantı havuzu tükendiğinde ona bağımlı 5-6 servisin hepsi aynı anda hata vermeye başlıyordu — her uyarı ayrı bir olay olarak listeleniyordu. Kendi test ortamımda tek bir kök-neden arızası genellikle 25-35 ayrı uyarı satırına dönüşüyordu ve nöbetçi mühendis bu listeyi tek tek eleyerek okumak zorunda kalıyordu.",
     solution:
-      "Olaylar arasında zaman ve bağımlılık temelli ilişkilendirme yapan bir motor kurduk; bu motor birbiriyle ilişkili uyarıları tek bir 'olay' altında topluyor ve olası kök nedeni öne çıkarıyor. WebSocket tabanlı canlı akış sayesinde ekip aynı olay zaman çizelgesini eş zamanlı izleyebiliyor.",
+      "Servisler arasındaki gerçek çağrı ilişkisini bir bağımlılık grafiğinde tuttum; bir uyarı geldiğinde, aynı 90 saniyelik pencere içinde ona bağımlı servislerden gelen diğer uyarıları otomatik olarak aynı 'olay' kümesine topluyor, kümenin kökü olarak bağımlılık zincirinde en yukarıdaki servisi işaretliyorum. Canlı akış için polling yerine WebSocket kullandım — 5-10 saniyelik polling gecikmesi, olay hâlâ oluşurken kümenin yanlış büyümesine yol açıyordu.",
     outcome:
-      "Erken kullanıcı testlerinde ortalama müdahale süresinin belirgin şekilde kısaldığı, uyarı yorgunluğunun azaldığı gözlemlendi. Nöbetçi ekipler, artık ilgisiz uyarıları elemek yerine doğrudan ilişkilendirilmiş olaya odaklanabiliyor.",
+      "Kendi test senaryomda (kasıtlı tetiklenen bir veritabanı-havuzu tükenmesi), 32 ayrı uyarı tek bir olay kümesinde toplandı ve kök neden servis doğru işaretlendi; motor bu kümelemeyi ortalama 4 saniyede tamamladı. Bu bir prototip/test ortamı sonucu — henüz gerçek bir prod ortamında, gerçek bir nöbetçi ekiple doğrulanmadı.",
     learnings:
       "Gerçek zamanlı sistemlerde kullanıcıya güven vermek, doğruluktan çok tutarlılık ve şeffaflıkla ilgili — sistemin neden o kararı verdiğini göstermek kritik. İlişkilendirme mantığını kara kutu olarak bırakmak yerine her adımı izlenebilir kılmak, benimsenmeyi hızlandırdı.",
   },
@@ -76,11 +76,11 @@ export const projects: Project[] = [
     featured: true,
     visual: { accent: "secondary" },
     challenge:
-      "Operasyon ekibi, araç durumu bilgisini üç farklı tedarikçi sisteminden manuel olarak birleştiriyor; bir arızayı fark etmek genellikle saatler alıyordu.",
+      "Operasyon ekibi, araç durumu bilgisini üç farklı tedarikçi sisteminden (yakıt sensörü sağlayıcısı, ayrı bir GPS izleme servisi, aracın kendi motor kontrol ünitesi) manuel olarak birleştiriyordu; üçünün veri formatı ve gönderim sıklığı farklı olduğu için bir arızayı fark etmek genellikle saatler alıyordu.",
     solution:
-      "Tüm cihazlardan gelen MQTT tabanlı telemetriyi tek bir şemaya normalize eden bir alım hattı kurduk; anomali tespiti basit eşik kurallarıyla değil, aracın kendi geçmişiyle karşılaştırılarak yapılıyor.",
+      "Tüm cihazlardan gelen MQTT tabanlı telemetriyi (ortalama 30 saniyede bir örnekleme) tek bir şemaya normalize eden bir alım hattı kurduk; anomali tespitini sabit bir eşik yerine her aracın kendi son 14 günlük ortalamasına göre yaptık, çünkü filo yaş/model açısından karışıktı ve tek bir eşik değeri eski araçlar için çok hassas ya da yeni araçlar için çok gevşek kalıyordu.",
     outcome:
-      "Saha ekipleri, olası arızaları belirtiler ağırlaşmadan önce fark etmeye başladı; plansız duruşlarda gözle görülür bir azalma yaşandı.",
+      "Operasyon ekibi, olası arızaları belirtiler ağırlaşmadan — motor arızası kodu düşmeden genellikle bir-iki gün önce — fark etmeye başladı; ayda birkaç plansız duruşun önüne bu erken uyarıyla geçildi.",
     learnings:
       "IoT verisinde asıl zorluk toplama değil, cihazdan cihaza tutarsız formatları güvenilir şekilde normalize etmek — bu katmana erken yatırım yapmak sonraki her şeyi kolaylaştırdı.",
   },
@@ -101,11 +101,11 @@ export const projects: Project[] = [
     featured: true,
     visual: { accent: "secondary" },
     challenge:
-      "Yazarlar kendi argümanlarına çok yakın oldukları için mantıksal boşlukları (desteksiz bir iddia, hiç sorgulanmamış bir varsayım) genellikle göremiyordu; bu boşluklar çoğu zaman ancak okuyucu ya da hakem eleştirisinde ortaya çıkıyor, bu da geç ve maliyetli bir geri bildirim döngüsü yaratıyordu.",
+      "Yazarlar kendi argümanlarına çok yakın oldukları için mantıksal boşlukları göremiyordu; bir iddiayı destekleyen tek 'kanıt', çoğu zaman iddianın kendisinin başka kelimelerle tekrarından ibaretti ama yazar bunu son okumada bile fark etmiyordu. Bu tür boşluklar genelde ancak hakem eleştirisinde ortaya çıkıyor, bu da geç ve maliyetli bir geri bildirim döngüsü yaratıyordu.",
     solution:
-      "Metni cümle cümle analiz edip her cümleyi 'iddia', 'destek' ya da 'varsayım' olarak sınıflandıran, aralarındaki mantıksal bağı çıkaran bir işlem hattı kurduk; sonucu düzyazı olarak değil, düğümleri ve bağlantıları olan bir grafik olarak gösterdik — desteksiz kalan iddialar ve zincirin dışında kalan varsayımlar otomatik olarak vurgulanıyor.",
+      "Metni cümle cümle bir LLM ile sınıflandırıp her cümleyi 'iddia', 'destek' ya da 'varsayım' etiketiyle işaretleyen, aralarındaki referans ilişkisini çıkaran bir işlem hattı kurduk; sonucu düzyazı olarak değil, düğümleri ve kenarları olan bir grafik (D3.js) olarak gösterdik. Bir iddia düğümüne giren destek kenarı yoksa ya da bir varsayım hiçbir iddiaya bağlanmıyorsa, düğüm otomatik olarak işaretleniyor.",
     outcome:
-      "Erken kullanıcılar, taslak aşamasında normalde son okumada ya da hakem sürecinde yakalanacak zayıf mantıksal bağları fark etmeye başladı; özellikle uzun, çok iddialı metinlerde revizyon turlarının sayısı azaldı.",
+      "Erken kullanıcılar, 3-4 bin kelimelik taslaklarda ortalama 4-6 desteksiz iddia ya da işaretlenmemiş varsayım buldu — bunların çoğu, yazarın kendisinin daha önce hiç fark etmediği noktalardı. Özellikle çok iddialı, uzun metinlerde son-okuma turlarının sayısı azaldı.",
     learnings:
       "Bir metnin 'iyi yazılmış' olması ile 'mantıksal olarak sağlam' olması aynı şey değil — dil bilgisi ve akış kusursuz olsa bile altındaki iddia zinciri kırık olabiliyor. Yapıyı görselleştirmek, metni tekrar tekrar okumaktan çok daha hızlı bir şekilde bu farkı ortaya çıkarıyor.",
   },
@@ -126,11 +126,11 @@ export const projects: Project[] = [
     featured: true,
     visual: { accent: "secondary" },
     challenge:
-      "Küçük ekipler, kimlik doğrulamayı her projede yeniden ve genellikle güvenlik açıklarıyla yazıyordu; oturum yönetimi ve token yenileme mantığı her seferinde farklı şekilde hatalıydı.",
+      "Küçük ekipler kimlik doğrulamayı her projede yeniden yazıyordu; en sık tekrar eden iki hata token'ı localStorage'da düz metin olarak saklamak ve refresh-token rotasyonunu hiç uygulamamaktı — ikisi de görünürde 'çalışıyor' ama oturumun çalınmasına açık kalıyordu.",
     solution:
-      "Yaygın güvenlik hatalarını (zayıf token saklama, eksik süre sonu kontrolü) varsayılan olarak engelleyen, buna karşın tamamen özelleştirilebilir bir API tasarladık. Güvenlik varsayımlarını dokümantasyonda açıkça gerekçelendirdik.",
+      "Token'ı yalnızca httpOnly cookie'de saklayan, refresh-token'ı her kullanımda otomatik rotate eden ve eski bir refresh-token tekrar kullanılmaya çalışılırsa tüm oturumu iptal eden bir varsayılan akış tasarladım — bunu kapatmak ekstra kod yazmayı gerektiriyor, güvensiz kullanım varsayılan olarak neredeyse mümkün değil. Kütüphane framework'e özel bağımlılık taşımıyor, sadece Node.js çekirdek modülleri ve `jsonwebtoken` üzerine kurulu.",
     outcome:
-      "Kütüphane, birden fazla iç projede kimlik doğrulama geliştirme süresini kısalttı; bağımsız güvenlik incelemesinde önceki elle yazılmış çözümlere kıyasla belirgin şekilde daha az bulgu çıktı.",
+      "Kütüphaneyi kullandığım 3 iç projede kimlik doğrulama entegrasyonu, sıfırdan yazmaya kıyasla günler yerine saatler sürdü; bağımsız bir güvenlik incelemesinde önceki elle yazılmış çözümlerde bulunan orta-riskli bulgulardan hiçbiri AuthCore'da çıkmadı.",
     learnings:
       "Güvenlik odaklı bir kütüphanede en değerli özellik esneklik değil, 'yanlış kullanmayı zorlaştırmak' — varsayılan davranışın güvenli olması, dokümantasyondan çok daha etkili bir koruma.",
   },
@@ -151,11 +151,11 @@ export const projects: Project[] = [
     featured: true,
     visual: { accent: "secondary" },
     challenge:
-      "Genel amaçlı asistanlar, ekip içi özel bilgiye erişemediği için yüzeysel cevaplar veriyordu. Kullanıcılar, bir yanıtın nereden geldiğini doğrulayamadıkları için sonuçlara güvenmekte tereddüt ediyordu.",
+      "Genel amaçlı asistanlar ekip içi özel doküman ve kararlara erişemediği için yüzeysel cevaplar veriyordu. Kullanıcılar bir yanıtın hangi belgeden geldiğini doğrulayamadığı için, özellikle 'yanlışsa maliyetli' konularda (politika, prosedür) sonuçlara güvenmekte tereddüt ediyordu.",
     solution:
-      "Doküman tabanlı bir alım (retrieval) katmanı kurarak yanıtların hangi kaynaktan geldiğini şeffaf biçimde gösteren bir arayüz tasarladık. Kaynak pasajları yanıtın yanında satır içi olarak vurgulanıyor.",
+      "Dokümanları ~500 token'lık parçalara bölüp vektör veritabanında indeksleyen bir alım (retrieval) katmanı kurduk; yanıt üretilirken kullanılan her pasaj, yanıtın yanında satır içi alıntı olarak ve kaynağa tıklanabilir bağlantıyla gösteriliyor. Bir soru indekslenmiş hiçbir pasajla yeterince örtüşmüyorsa asistan uydurma bir cevap vermek yerine bunu açıkça belirtiyor.",
     outcome:
-      "Kullanıcılar, yanıtlara kaynak gösterildiğinde belirgin biçimde daha fazla güven duyduklarını belirtti. Erken benimseyen ekipler, iç dokümantasyonu arama yerine doğrudan asistana soru sorarak zaman kazandı.",
+      "Kullanıcı görüşmelerinde, kaynağı gösterilmeyen bir yanıta güvenmeden önce genelde belgeyi kendileri de açıp kontrol ettiklerini, kaynak satır içi gösterildiğindeyse bu ekstra kontrol adımını çoğu zaman atladıklarını gözlemledik. Erken benimseyen ekipler, iç dokümantasyonda arama yapmak yerine doğrudan asistana sormaya yöneldi.",
     learnings:
       "Bir yapay zekâ ürününde 'doğru cevap' tek başına yetmiyor — kullanıcının cevaba neden güvenmesi gerektiğini göstermek, benimseme için doğruluğun kendisi kadar önemli.",
   },
@@ -176,11 +176,11 @@ export const projects: Project[] = [
     featured: false,
     visual: { accent: "secondary" },
     challenge:
-      "Yeni katılan mühendisler, aynı sorunun cevabının hangi araçta (Confluence, eski bir GitHub issue'su, Slack konuşması) olduğunu bilmediği için aynı soruları tekrar tekrar soruyordu.",
+      "Yeni katılan mühendisler, aynı sorunun cevabının hangi araçta (Confluence'ta eski bir sayfa mı, kapatılmış bir GitHub issue'su mu, altı ay önceki bir Slack konuşması mı) olduğunu bilmediği için aynı soruları defalarca soruyordu; cevap genelde üçünden birinde vardı ama hangisinde olduğunu tahmin etmek gerekiyordu.",
     solution:
-      "Üç kaynağı da düzenli olarak tarayıp semantik bir indekste birleştiren, sonuçları kaynağıyla birlikte gösteren tek bir arama çubuğu kurduk; sonuçlar orijinal belgeye doğrudan bağlanıyor.",
+      "Üç kaynağı da düzenli aralıklarla (Confluence ve GitHub günlük, Slack saatlik) tarayıp tek bir vektör indekste birleştiren, anahtar kelime yerine anlam benzerliğine göre sıralayan bir arama uçbirimi kurduk; her sonuç kaynağıyla ve orijinal belgeye giden doğrudan bağlantıyla birlikte gösteriliyor.",
     outcome:
-      "Yeni ekip üyelerinin ilk haftalardaki tekrarlayan sorularında belirgin bir azalma gözlendi; mevcut mühendisler de dağınık geçmiş kararları yeniden bulmak için araca yöneldi.",
+      "Yeni katılan bir mühendisin ilk haftalarında sorduğu tekrarlayan sorulardan çoğu, artık bir kıdemliye ulaşmadan önce arama çubuğunda cevap buluyordu; kıdemli mühendisler de dağınık geçmiş kararları yeniden bulmak için Slack'te insan aramak yerine doğrudan araca yöneldi.",
     learnings:
       "Arama kalitesini artırmak çoğu zaman daha iyi bir model değil, daha iyi kaynak seçimi ve güncel tutma disiplini gerektiriyor — indeks ne kadar akıllı olursa olsun güncel olmayan bir kaynaktan doğru cevap çıkmıyor.",
   },
@@ -201,11 +201,11 @@ export const projects: Project[] = [
     featured: false,
     visual: { accent: "primary" },
     challenge:
-      "Her ürün ekibi kendi buton, form ve modal bileşenlerini yeniden yazıyordu; aynı hata (odak kaybı, kontrast yetersizliği) birden fazla üründe tekrar ediyordu.",
+      "Her ürün ekibi kendi buton, form ve modal bileşenlerini yeniden yazıyordu; en sık tekrar eden hata aynıydı — bir modal açıldığında odağın (focus) modalin içine taşınmaması, bu yüzden ekran okuyucu kullanan bir kullanıcının arka plandaki sayfada kaybolması. Bu hata birbirinden habersiz en az üç ayrı üründe üç kez düzeltiliyordu.",
     solution:
-      "Erişilebilirlik testlerini bileşen düzeyinde zorunlu kılan, tasarım tokenlarını tek kaynaktan üreten ve her bileşeni Storybook üzerinden belgeleyen paylaşılan bir kütüphane kurduk.",
+      "Odak yönetimini (focus trap, ESC ile kapama, açılışta ilk etkileşilebilir öğeye odaklanma) her bileşenin kendisine gömdüğümüz, tasarım tokenlarını (renk, boşluk, tipografi) Figma'dan tek bir JSON kaynağına (Style Dictionary) bağlayan paylaşılan bir kütüphane kurduk; bir bileşen bu davranışlar test edilmeden Storybook'a ya da yayına alınamıyor.",
     outcome:
-      "Yeni bir ekranın arayüzü, sıfırdan bileşen yazmak yerine var olan bileşenlerden kurulur hale geldi; erişilebilirlik denetimlerinde tekrar eden hatalar büyük ölçüde ortadan kalktı.",
+      "Yeni bir ekranın arayüzü, sıfırdan bileşen yazmak yerine var olan Compose bileşenlerinden kurulur hale geldi; aynı odak-yönetimi hatası artık tek bir yerde — kütüphanenin kendisinde — düzeltiliyor, üç ayrı ürün ekibi tarafından üç kez yeniden yazılmıyor.",
     learnings:
       "Paylaşılan bir kütüphanenin en büyük riski benimsenmemesi — erken aşamada gerçek ekiplerin gerçek ekranlarını kütüphaneyle birlikte inşa etmek, sonradan 'kullanın' demekten çok daha etkili oldu.",
   },
@@ -226,11 +226,11 @@ export const projects: Project[] = [
     featured: false,
     visual: { accent: "primary" },
     challenge:
-      "Saha ve toplantı notları çoğunlukla sesli kaydediliyor ama sonrasında dinlenip elle özetlenmediği için aylar sonra hiç kullanılmadan unutuluyordu.",
+      "Saha ve toplantı notları çoğunlukla telefonla sesli kaydediliyordu, ama kayıt genelde 40-50 dakikayı buluyor ve kimse geri dönüp dinlemiyordu — not, aylar sonra 'bunu bir yerde konuşmuştuk' diye hatırlanıp bir daha bulunamayan bir ses dosyası olarak kalıyordu.",
     solution:
-      "Kaydı bittiği anda otomatik yazıya döken, ardından eyleme dönüştürülebilir maddeleri ayıklayan bir işlem hattı kurduk; kullanıcı özeti onaylayıp doğrudan panosuna gönderebiliyor.",
+      "Kayıt biter bitmez Whisper API ile yazıya döken, ardından metni eyleme dönüştürülebilir maddelere ayıklayan bir işlem hattı kurduk; her madde önerisi kullanıcıya düzenlenebilir bir taslak olarak gösteriliyor, kullanıcı onaylamadan hiçbir şey doğrudan panoya gönderilmiyor.",
     outcome:
-      "Kullanıcılar, kayıtlarını dinlemeden dakikalar içinde eyleme geçirebilir hale geldi; unutulan sesli notların oranı belirgin şekilde azaldı.",
+      "Kullanıcılar, 45 dakikalık bir kaydı hiç dinlemeden, çıkan taslağı gözden geçirip birkaç dakika içinde panoya aktarabilir hale geldi; haftalarca dinlenmeyi bekleyen kayıt yığını neredeyse ortadan kalktı.",
     learnings:
       "Otomatik özetleme tek başına yeterli değil — kullanıcıya düzenleme ve onaylama adımı bırakmak, yapay zekânın hatalı çıkardığı bir maddeyi sessizce panoya göndermekten çok daha güvenli.",
   },
@@ -251,11 +251,11 @@ export const projects: Project[] = [
     featured: false,
     visual: { accent: "primary" },
     challenge:
-      "Müşteri, büyüdükçe hazır platformun özelleştirme kısıtlarına takılıyor ve her yeni entegrasyon haftalar sürüyordu. Kampanya dönemlerinde envanter senkronizasyonu sık sık gecikiyor, stok tutarsızlıkları satış kaybına yol açıyordu.",
+      "Müşteri büyüdükçe hazır platformun özelleştirme kısıtlarına takılıyordu — yeni bir pazar yeri entegrasyonu bile platformun kendi eklenti API'sinden geçmek zorunda olduğu için haftalarca sürüyordu. Kampanya dönemlerinde envanter senkronizasyonu birkaç dakika gecikince, aslında tükenmiş bir üründen sipariş alınabiliyor, bu da iptal ve iade olarak geri dönüyordu.",
     solution:
-      "Katalog, sipariş ve ödeme akışlarını bağımsız modüllere ayırarak her birinin kendi hızında geliştirilebildiği bir mimari kurduk. Envanteri olay tabanlı bir senkronizasyon katmanı üzerinden gerçek zamanlı güncelleyen bir tasarım benimsedik.",
+      "Katalog, sipariş ve ödeme akışlarını bağımsız modüllere ayırıp her birinin kendi hızında geliştirilebildiği bir mimari kurduk. Envanteri, siparişten hemen sonra tetiklenen olay tabanlı (event-driven) bir senkronizasyon katmanı üzerinden saniyeler içinde güncelledik — önceki toplu (batch) senkronizasyonun dakikalar süren gecikme penceresini ortadan kaldırdı.",
     outcome:
-      "Yeni satış kanalı entegrasyonları haftalar yerine günler içinde tamamlanır hale geldi. Yoğun kampanya dönemlerinde stok tutarsızlığı kaynaklı iptaller belirgin şekilde azaldı.",
+      "Yeni bir satış kanalı entegrasyonu haftalar yerine günler içinde tamamlanır oldu; olay tabanlı senkronizasyon sayesinde yoğun kampanya dönemlerinde de stok tutarsızlığından kaynaklanan sipariş iptalleri nadir bir istisna haline geldi.",
     learnings:
       "Modülerlik, doğru sınırları çizmeden sadece ek karmaşıklık getirir. Servisler arası sözleşmeyi (contract) en başta net tanımlamak, sonradan yeniden bölmekten çok daha ucuza geliyor.",
   },
@@ -276,11 +276,11 @@ export const projects: Project[] = [
     featured: false,
     visual: { accent: "primary" },
     challenge:
-      "Ekipler; görev takibi, zaman çizelgesi ve kaynak planlaması için üç ayrı araç kullanmak zorunda kalıyordu. Bu araçlar arasında veri elle taşındığı için raporlar sık sık güncel değildi.",
+      "Ekipler; görev takibi için bir araç, zaman çizelgesi için başka bir araç, kaynak planlaması için üçüncü bir tabloyu ayrı ayrı güncelliyordu. Bu üç kaynak elle senkronize edildiği için, bir yöneticinin baktığı kaynak planı genelde en az birkaç gün eskiydi.",
     solution:
-      "Üç ihtiyacı da aynı veri modeli üzerinde birleştiren, tek bir görünümden yönetilebilen bir arayüz geliştirdik. Zaman çizelgesi ve kaynak planlaması aynı görev nesnesinden türetildiği için ayrı senkronizasyona gerek kalmadı.",
+      "Görev, zaman ve kişi verisini aynı ilişkisel modelde tuttuk — tek bir `task` nesnesi hem zaman çizelgesini hem kaynak planını besleyecek şekilde tasarlandı. Bir görevin süresi ya da atanan kişisi değiştiğinde, hem zaman çizelgesi hem kaynak görünümü aynı anda güncelleniyor, ayrı bir senkronizasyon adımına gerek kalmıyor.",
     outcome:
-      "Ekipler araçlar arası geçiş yapmayı bırakarak günlük planlama süresinden tasarruf etti; yöneticiler kaynak çakışmalarını rapor beklemeden anlık olarak görebildi.",
+      "Ekipler üç ayrı araç arasında geçiş yapmayı bıraktı; bir yöneticinin kaynak çakışmasını fark etmesi artık haftalık rapor beklemek yerine ekranı açtığı anda oluyor.",
     learnings:
       "Bir arayüzü birleştirmek yetmiyor; asıl kazanım, altta yatan veri modelini de birleştirmekten geliyor — aksi halde 'tek panel' sadece görsel bir katman olarak kalıyor.",
   },
@@ -301,11 +301,11 @@ export const projects: Project[] = [
     featured: false,
     visual: { accent: "primary" },
     challenge:
-      "Geleneksel otomatik ölçeklendirme, ani ve düzensiz yük değişimlerinde gecikmeli ve verimsiz kalıyordu; sistem tepki verdiğinde yük zirvesi genellikle çoktan geçmiş oluyordu.",
+      "Geleneksel otomatik ölçeklendirme (CPU kullanımı %70'i geçince yeni pod ekle gibi kurallar), ani ve düzensiz yük değişimlerinde gecikmeli kalıyordu — bir pod'un ayağa kalkması 60-90 saniye sürdüğü için, sistem tepki verdiğinde yük zirvesi genellikle çoktan geçmiş oluyordu.",
     solution:
-      "Geçmiş yük örüntülerinden öğrenen ve önceden ölçeklenen deneysel bir kontrol katmanı prototipledik; bu katman klasik eşik tabanlı kurallar yerine kısa vadeli tahmine dayanıyor.",
+      "Geçmiş 7 günlük yük örüntüsünden kısa vadeli (5 dakika ilerisi) tahmin üreten, eşik aşılmadan önce ölçekleyen deneysel bir kontrol katmanı prototipledim; klasik eşik kuralı hâlâ bir yedek olarak duruyor, tahmin ile gerçekleşen yük arasındaki fark belli bir payı aşınca devreye giriyor.",
     outcome:
-      "Simüle edilmiş senaryolarda kaynak israfı azalırken tepki süresi iyileşti; çalışma devam eden bir araştırmadır ve henüz üretim ortamında doğrulanmadı.",
+      "Kayıtlı geçmiş trafiği tekrar oynattığım simülasyonlarda, tahmine dayalı ölçekleme eşik-tabanlı yaklaşıma kıyasla yük zirvesine daha erken tepki verdi ve gereksiz fazla-provizyon süresini kısalttı; bu hâlâ devam eden bir araştırmadır ve gerçek bir üretim ortamında henüz doğrulanmadı.",
     learnings:
       "Biyolojik sistemlerden ilham almak, mühendislik problemlerine taze bir çerçeve sunuyor — ama araştırma niteliğindeki bir fikri üretime taşımadan önce sınırlarını açıkça belirtmek, güveni korumak için en az çözümün kendisi kadar önemli.",
   },
