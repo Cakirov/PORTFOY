@@ -26,7 +26,7 @@ export const siteContent: SiteContent = {
     heading: "Nasıl çalıştığım",
     body: [
       "Bir problemi çözmeden önce onu gerçekten anlamaya zaman ayırırım; çoğu zaman en iyi çözüm ilk akla gelen değildir.",
-      "Kodu, uzun vadede bakımı yapılabilecek ve büyüyebilecek bir sistemin parçası olarak tasarlarım — hızlı çözüm ile sağlam çözüm arasındaki dengeyi bilinçli kurarım.",
+      "Kodu, uzun vadede bakımı yapılabilecek ve büyüyebilecek bir sistemin parçası olarak tasarlarım; hızlı çözüm ile sağlam çözüm arasındaki dengeyi bilinçli kurarım.",
       "Yeni teknolojilere meraklıyım ama araçları amaç değil, doğru problemi çözmek için birer araç olarak görürüm.",
     ],
     specs: [
@@ -44,7 +44,7 @@ export const siteContent: SiteContent = {
   process: {
     eyebrow: "Süreç",
     heading: "Çalışma yaklaşımım",
-    body: "Her proje aynı dört adımdan geçer — bu disiplin, kalite ve hız arasındaki dengeyi korur.",
+    body: "Her proje aynı dört adımdan geçer; bu disiplin, kalite ve hız arasındaki dengeyi korur.",
   },
   explorations: {
     eyebrow: "Explorations",
