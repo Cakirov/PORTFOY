@@ -103,6 +103,7 @@ export function ContactForm() {
           variant="primary"
           showArrow={!pending}
           disabled={pending}
+          magnetic
           className="self-start disabled:opacity-60"
         >
           {pending ? "Gönderiliyor..." : "Mesajı Gönder"}

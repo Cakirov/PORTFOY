@@ -2,11 +2,16 @@ import Link from "next/link";
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from "react";
 import { ArrowUpRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { MagneticWrapper } from "@/components/ui/MagneticWrapper";
 
 type ButtonVariant = "primary" | "secondary" | "ghost";
 
 interface SharedProps {
   variant?: ButtonVariant;
+  /** Subtle pointer-follow offset — reserved for a page's one or two most
+      prominent CTAs, not every button (see HeroSection/ContactForm for the
+      current call sites). */
+  magnetic?: boolean;
   showArrow?: boolean;
   className?: string;
   children: ReactNode;
@@ -33,6 +38,7 @@ const VARIANT_CLASSES: Record<ButtonVariant, string> = {
 
 export function Button({
   variant = "primary",
+  magnetic = false,
   showArrow = false,
   className,
   children,
@@ -54,7 +60,7 @@ export function Button({
     </>
   );
 
-  return href ? (
+  const element = href ? (
     <Link
       href={href}
       className={cn(classes, "group")}
@@ -69,5 +75,11 @@ export function Button({
     >
       {content}
     </button>
+  );
+
+  return magnetic ? (
+    <MagneticWrapper className="inline-block">{element}</MagneticWrapper>
+  ) : (
+    element
   );
 }

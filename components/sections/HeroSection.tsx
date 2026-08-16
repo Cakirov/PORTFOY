@@ -174,6 +174,14 @@ export function HeroSection() {
               transition={heroTransition(0.4)}
               className="flex flex-wrap items-center gap-3"
             >
+              {/* Deliberately not `magnetic` — this button lives inside the
+                  container that HeroSection itself rotates in 3D
+                  (perspective + preserve-3d, see the frame-tilt above).
+                  Layering the wrapper's own independent x/y transform on a
+                  child already inside a preserve-3d rotating parent is the
+                  exact "nested transform" rendering bug ProjectCard's own
+                  history already ran into and ruled out — confirmed
+                  reproducing here too (glitched frames on hover), reverted. */}
               <Button href={`#${SECTION_IDS.projects}`} variant="primary" showArrow>
                 {hero.primaryCta}
               </Button>

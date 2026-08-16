@@ -50,10 +50,17 @@ export function ExplorationsSection() {
                 variants={fadeInUp}
                 className="group relative flex flex-col gap-4 border border-border bg-bg-elevated/50 py-7 pr-7 pl-9 transition-[border-color,box-shadow] duration-300 hover:border-secondary hover:shadow-[0_16px_32px_-16px_rgba(0,0,0,0.45)]"
               >
-                <span
-                  aria-hidden="true"
-                  className="absolute top-6 bottom-6 left-4 w-px bg-[repeating-linear-gradient(to_bottom,var(--border-strong)_0_3px,transparent_3px_8px)] opacity-70"
-                />
+                <span aria-hidden="true" className="absolute top-6 bottom-6 left-4 w-px">
+                  <span className="absolute inset-0 bg-[repeating-linear-gradient(to_bottom,var(--border-strong)_0_3px,transparent_3px_8px)] opacity-70" />
+                  {/* Traveling signal echoing NodeGraphic's drifting
+                      data-packet dots — same motif as Process's ledger rule,
+                      tinted secondary to match this section's own accent. */}
+                  <motion.span
+                    className="absolute left-1/2 h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-secondary shadow-[0_0_6px_1px_var(--secondary)]"
+                    animate={{ top: ["0%", "100%"], opacity: [0, 1, 1, 0] }}
+                    transition={{ duration: 3.5, repeat: Infinity, ease: "linear", delay: i * 0.5, times: [0, 0.12, 0.88, 1] }}
+                  />
+                </span>
 
                 <IconBadge icon={item.icon} size="sm" />
 
