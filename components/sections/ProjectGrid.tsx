@@ -25,8 +25,14 @@ interface ProjectGridProps {
 
 /** Minimum time between committed card changes from scroll — see the note
     on `useMotionValueEvent` below for why this is throttled at all instead
-    of committing on every scroll-progress change. */
-const COMMIT_INTERVAL_MS = 380;
+    of committing on every scroll-progress change. Also sets the ceiling for
+    `positionTransition`/`fadeTransition` below: those durations must stay
+    comfortably under this value, or a fast flick's steps retarget a still-
+    running slide/fade mid-flight (Framer restarts the tween from scratch on
+    a retarget rather than preserving elapsed progress) instead of letting
+    each step's motion finish before the next one begins — that's what reads
+    as a snap/stutter on a fast scroll rather than one continuous glide. */
+const COMMIT_INTERVAL_MS = 320;
 
 /**
  * Vertical single-card "stack" — exactly one project fully visible at a
@@ -54,63 +60,97 @@ export function ProjectGrid({ projects, startIndex = 0, heading }: ProjectGridPr
   const prefersReducedMotion = useReducedMotion();
   const latestProgress = useRef(0);
   const lastCommitTime = useRef(0);
-  const trailingTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const rafId = useRef<number | null>(null);
+  // Mirrors `activeIndex`/`activeSlug` synchronously for the step-poll
+  // below — it needs to read/compare/write the "current" index within a
+  // single call, which React state alone can't do without waiting a render
+  // round-trip.
+  const committedIndexRef = useRef(0);
+  const activeSlugRef = useRef<string | null>(null);
+  useEffect(() => {
+    activeSlugRef.current = activeSlug;
+  }, [activeSlug]);
 
   const { scrollYProgress } = useScroll({ target: spacerRef, offset: ["start start", "end end"] });
 
-  const commitFromProgress = useCallback(() => {
-    lastCommitTime.current = Date.now();
-    setActiveIndex(
-      Math.min(projects.length - 1, Math.max(0, Math.round(latestProgress.current * (projects.length - 1)))),
-    );
-  }, [projects.length]);
+  const targetIndexFromProgress = useCallback(
+    () => Math.min(projects.length - 1, Math.max(0, Math.round(latestProgress.current * (projects.length - 1)))),
+    [projects.length],
+  );
 
   // Committing `activeIndex` the instant scroll progress changes worked
   // fine for mouse-wheel notches — naturally spaced far enough apart for
   // one card's slide to finish before the next notch arrives — but not for
   // a touch flick: its momentum can cross several card boundaries within a
-  // couple hundred milliseconds, and each crossing re-triggered a fresh
-  // slide before the last one had finished, so several cards visibly moved
-  // at once.
+  // couple hundred milliseconds.
   //
   // A *debounce* (wait until scroll goes fully quiet, then commit once)
-  // fixed that but broke something worse: this spacer is many screen-
-  // heights tall, and an ordinary scroll-down gesture on a phone can carry
-  // enough momentum to coast all the way through it in one continuous
+  // fixed the pile-up but broke something worse: this spacer is many
+  // screen-heights tall, and an ordinary scroll-down gesture on a phone can
+  // carry enough momentum to coast all the way through it in one continuous
   // motion — debounced, nothing would update until that whole coast
   // finished, so the stack seemed to sit frozen on the first card and then
   // suddenly jump straight to whichever one momentum happened to land on.
   //
-  // A *throttle* instead: commit immediately on the first change (so the
-  // stack starts responding right away), then during continuous scrolling
-  // allow at most one commit per `COMMIT_INTERVAL_MS` — close to, but a
-  // touch shorter than, the slide's own duration, so consecutive cards
-  // still progress past one at a time as a long scroll carries through
-  // them, without committing so often that transitions pile up and
-  // overlap. A trailing commit after the last change guarantees the final
-  // resting position is always reflected exactly, even if it lands
-  // mid-interval.
+  // A plain *throttle* (commit immediately, then at most once per
+  // `COMMIT_INTERVAL_MS`) fixed that, but each commit set `activeIndex`
+  // straight to whatever the scroll progress pointed at *right then* — a
+  // fast flick that covers several cards' worth of progress within one
+  // throttle window still jumped the stack directly from card 1 to, say,
+  // card 4, skipping 2 and 3 without ever rendering them (only a ±1 window
+  // around `activeIndex` is ever mounted, so a multi-step jump means the
+  // in-between cards genuinely never appear).
+  //
+  // Fix, take one: each step only ever moves `activeIndex` by exactly ±1
+  // toward wherever the scroll progress currently points, re-scheduling
+  // itself via `setTimeout` until it catches up. That alone wasn't enough
+  // once tested against a real fast touch flick — Chromium (and mobile
+  // browsers generally) deprioritizes `setTimeout` callbacks on the main
+  // thread while a scroll/fling is actively being handled, to keep the
+  // scroll itself smooth. A chain of `setTimeout(fn, 380)` calls scheduled
+  // during that fling doesn't fire on schedule — several of them get
+  // deferred and then released in a single burst once the fling settles,
+  // which defeats the whole point of spacing the steps out (confirmed via
+  // tracing: 4 steps that should have been ~380ms apart all landing within
+  // the same handful of milliseconds).
+  //
+  // `requestAnimationFrame` doesn't have this problem — the browser has to
+  // keep servicing it throughout the scroll/fling anyway to paint frames.
+  // So instead of scheduling the *next* step with a timer, this polls via
+  // rAF on every frame but only *advances* the index once real elapsed time
+  // (`Date.now()`, not frame count) has actually passed `COMMIT_INTERVAL_MS`
+  // since the last one — cheap to check every frame, and immune to timer
+  // throttling because it never depends on a `setTimeout` firing on time.
+  function tick() {
+    rafId.current = null;
+    if (activeSlugRef.current !== null) return;
+    const target = targetIndexFromProgress();
+    const current = committedIndexRef.current;
+    if (target === current) return;
+    if (Date.now() - lastCommitTime.current >= COMMIT_INTERVAL_MS) {
+      const next = current + Math.sign(target - current);
+      committedIndexRef.current = next;
+      lastCommitTime.current = Date.now();
+      setActiveIndex(next);
+    }
+    rafId.current = requestAnimationFrame(tick);
+  }
+
+  function ensurePolling() {
+    if (rafId.current === null) {
+      rafId.current = requestAnimationFrame(tick);
+    }
+  }
+
   useMotionValueEvent(scrollYProgress, "change", (v) => {
     latestProgress.current = v;
     if (activeSlug !== null) return;
-    const elapsed = Date.now() - lastCommitTime.current;
-    if (elapsed >= COMMIT_INTERVAL_MS) {
-      if (trailingTimer.current) {
-        clearTimeout(trailingTimer.current);
-        trailingTimer.current = undefined;
-      }
-      commitFromProgress();
-    } else if (!trailingTimer.current) {
-      trailingTimer.current = setTimeout(() => {
-        trailingTimer.current = undefined;
-        commitFromProgress();
-      }, COMMIT_INTERVAL_MS - elapsed);
-    }
+    ensurePolling();
   });
 
   useEffect(() => {
     return () => {
-      if (trailingTimer.current) clearTimeout(trailingTimer.current);
+      if (rafId.current !== null) cancelAnimationFrame(rafId.current);
     };
   }, []);
 
@@ -145,21 +185,40 @@ export function ProjectGrid({ projects, startIndex = 0, heading }: ProjectGridPr
   // the page — unlike wheel/touch, a button press is an unambiguous, single
   // step with no risk of several rapid-fire changes to coalesce, so there's
   // no reason to make it wait through both the native smooth-scroll *and*
-  // the throttle window above. Resetting `lastCommitTime` keeps the two
-  // paths from fighting: without it, the scroll set off by this same click
-  // could still be mid-throttle-window and momentarily re-commit a stale
-  // in-between value once the button's own update has already landed.
+  // the throttle window above. Resetting `lastCommitTime` (and cancelling
+  // any in-flight scroll-driven step chain) keeps the two paths from
+  // fighting: without it, the scroll set off by this same click could still
+  // be mid-chain and overwrite the button's own update a moment later.
+  // `committedIndexRef` is updated here too so that chain — if scrolling
+  // resumes afterward — resumes from the button's landing spot, not a
+  // stale pre-click index.
   const goPrev = useCallback(() => {
     if (activeSlug) return;
     lastCommitTime.current = Date.now();
-    setActiveIndex((i) => Math.max(0, i - 1));
+    if (rafId.current !== null) {
+      cancelAnimationFrame(rafId.current);
+      rafId.current = null;
+    }
+    setActiveIndex((i) => {
+      const next = Math.max(0, i - 1);
+      committedIndexRef.current = next;
+      return next;
+    });
     scrollByStep(-1);
   }, [activeSlug, scrollByStep]);
 
   const goNext = useCallback(() => {
     if (activeSlug) return;
     lastCommitTime.current = Date.now();
-    setActiveIndex((i) => Math.min(projects.length - 1, i + 1));
+    if (rafId.current !== null) {
+      cancelAnimationFrame(rafId.current);
+      rafId.current = null;
+    }
+    setActiveIndex((i) => {
+      const next = Math.min(projects.length - 1, i + 1);
+      committedIndexRef.current = next;
+      return next;
+    });
     scrollByStep(1);
   }, [activeSlug, scrollByStep, projects.length]);
 
@@ -196,15 +255,22 @@ export function ProjectGrid({ projects, startIndex = 0, heading }: ProjectGridPr
   // at 1) — right for a quick reveal/pop, but on a slide this size it reads
   // as "snap, then an imperceptible creep," the opposite of soft. This is a
   // standard, evenly-paced deceleration curve instead — one that actually
-  // spends its whole duration visibly slowing down, so 0.6s reads as
-  // genuinely gentle rather than instant.
+  // spends its whole duration visibly slowing down.
   const SLIDE_EASE = [0.4, 0, 0.2, 1] as const;
+  // Local to this component rather than `motionTokens.duration.normal`
+  // (0.45s) — that's a shared site-wide token, and coupling this fade to it
+  // meant retuning it here would silently affect unrelated components. Both
+  // this and `positionTransition`'s duration below are deliberately kept
+  // under `COMMIT_INTERVAL_MS` (320ms) so a committed step's slide/fade
+  // always finishes before the next step is allowed to commit — see that
+  // constant's comment for why that matters.
+  const FADE_DURATION_S = 0.2;
   const positionTransition = prefersReducedMotion
     ? { duration: motionTokens.duration.fast, ease: "linear" as const }
-    : { duration: 0.6, ease: SLIDE_EASE };
+    : { duration: 0.28, ease: SLIDE_EASE };
   const fadeTransition = prefersReducedMotion
     ? { duration: motionTokens.duration.fast, ease: "linear" as const }
-    : { duration: motionTokens.duration.normal, ease: EASE_STANDARD };
+    : { duration: FADE_DURATION_S, ease: EASE_STANDARD };
 
   return (
     <div ref={spacerRef} className="relative" style={{ height: `${projects.length * PROJECT_STACK_STEP_VH}vh` }}>

@@ -12,6 +12,7 @@ import { useFocusTrap } from "@/hooks/useFocusTrap";
 import { useLockBodyScroll } from "@/hooks/useLockBodyScroll";
 import { skillGroups } from "@/data/skills";
 import { PROJECT_CATEGORY_CODE } from "@/lib/constants";
+import { motionTokens } from "@/lib/motion";
 
 interface ProjectDetailPanelProps {
   project: Project;
@@ -77,6 +78,13 @@ export function ProjectDetailPanel({ project, sheetNumber, onClose, restoreScrol
   return createPortal(
     <motion.div
       layoutId={`project-card-${project.slug}`}
+      // Overrides the global `MotionConfig` default (a fixed-duration
+      // tween) for this one shared-layout morph: a spring adapts to however
+      // large the size/position jump actually is instead of forcing every
+      // card→panel transition through the same duration regardless of
+      // distance — most noticeable on mobile, where the jump from a small
+      // card to a full-screen sheet is the biggest anywhere on the site.
+      transition={motionTokens.spring.soft}
       id={`project-panel-${project.slug}`}
       role="dialog"
       aria-modal="true"
@@ -98,6 +106,7 @@ export function ProjectDetailPanel({ project, sheetNumber, onClose, restoreScrol
             benefit from — more room than this to read clearly. */}
         <motion.div
           layoutId={`project-image-${project.slug}`}
+          transition={motionTokens.spring.soft}
           className="relative h-[220px] w-full overflow-hidden bg-panel-2 md:h-[300px]"
         >
           <div className="absolute inset-0 p-8 opacity-90 md:p-12">
